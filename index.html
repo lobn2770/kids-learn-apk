@@ -142,26 +142,26 @@ button:active {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 4px;
+  gap: 3px;
   cursor: pointer;
-  font-size: 14px;
+  font-size: 12px;
   color: #999;
-  min-width: 64px;
+  min-width: 40px;
   min-height: 58px;
   justify-content: center;
   transition: color 0.2s;
 }
 
 .bottom-tabs .tab-item .tab-icon {
-  width: 34px;
-  height: 34px;
+  width: 28px;
+  height: 28px;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 .bottom-tabs .tab-item .tab-icon svg {
-  width: 30px;
-  height: 30px;
+  width: 25px;
+  height: 25px;
   fill: currentColor;
 }
 
@@ -192,14 +192,14 @@ button:active {
     display: none;
   }
   .mobile-header {
-    display: flex;
+    display: none;
   }
   .bottom-tabs {
     display: block;
   }
   .main-content {
     margin-left: 0;
-    padding: 70px 16px 118px 16px;
+    padding: 16px 16px 118px 16px;
   }
 }
 
@@ -330,6 +330,801 @@ button:active {
   .module-grid {
     grid-template-columns: 1fr;
   }
+}
+
+/* ========== 首页知识图谱 ========== */
+.kg-section {
+  margin-top: 20px;
+  background: #fff;
+  border-radius: var(--radius);
+  box-shadow: var(--card-shadow);
+  overflow: hidden;
+}
+
+.kg-head {
+  display: flex;
+  align-items: baseline;
+  gap: 12px;
+  flex-wrap: wrap;
+  padding: 18px 20px 0;
+}
+
+.kg-title {
+  font-size: 21px;
+  color: #333;
+}
+
+.kg-sub {
+  font-size: 13px;
+  color: #999;
+}
+
+.kg-sub b {
+  color: var(--pink);
+}
+
+/* 工具栏 */
+.kg-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 10px 18px;
+  flex-wrap: wrap;
+  padding: 14px 20px;
+  border-bottom: 1px solid #f2f2f2;
+}
+
+.kg-filter {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.kg-filter > label {
+  font-size: 13px;
+  color: #999;
+  margin-right: 2px;
+}
+
+.kg-btn {
+  min-width: auto;
+  min-height: auto;
+  padding: 6px 13px;
+  border: 1px solid #e8e8e8;
+  background: #fff;
+  border-radius: 10px;
+  font-size: 13px;
+  color: #666;
+  transition: all 0.15s;
+}
+
+.kg-btn:hover {
+  border-color: var(--blue);
+  color: var(--blue);
+}
+
+.kg-btn.active {
+  background: var(--blue);
+  border-color: var(--blue);
+  color: #fff;
+  font-weight: 600;
+}
+
+.kg-search {
+  margin-left: auto;
+}
+
+.kg-search input {
+  width: 170px;
+  height: 34px;
+  border: 1px solid #e8e8e8;
+  border-radius: 10px;
+  padding: 0 12px;
+  font-size: 13px;
+  font-family: inherit;
+  outline: none;
+  transition: border-color 0.15s;
+}
+
+.kg-search input:focus {
+  border-color: var(--blue);
+}
+
+/* 图谱主体：宽屏左右分栏时，高度取「视口剩余高度」与「按画布比例算出的理想高度」中的较小值。
+   前者防止图谱被挤出屏幕，后者防止图谱过高导致 SVG 上下出现大片留白
+   （减去的 590px = 侧边栏 200 + 主区内边距 60 + 详情面板 330） */
+.kg-body {
+  display: flex;
+  align-items: stretch;
+  height: min(calc(100vh - 240px), calc((100vw - 590px) / 1.5));
+  min-height: 420px;
+  max-height: 820px;
+}
+
+.kg-canvas-wrap {
+  position: relative;
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  background: #FCFDFF;
+  overflow: hidden;
+}
+
+.kg-canvas {
+  display: block;
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  height: 100%;
+  cursor: grab;
+  touch-action: none;
+  user-select: none;
+}
+
+.kg-canvas.dragging {
+  cursor: grabbing;
+}
+
+/* 学科分区标识：只用淡色文字标注，不铺背景色块（让树状结构本身成为画面主体） */
+.kg-zones {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  pointer-events: none;
+}
+
+.kg-zone {
+  position: relative;
+  margin: 4px;
+}
+
+.kg-zone > span {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 4px;
+  user-select: none;
+  opacity: .5;
+}
+
+.kg-zone-math > span    { color: #6E93D6; }
+.kg-zone-chinese > span { color: #D4789C; }
+.kg-zone-english > span { color: #5FB5AD; }
+.kg-zone-science > span { color: #9E76CC; }
+
+/* 缩放按钮 */
+.kg-zoom {
+  position: absolute;
+  right: 14px;
+  bottom: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.kg-zoom button {
+  min-width: 34px;
+  min-height: 34px;
+  width: 34px;
+  height: 34px;
+  border-radius: 10px;
+  background: #fff;
+  border: 1px solid #e8e8e8;
+  color: #666;
+  font-size: 17px;
+  line-height: 1;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+}
+
+.kg-zoom button:hover {
+  border-color: var(--blue);
+  color: var(--blue);
+}
+
+/* 操作提示：并入底部图例栏（若浮在图谱里会压住最底层的节点名称） */
+.kg-hint {
+  color: #b6bcc6;
+}
+
+/* SVG 内部元素 */
+/* 主干连线（父 → 子）：虚线箭头，从父节点垂直向上接到子节点 */
+.kg-edge {
+  fill: none;
+  stroke: #B9C7E0;
+  stroke-width: 1.5;
+  stroke-dasharray: 6 5;
+  transition: stroke 0.15s, stroke-width 0.15s;
+}
+
+/* 跨分支关联（一个知识点有多个前置，非主干的那条）：更浅更细，避免和主干抢视线 */
+.kg-edge-soft {
+  stroke: #DDE4EF;
+  stroke-width: 1;
+  stroke-dasharray: 3 5;
+}
+
+.kg-edge.on,
+.kg-edge-soft.on {
+  stroke: var(--pink);
+  stroke-width: 2.4;
+  stroke-dasharray: none;
+}
+
+.kg-node {
+  cursor: pointer;
+  transition: opacity 0.15s;
+}
+
+.kg-node .kg-shape {
+  stroke-width: 2;
+  transition: all 0.15s;
+}
+
+.kg-node:hover .kg-shape {
+  stroke-width: 3.5;
+}
+
+.kg-node.dim {
+  opacity: 0.22;
+}
+
+.kg-label {
+  font-size: 12.5px;
+  fill: #55607A;
+  text-anchor: middle;
+  pointer-events: none;
+  display: none;
+}
+
+.kg-canvas.show-labels .kg-label {
+  display: block;
+}
+
+.kg-label.hi {
+  fill: var(--pink);
+  font-weight: 600;
+}
+
+/* 悬停提示 */
+.kg-tip {
+  position: absolute;
+  padding: 6px 10px;
+  background: #fff;
+  border: 1px solid #e8e8e8;
+  border-radius: 8px;
+  font-size: 12.5px;
+  color: #444;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.1);
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 0.12s;
+  white-space: nowrap;
+  z-index: 5;
+}
+
+.kg-tip.show {
+  opacity: 1;
+}
+
+/* 详情面板（右侧常驻：上操作按钮 + 下详情内容） */
+.kg-panel {
+  display: flex;
+  flex-direction: column;
+  border-left: 1px solid #f2f2f2;
+  max-height: 100%;
+  overflow: hidden;
+}
+
+.kg-panel-actions {
+  display: flex;
+  gap: 8px;
+  padding: 14px 16px;
+  border-bottom: 1px solid #f2f2f2;
+  background: #FCFCFE;
+  flex-shrink: 0;
+}
+
+.kg-panel-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 18px;
+}
+
+.kg-empty {
+  text-align: center;
+  padding: 70px 14px;
+  color: #aaa;
+  font-size: 14px;
+  line-height: 1.9;
+}
+
+.kg-empty svg {
+  width: 46px;
+  height: 46px;
+  opacity: 0.28;
+  margin-bottom: 10px;
+}
+
+.kg-name {
+  font-size: 20px;
+  font-weight: 700;
+  color: #333;
+  line-height: 1.3;
+  margin-bottom: 10px;
+}
+
+.kg-tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 16px;
+}
+
+.kg-tag {
+  font-size: 12px;
+  padding: 3px 9px;
+  border-radius: 8px;
+  font-weight: 500;
+}
+
+.kg-field {
+  margin-bottom: 15px;
+}
+
+.kg-field > .kg-cap {
+  font-size: 12px;
+  font-weight: 600;
+  color: #9aa2b1;
+  margin-bottom: 6px;
+}
+
+.kg-field > .kg-val {
+  font-size: 14px;
+  color: #444;
+  line-height: 1.7;
+}
+
+.kg-ul {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.kg-ul li {
+  list-style: none;
+  font-size: 13px;
+  color: #444;
+  line-height: 1.65;
+  background: #F7F9FC;
+  border-radius: 8px;
+  padding: 8px 11px;
+}
+
+.kg-rel {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.kg-rel-btn {
+  min-width: auto;
+  min-height: auto;
+  font-size: 12.5px;
+  padding: 6px 11px;
+  border-radius: 8px;
+  background: #F1F6FF;
+  color: #4166B8;
+  border: 1px solid #DCE7FA;
+}
+
+.kg-rel-btn:hover {
+  background: #E3EDFF;
+}
+
+/* 详情面板底部操作提示（点亮 / 熄灭按钮已移至右上角工具栏） */
+.kg-tip-line {
+  margin-top: 18px;
+  padding-top: 12px;
+  border-top: 1px solid #f2f2f2;
+  font-size: 12.5px;
+  color: #9aa2b1;
+  text-align: center;
+}
+
+/* 图例 */
+.kg-legend {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px 16px;
+  padding: 12px 20px;
+  border-top: 1px solid #f2f2f2;
+  font-size: 12.5px;
+  color: #9aa2b1;
+}
+
+.kg-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.kg-dot {
+  width: 11px;
+  height: 11px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.kg-shape-ico {
+  width: 12px;
+  height: 12px;
+  flex-shrink: 0;
+  border: 2px solid #C0C9DA;
+}
+
+.kg-sep {
+  width: 1px;
+  height: 14px;
+  background: #e8e8e8;
+}
+
+/* 横屏平板（屏高较小）时压缩首页顶部占位，让知识图谱更早进入视野。
+   这些元素只出现在首页，不影响其它模块 */
+@media (min-width: 1151px) and (max-height: 1000px) {
+  .welcome-banner {
+    padding: 16px 30px;
+    margin-bottom: 14px;
+  }
+  .welcome-banner h1 {
+    font-size: 23px;
+    margin-bottom: 4px;
+  }
+  .stats-grid {
+    margin-bottom: 14px;
+  }
+  .stat-card {
+    padding: 12px 10px;
+  }
+  .module-card {
+    padding: 15px;
+  }
+}
+
+/* 中等宽度（平板横屏、小笔记本）：侧边栏 200 + 详情面板 330 会把图谱挤得太窄，
+   改为图谱在上、详情在下的纵向布局，保证图谱可用宽度 */
+@media (min-width: 769px) and (max-width: 1150px) {
+  .kg-body {
+    flex-direction: column;
+    height: auto;
+    min-height: 0;
+    max-height: none;
+  }
+  .kg-canvas-wrap {
+    flex: none;
+    height: auto;
+    /* 画布内容比例为 1240:800，让容器按同比例留高，避免 SVG 上下出现大片空白 */
+    aspect-ratio: 1800 / 1200;
+    min-height: 420px;
+  }
+  .kg-panel {
+    width: 100%;
+    max-height: 340px;
+    border-left: none;
+    border-top: 1px solid #f2f2f2;
+  }
+}
+
+@media (max-width: 768px) {
+  /* 触屏上允许纵向滑动正常滚动页面，横向滑动才用于平移图谱 */
+  .kg-canvas {
+    touch-action: pan-y;
+  }
+  .kg-body {
+    flex-direction: column;
+    height: auto;
+    min-height: 0;
+    max-height: none;
+  }
+  .kg-canvas-wrap {
+    flex: none;
+    height: auto;
+    aspect-ratio: 1800 / 1200;
+    min-height: 420px;
+  }
+  .kg-panel {
+    width: 100%;
+    max-height: 460px;
+    border-left: none;
+    border-top: 1px solid #f2f2f2;
+  }
+  .kg-search {
+    margin-left: 0;
+    width: 100%;
+  }
+  .kg-search input {
+    width: 100%;
+  }
+  .kg-title {
+    font-size: 19px;
+  }
+}
+
+/* ========== 知识图谱：卡片地图 ========== */
+.km-page-title {
+  font-size: 24px;
+  color: #333;
+  margin-bottom: 16px;
+}
+
+.km-wrap {
+  background: #fff;
+  border-radius: var(--radius);
+  box-shadow: var(--card-shadow);
+  padding: 18px 20px 22px;
+}
+
+.km-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.km-total {
+  font-size: 15px;
+  color: #666;
+}
+
+.km-total b {
+  color: var(--pink);
+  font-size: 19px;
+  padding: 0 2px;
+}
+
+.km-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.km-act {
+  min-width: auto;
+  min-height: auto;
+  padding: 6px 13px;
+  font-size: 13px;
+  border: 1px solid #e8e8e8;
+  border-radius: 9px;
+  background: #fff;
+  color: #777;
+}
+
+.km-act:hover {
+  border-color: var(--blue);
+  color: var(--blue);
+}
+
+/* 页面布局：左卡片地图 + 右侧 1/3 操作与详情面板 */
+.km-layout {
+  display: flex;
+  align-items: stretch;
+}
+
+.km-layout .km-wrap {
+  flex: 1;
+  min-width: 0;
+}
+
+.km-layout .kg-panel {
+  flex: 0 0 30%;
+  min-width: 250px;
+  max-width: 430px;
+  align-self: stretch;
+  background: #fff;
+  border-radius: var(--radius);
+  box-shadow: var(--card-shadow);
+  position: sticky;
+  top: 14px;
+  max-height: calc(100vh - 28px);
+}
+
+/* v2.3：断点从 1150 降为 900，平板横屏（逻辑宽 1000~1200）保持左右布局 */
+@media (max-width: 900px) {
+  .km-layout {
+    flex-direction: column;
+  }
+
+  /* column 布局下 flex:1 的 flex-basis:0 会压垮卡片地图高度，必须放开 */
+  .km-layout .km-wrap {
+    flex: none;
+  }
+
+  .km-layout .kg-panel {
+    position: static;
+    flex: none;
+    width: auto;
+    min-width: 0;
+    max-width: none;
+    max-height: none;
+    border-left: none;
+    border-top: 1px solid #f2f2f2;
+  }
+}
+
+/* 科目筛选：一次只显示一个科目 */
+.km-subject-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.km-tab {
+  min-width: auto;
+  min-height: auto;
+  padding: 7px 18px;
+  font-size: 14px;
+  font-weight: 600;
+  border: 1.5px solid #e8e8e8;
+  border-radius: 10px;
+  background: #fff;
+  color: #8a93a3;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
+}
+
+.km-tab:hover {
+  border-color: var(--tab色, #ccc);
+  color: var(--tab色, #555);
+}
+
+.km-tab.active {
+  background: var(--tab色);
+  border-color: var(--tab色);
+  color: #fff;
+}
+
+/* 当前科目板块图例 */
+.km-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 12px;
+  font-size: 12px;
+  color: #9aa2b1;
+  margin-bottom: 12px;
+}
+
+.km-legend-item {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.km-swatch {
+  width: 11px;
+  height: 11px;
+  border-radius: 3px;
+  flex-shrink: 0;
+}
+
+/* 网格两列：年级格子（含上 / 下册标签）+ 卡片区 */
+.km-grid {
+  display: grid;
+  grid-template-columns: 60px 1fr;
+  gap: 4px;
+}
+
+.km-grade {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  background: #F8FAFC;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #64748B;
+  padding: 4px 2px;
+}
+
+/* 分上下册的科目：年级格子纵向跨两行，格子内放"上册 / 下册"小标签 */
+.km-grade.has-term {
+  grid-row: span 2;
+}
+
+.km-grade-name {
+  flex-shrink: 0;
+}
+
+.km-term-tag {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  font-size: 11.5px;
+  font-weight: 500;
+  color: #A8B2C1;
+}
+
+.km-cards {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
+  padding: 3px 0;
+  align-content: flex-start;
+}
+
+/* 未点亮半透明，点亮后实色 + 描边，对比明显 */
+.km-card {
+  position: relative;
+  min-width: 88px;
+  min-height: auto;
+  padding: 7px 10px;
+  border-radius: 7px;
+  border: 1.5px solid transparent;
+  background: var(--底, #F1F5F9);
+  color: var(--字, #475569);
+  font-size: 12.5px;
+  line-height: 1.35;
+  text-align: left;
+  cursor: pointer;
+  opacity: 0.62;
+  transition: opacity 0.18s, transform 0.12s, box-shadow 0.18s, border-color 0.18s;
+}
+
+.km-card:hover {
+  opacity: 0.78;
+  transform: translateY(-1px);
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+}
+
+.km-card.on {
+  opacity: 1;
+  border-color: var(--字, #475569);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.13);
+  font-weight: 600;
+}
+
+/* 当前选中的知识点卡片：蓝色光圈，提示"学会了 / 取消点亮"的作用对象 */
+.km-card.sel {
+  border-color: #5B8DEF;
+  box-shadow: 0 0 0 2.5px rgba(91, 141, 239, 0.4);
+  opacity: 1;
+}
+
+.km-check {
+  margin-right: 3px;
+  font-weight: 700;
+}
+
+.km-empty {
+  font-size: 12px;
+  color: #CBD5E1;
+  padding: 7px 4px;
+}
+
+/* 详情面板跳转定位时的闪烁提示 */
+.km-flash {
+  animation: km闪 0.55s ease-in-out 2;
+}
+
+@keyframes km闪 {
+  0%, 100% { box-shadow: 0 2px 8px rgba(0, 0, 0, 0.13); }
+  50% { box-shadow: 0 0 0 6px rgba(91, 141, 239, 0.35); transform: scale(1.04); }
+}
+
+@media (max-width: 768px) {
+  .km-wrap { padding: 14px 12px 18px; }
+  .km-page-title { font-size: 20px; margin-bottom: 12px; }
+  .km-grid { grid-template-columns: 44px 1fr; }
+  .km-grade { font-size: 12px; }
+  .km-card { font-size: 12px; padding: 6px 8px; }
+  .km-tab { padding: 6px 13px; font-size: 13px; }
 }
 
 /* ========== 英语岛样式 ========== */
@@ -588,13 +1383,11 @@ button:active {
   color: #333;
 }
 
-.quiz-blank-line {
-  font-size: 18px;
-  color: var(--purple);
-  margin-top: 6px;
-}
-
+/* 空缺处：只留一条下划线（去掉三个短横字符，用最小宽度撑出空位） */
 .quiz-blank {
+  display: inline-block;
+  min-width: 76px;
+  text-align: center;
   font-weight: bold;
   color: var(--purple);
   border-bottom: 2px solid var(--purple);
@@ -797,13 +1590,6 @@ button:active {
   gap: 10px;
 }
 
-.sudoku-rule {
-  color: #666;
-  font-size: 15px;
-  line-height: 1.6;
-  margin: 0;
-}
-
 .sudoku-tip {
   color: #999;
   font-size: 13px;
@@ -935,6 +1721,53 @@ button:active {
 
 @media (max-width: 768px) {
   .listen-options .listen-btn { width: 84px; height: 84px; font-size: 42px; }
+}
+
+/* ========== 听音选词样式 ========== */
+.word-options {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 14px;
+  max-width: 620px;
+  margin: 0 auto;
+}
+
+.word-options .word-btn {
+  min-width: 240px;
+  min-height: 76px;
+  height: auto;
+  padding: 10px 18px;
+  background: #fff;
+  border: 2px solid #B5D4F4;
+  border-radius: 18px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  line-height: 1.25;
+}
+
+.word-options .word-btn .w-en { font-size: 24px; font-weight: bold; color: #333; }
+.word-options .word-btn .w-cn { font-size: 15px; color: #888; }
+
+.word-options .word-btn.correct { border-color: var(--green); background: #EAF3DE; }
+.word-options .word-btn.wrong { border-color: #FF6B6B; background: #FCEBEB; }
+
+@media (max-width: 768px) {
+  .word-options .word-btn { min-width: 165px; min-height: 66px; }
+  .word-options .word-btn .w-en { font-size: 20px; }
+  .word-options .word-btn .w-cn { font-size: 13px; }
+}
+
+/* 口算里出现的乘法口诀题：不走竖式，大字居中显示 */
+.calc-plain-q {
+  font-size: 40px;
+  font-weight: bold;
+  color: #333;
+  padding: 18px 0;
+  font-variant-numeric: tabular-nums;
 }
 
 /* ========== 逻辑挑战样式 ========== */
@@ -1181,7 +2014,15 @@ button:active {
   color: #666;
 }
 
-.sub-tabs .sub-tab.active {
+.sub-tabs /* 满 10 关的题型：子 Tab 变金色并标「已通关」 */
+.sub-tab.cleared {
+  background: linear-gradient(135deg, #FFD86B, #F5B301);
+  border-color: #E8A800;
+  color: #6B4A00;
+  font-weight: 600;
+}
+
+.sub-tab.active {
   border-color: var(--pink);
   color: var(--pink);
   background: #FFF0F5;
@@ -1195,6 +2036,7 @@ button:active {
   padding: 12px 32px;
   font-size: 18px;
   font-weight: bold;
+  white-space: nowrap;
 }
 
 /* 星星计数器 */
@@ -1222,6 +2064,8 @@ button:active {
   }
 }
 </style>
+<!-- 知识图谱数据（1-6 年级四科，离线本地文件，不依赖网络） -->
+<script src="knowledge-graph.js"></script>
 </head>
 <body data-page-node-id="KCvg73AMTL03H3RcfiGecP">
 
@@ -1233,24 +2077,23 @@ button:active {
   <div data-page-node-id="Dnt29r4vphzgpbdjbCYCzW" class="logo"><svg data-page-node-id="q7JI2DCz6WXUqbKYwImG8u" fill="none" height="22" viewBox="0 0 24 24" width="22" style="margin-right:4px; vertical-align:middle"><path data-page-node-id="gnyARqo4VfyX1CPUHJWvH8" d="M3 12c0-1.5.5-3 1.5-4s2.5-1 3.5 0c.7.7 1 1.7 1.5 2.5.5-.8.8-1.8 1.5-2.5 1-1 2.5-1 3.5 0s1.5 2.5 1.5 4c0 2-1.5 3.5-3 4.5S11 18 9.5 19 6 17.5 5 16.5 3 14 3 12z" fill="#FF6B9D"/><path data-page-node-id="8etkDe9lpVMM5vzIRqin0g" d="M12 5c0-1 .3-2 1-2.5s1.7-.3 2 .5c.2.5 0 1.2-.3 1.8-.3-.6-.5-1.3-1-1.8-.4.5-.6 1.2-1 1.8-.3-.6-.5-1.3-.7-1.8z" fill="#FFE66D"/><path data-page-node-id="eyBGICIGximq3uVPIfjepe" d="M16 8c1-.5 2-.5 2.5 0s.5 1.5 0 2c-.3.3-.8.5-1.2.5.4 0 .9.2 1.2.5.5.5.5 1.5 0 2s-1.5.5-2.5 0" fill="#4ECDC4"/><path data-page-node-id="KsrnZmxcLoMc7jhQqEj9vM" d="M8 8c-1-.5-2-.5-2.5 0s-.5 1.5 0 2c.3.3.8.5 1.2.5-.4 0-.9.2-1.2.5-.5.5-.5 1.5 0 2s1.5.5 2.5 0" fill="#95E67E"/></svg><!--pnid:mXBliUJnKqoDeAEmL8UIWs--> 宝贝学习乐园</div>
   <div data-page-node-id="BNlR9Buwbo7b69c6Mhot0d" class="nav-item active" data-page="home"><span data-page-node-id="E1w7wSzwcGRSdvSFEdNN9S" class="nav-icon"><svg data-page-node-id="T3G2aaR7bgrX0vJuxYQSX6" viewBox="0 0 24 24"><path data-page-node-id="YdLtijKcHYTtba8ZRDwhji" d="M12 3L2 12h3v8h6v-5h2v5h6v-8h3L12 3zm0 2.84L18 11v7h-2v-5H8v5H6v-7l6-5.16z"/><path data-page-node-id="dhKcxsVvA08m6aaFBFnyLZ" d="M12 3L2 12h3v8h6v-5h2v5h6v-8h3L12 3z" opacity="0.9"/></svg></span><!--pnid:oySpH6llKuZ1ssbNhZ8xNc-->首页</div>
   <div data-page-node-id="Ravk2R4fjiRDzbEku4mCRZ" class="nav-item" data-page="alphabet"><span data-page-node-id="CnKZAQm77Bub6dD8yQUljF" class="nav-icon"><svg data-page-node-id="t5fxb4U3Q2HMiNVehtXxuj" viewBox="0 0 24 24"><path data-page-node-id="PpUMTNEJpSvCfRCPN2pCBR" d="M5 4h2v16H5V4zm4 0h1.5l4.5 9.5V4H17v16h-1.5L11 10.5V20H9V4zm9 0h2l3 16h-2l-.5-3h-3l-.5 3h-2l3-16zm1 2.5L18.2 15h1.6L19 6.5z"/></svg></span><!--pnid:7GCcdKJve4SJk73PkCfdng-->英语岛</div>
-  <div data-page-node-id="er28q8NtxpCDIznBHHQyQv" class="nav-item" data-page="poem"><span data-page-node-id="ohmZLicB9KomK6Sx3Qbu4l" class="nav-icon"><svg data-page-node-id="78qms72VzALTPsRB7xn6LD" viewBox="0 0 24 24"><path data-page-node-id="pHtm7sqKZZ3ExOfWuZ8jk3" d="M21 4H3a1 1 0 00-1 1v14a1 1 0 001 1h18a1 1 0 001-1V5a1 1 0 00-1-1zM4 6h16v2H4V6zm0 4h10v2H4v-2zm0 4h16v2H4v-2z"/></svg></span><!--pnid:u1YSaTYfOzpuGWIudqlU1J-->古诗花园</div>
+  <div class="nav-item" data-page="chinese"><span class="nav-icon"><svg viewBox="0 0 24 24"><path d="M4 19h16v2H4v-2zm2.2-4h11.6l-1.1 3H7.3l-1.1-3zM12 4c2.6 0 4.8 1 5.9 2.7.8 1.2.9 2.6.4 3.9-.4-1.2-1.2-2.3-2.4-3.1C14.6 6.6 13.3 6.2 12 6.2S9.4 6.6 8.1 7.5C6.9 8.3 6.1 9.4 5.7 10.6c-.5-1.3-.4-2.7.4-3.9C7.2 5 9.4 4 12 4zm0 3.4c1.9 0 3.6.7 4.7 1.9-.9 1.5-2.7 2.5-4.7 2.5s-3.8-1-4.7-2.5c1.1-1.2 2.8-1.9 4.7-1.9z"/></svg></span>语文天地</div>
   <div data-page-node-id="L1k50oi99WBaHesz7W7YyA" class="nav-item" data-page="number"><span data-page-node-id="0tYSFBECFswLVsYZr7xfK4" class="nav-icon"><svg data-page-node-id="ak3NN3rdirlh9VYxmz47zK" viewBox="0 0 24 24"><path data-page-node-id="yYysCSJVySR7X4x9xS17qp" d="M4 4h4v4H4V4zm6 0h4v4h-4V4zm6 0h4v4h-4V4zM4 10h4v4H4v-4zm6 0h4v4h-4v-4zm6 0h4v4h-4v-4zM4 16h4v4H4v-4zm6 0h4v4h-4v-4zm6 0h4v4h-4v-4z"/><text data-page-node-id="QM4pq9i2KvkmcNqtYpjodz" fill="white" font-size="3.5" font-weight="bold" x="4.5" y="7.5"><!--pnid:sOk5YQdWownDoDT1Jxj7I8-->1</text><text data-page-node-id="nxyWnSJEoaKQc4qFw6bfkl" fill="white" font-size="3.5" font-weight="bold" x="10.5" y="7.5"><!--pnid:GMdlRSrBBDEyPCRdZqRki4-->2</text><text data-page-node-id="VPIkBKRDLP1V8hxJPowe5y" fill="white" font-size="3.5" font-weight="bold" x="16.5" y="7.5"><!--pnid:9fNoprAz6CvjwQyPBYJFHc-->3</text><text data-page-node-id="nN5hDAH1sOkFXBXMSsQsc5" fill="white" font-size="3.5" font-weight="bold" x="4.5" y="13.5"><!--pnid:ymrkxHWp2tY6VY1wTyLmw4-->4</text><text data-page-node-id="XBUYxDo01PwQJELuCO7zTn" fill="white" font-size="3.5" font-weight="bold" x="10.5" y="13.5"><!--pnid:EXY7QrxwiI0DjcaUkItr5g-->5</text><text data-page-node-id="Pi4NPcUNR6ZsU7Qs5XDat6" fill="white" font-size="3.5" font-weight="bold" x="16.5" y="13.5"><!--pnid:2z7iuIjQOKjHuEobgH7xrg-->6</text><text data-page-node-id="w2BHkf0F3gfCQZajOy5cHP" fill="white" font-size="3.5" font-weight="bold" x="4.5" y="19.5"><!--pnid:NtCf0pDs44EVkQPglgGEAO-->7</text><text data-page-node-id="viTybRDajNGzpggLDbGBpu" fill="white" font-size="3.5" font-weight="bold" x="10.5" y="19.5"><!--pnid:eVn2xMizzKv5jBd17hbC2V-->8</text><text data-page-node-id="FNG3VUYwBr8W90VibGSemy" fill="white" font-size="3.5" font-weight="bold" x="16.5" y="19.5"><!--pnid:WJDWyhQ1VXpIFMzOgEF31L-->9</text></svg></span><!--pnid:Xu3bKZJasXMhlZB7Jzv7Fq-->数学城</div>
   <div data-page-node-id="sIbZaD13yFDQkAusQZJ1YG" class="nav-item" data-page="logic"><span data-page-node-id="AU9AYhZ5RpI1nYetJl82Hd" class="nav-icon"><svg data-page-node-id="U0ibyIGmyZhk07unykfOSE" viewBox="0 0 24 24"><path data-page-node-id="IK4soHfrdW4C5cwciOLJ6U" d="M4 4h7v7H4V4zm9 0h7v7h-7V4zM4 13h7v7H4v-7zm9 0h7v7h-7v-7z" opacity="0.3"/><path data-page-node-id="sp7FQvJcyDWwRjfewNz7ss" d="M5 5h5v5H5V5zm9 0h5v5h-5V5zM5 14h5v5H5v-5z"/><path data-page-node-id="NX8JEHwkobH1ck5CxDWDLX" d="M14 14h5v5h-5v-5z" fill="none" stroke="currentColor" stroke-dasharray="2 1" stroke-width="1.5"/></svg></span><!--pnid:Zjx9iMFW6ijRBIyEYVht2Y-->逻辑挑战</div>
-  <div data-page-node-id="GfXIEpo9SjwKCUsmcTtxmU" class="nav-item" data-page="adventure"><span data-page-node-id="R6K1csUjFaES7HoidcGv4l" class="nav-icon"><svg data-page-node-id="LEhEKg3tbDmgmZk2HWuZp7" viewBox="0 0 24 24"><path data-page-node-id="IUPFuy7IWp46YVsPszVZ39" d="M3 6l3-3h12l3 3v12l-3 3H6l-3-3V6z"/><circle data-page-node-id="BbUExcpfYEHBKXBVG3Zbz9" cx="9" cy="10" fill="white" r="1.5"/><circle data-page-node-id="W6gbo8L2K9eQiO3JstU15f" cx="15" cy="10" fill="white" r="1.5"/><path data-page-node-id="5kix3PyE019oOgmi6nFc0l" d="M8 15h8" stroke="white" stroke-linecap="round" stroke-width="1.5"/><path data-page-node-id="QncbH5VmmNvlQCo9qgGf6K" d="M6 3v3M18 3v3M6 18v3M18 18v3" stroke="currentColor" stroke-width="1.2"/></svg></span><!--pnid:vtTRhuCkRSvgNfp3dvtqdF-->闯关冒险</div>
+  <div data-page-node-id="GfXIEpo9SjwKCUsmcTtxmU" class="nav-item" data-page="graph"><span data-page-node-id="R6K1csUjFaES7HoidcGv4l" class="nav-icon"><svg viewBox="0 0 24 24"><path d="M12 2.5a2.6 2.6 0 100 5.2 2.6 2.6 0 000-5.2zM5 16.3a2.6 2.6 0 100 5.2 2.6 2.6 0 000-5.2zM19 16.3a2.6 2.6 0 100 5.2 2.6 2.6 0 000-5.2z"/><path d="M12 8.2v3.4M11.2 12.2l-4.9 4M12.8 12.2l4.9 4" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><!--pnid:vtTRhuCkRSvgNfp3dvtqdF-->知识图谱</div>
 </nav>
 
-<!--pnid:D4LJyKmmoCxJfFdmXa35JZ--><!-- 移动端顶部 -->
-<div data-page-node-id="Tf71NPUlCOZ8IypF0RIkGF" class="mobile-header"><svg data-page-node-id="DMM9PsIkfYGrAitACpNLNl" fill="none" height="20" viewBox="0 0 24 24" width="20" style="margin-right:4px; vertical-align:middle"><path data-page-node-id="wGLkft9ybn0bLrMIoE6hEC" d="M3 12c0-1.5.5-3 1.5-4s2.5-1 3.5 0c.7.7 1 1.7 1.5 2.5.5-.8.8-1.8 1.5-2.5 1-1 2.5-1 3.5 0s1.5 2.5 1.5 4c0 2-1.5 3.5-3 4.5S11 18 9.5 19 6 17.5 5 16.5 3 14 3 12z" fill="#FFE66D"/><path data-page-node-id="I8eYTLyn3LHgr3Q6EbDIeu" d="M16 8c1-.5 2-.5 2.5 0s.5 1.5 0 2" fill="#4ECDC4"/></svg><!--pnid:r3yUYxxtd36rU0vMXJfrJ9--> 宝贝学习乐园</div>
+<!--pnid:D4LJyKmmoCxJfFdmXa35JZ--><!-- 移动端顶部标题栏（v2.1 取消显示） -->
 
 <!--pnid:Ydi6WYQ2glLy5s4csM3dZF--><!-- 移动端底部Tab -->
 <div data-page-node-id="knIGXid1AZAJqHm3rGuh6s" class="bottom-tabs">
   <div data-page-node-id="KVswhfZosjy8VyxniJJHI6" class="tabs-inner">
     <div data-page-node-id="gi27yq0DDhtsVNxYdsvvFo" class="tab-item active" data-page="home"><span data-page-node-id="iu3Uw6U1qQVRGhRtr2WSvE" class="tab-icon"><svg data-page-node-id="cfsAhzr2pAgMxTlDgHAHEm" viewBox="0 0 24 24"><path data-page-node-id="BwwbtMSofEMdiUHfsHqxB4" d="M12 3L2 12h3v8h6v-5h2v5h6v-8h3L12 3z"/></svg></span><!--pnid:b0XSWOonpldYBHyyb9qteZ-->首页</div>
-    <div data-page-node-id="rwjW4cgfvBIRB07trKGgmw" class="tab-item" data-page="alphabet"><span data-page-node-id="8ipE2Q0riTiTiAOOq0dlOu" class="tab-icon"><svg data-page-node-id="AqaJPG2FPvr6QAeKN0lJvW" viewBox="0 0 24 24"><path data-page-node-id="rAnKlLOvSHw2lJrV81Owu8" d="M5 4h2v16H5V4zm4 0h1.5l4.5 9.5V4H17v16h-1.5L11 10.5V20H9V4zm9 0h2l3 16h-2l-.5-3h-3l-.5 3h-2l3-16zm1 2.5L18.2 15h1.6L19 6.5z"/></svg></span><!--pnid:9xbH0bjJCD1oCjFuJl95qG-->字母</div>
-    <div data-page-node-id="rUcKvRkg8J8d5eTWaP51Hg" class="tab-item" data-page="poem"><span data-page-node-id="ZAB9MDjmtMBJIdF3BGBIiN" class="tab-icon"><svg data-page-node-id="e4DJGDQ8v7uYjgfZubPxeR" viewBox="0 0 24 24"><path data-page-node-id="5pgKLgEt6dWkkBZ0nVCOWE" d="M21 4H3a1 1 0 00-1 1v14a1 1 0 001 1h18a1 1 0 001-1V5a1 1 0 00-1-1zM4 6h16v2H4V6zm0 4h10v2H4v-2zm0 4h16v2H4v-2z"/></svg></span><!--pnid:vIjUndNUUYpwdQocVw3Yfb-->古诗</div>
+    <div data-page-node-id="rwjW4cgfvBIRB07trKGgmw" class="tab-item" data-page="alphabet"><span data-page-node-id="8ipE2Q0riTiTiAOOq0dlOu" class="tab-icon"><svg data-page-node-id="AqaJPG2FPvr6QAeKN0lJvW" viewBox="0 0 24 24"><path data-page-node-id="rAnKlLOvSHw2lJrV81Owu8" d="M5 4h2v16H5V4zm4 0h1.5l4.5 9.5V4H17v16h-1.5L11 10.5V20H9V4zm9 0h2l3 16h-2l-.5-3h-3l-.5 3h-2l3-16zm1 2.5L18.2 15h1.6L19 6.5z"/></svg></span><!--pnid:9xbH0bjJCD1oCjFuJl95qG-->英语</div>
+    <div class="tab-item" data-page="chinese"><span class="tab-icon"><svg viewBox="0 0 24 24"><path d="M4 19h16v2H4v-2zm2.2-4h11.6l-1.1 3H7.3l-1.1-3zM12 4c2.6 0 4.8 1 5.9 2.7.8 1.2.9 2.6.4 3.9-.4-1.2-1.2-2.3-2.4-3.1C14.6 6.6 13.3 6.2 12 6.2S9.4 6.6 8.1 7.5C6.9 8.3 6.1 9.4 5.7 10.6c-.5-1.3-.4-2.7.4-3.9C7.2 5 9.4 4 12 4zm0 3.4c1.9 0 3.6.7 4.7 1.9-.9 1.5-2.7 2.5-4.7 2.5s-3.8-1-4.7-2.5c1.1-1.2 2.8-1.9 4.7-1.9z"/></svg></span>语文</div>
     <div data-page-node-id="LpUhlEkuElCbaes12c1GYR" class="tab-item" data-page="number"><span data-page-node-id="YkchqlYAdEqMTYjp3oRxgm" class="tab-icon"><svg data-page-node-id="KAqc4EkpwR9XrBE6e2HytQ" viewBox="0 0 24 24"><path data-page-node-id="m4gJWEsMsjps06Rut4s2u2" d="M4 4h4v4H4V4zm6 0h4v4h-4V4zm6 0h4v4h-4V4zM4 10h4v4H4v-4zm6 0h4v4h-4v-4zm6 0h4v4h-4v-4zM4 16h4v4H4v-4zm6 0h4v4h-4v-4zm6 0h4v4h-4v-4z"/></svg></span><!--pnid:Og16yzZlwqjiArVFi10gvP-->数字</div>
     <div data-page-node-id="dHlovRZJxrF0yxG4R60wmG" class="tab-item" data-page="logic"><span data-page-node-id="AUEdNjxt51A7HF4It67Ndt" class="tab-icon"><svg data-page-node-id="zt51PRAHntM8LQgkTPc8qX" viewBox="0 0 24 24"><path data-page-node-id="J1MeYMlim11dNGiHckEm3F" d="M5 5h5v5H5V5zm9 0h5v5h-5V5zM5 14h5v5H5v-5z"/><path data-page-node-id="6yusgEE2n0WHf9olFeVSCw" d="M14 14h5v5h-5v-5z" fill="none" stroke="currentColor" stroke-dasharray="2 1" stroke-width="1.5"/></svg></span><!--pnid:S7wJiB5ulfyyVunk9NtbjH-->逻辑</div>
-    <div data-page-node-id="lQy72voxLSA9f28PGhgVsX" class="tab-item" data-page="adventure"><span data-page-node-id="4n2EWDgBwaunWLUGK81WRR" class="tab-icon"><svg data-page-node-id="XtmNsLjxhbNRpz36OuU5AK" viewBox="0 0 24 24"><path data-page-node-id="9GBbU7PBxd7PZ53boXUu0y" d="M3 6l3-3h12l3 3v12l-3 3H6l-3-3V6z"/><circle data-page-node-id="NCzsFVWuCeaQ1PI4cAPBJv" cx="9" cy="10" fill="white" r="1.5"/><circle data-page-node-id="JI1cm3GGbkQz2NoNIhaEu2" cx="15" cy="10" fill="white" r="1.5"/><path data-page-node-id="sfo3l6XULTJe4fzy7vMtWN" d="M8 15h8" stroke="white" stroke-linecap="round" stroke-width="1.5"/></svg></span><!--pnid:Mo8SvccBqpx43Fk8s9sOXH-->闯关</div>
+    <div data-page-node-id="lQy72voxLSA9f28PGhgVsX" class="tab-item" data-page="graph"><span data-page-node-id="4n2EWDgBwaunWLUGK81WRR" class="tab-icon"><svg viewBox="0 0 24 24"><path d="M12 2.5a2.6 2.6 0 100 5.2 2.6 2.6 0 000-5.2zM5 16.3a2.6 2.6 0 100 5.2 2.6 2.6 0 000-5.2zM19 16.3a2.6 2.6 0 100 5.2 2.6 2.6 0 000-5.2z"/><path d="M12 8.2v3.4M11.2 12.2l-4.9 4M12.8 12.2l4.9 4" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><!--pnid:Mo8SvccBqpx43Fk8s9sOXH-->图谱</div>
   </div>
 </div>
 
@@ -1288,44 +2131,55 @@ button:active {
         <div data-page-node-id="TeGG9aFLLzvhff1bsaGagh" class="stat-label"><!--pnid:q1ymL83PcjlLVhDPT5t80X-->答对题目</div>
       </div>
     </div>
-    <!--pnid:EfjgXULnwGWfwre4vJrvSs--><!-- 五大模块快捷入口 -->
+    <!--pnid:EfjgXULnwGWfwre4vJrvSs--><!-- 首页入口：闯关冒险 + 知识图谱 -->
     <div data-page-node-id="ddPBSgHHP8aaeh9ZKqqaEG" class="module-grid">
-      <div data-page-node-id="W4nrXdREtZ61U08iJ3WIWk" class="module-card" onclick="switchPage('alphabet')">
-        <div data-page-node-id="33nYAND4E4h6d0WpQEcjli" class="mc-icon" style="background:linear-gradient(135deg,#FF6B9D,#FF8FAB)"><svg data-page-node-id="SRfdyGc9kMEzeHiJdMNgdV" viewBox="0 0 24 24"><path data-page-node-id="IMkR343tMDR18EUCZqZpTe" d="M5 4h2v16H5V4zm4 0h1.5l4.5 9.5V4H17v16h-1.5L11 10.5V20H9V4zm9 0h2l3 16h-2l-.5-3h-3l-.5 3h-2l3-16zm1 2.5L18.2 15h1.6L19 6.5z"/></svg></div>
-        <div data-page-node-id="m0eDM8IadeZAMWEyUhXlJh" class="mc-text"><h3 data-page-node-id="xZyjMZtq0HooaMaDoX9NQ3" class="i18n-module" data-key="modAlphabet"><!--pnid:mglxh1VkNDxpkFDA1xm985-->英语岛</h3><p data-page-node-id="iHkImrt3I1bdEPqpP3pPXq" class="i18n-module-desc" data-key="modAlphabetDesc"><!--pnid:MAtqAVh0rgSiN5HRuifVy7-->26个字母认读与配对</p></div>
-      </div>
-      <div data-page-node-id="I6k2WmMFMgjPf032f5mmeg" class="module-card" onclick="switchPage('poem')">
-        <div data-page-node-id="2QbUzTYFvkhsmpKm4DyPvl" class="mc-icon" style="background:linear-gradient(135deg,#4ECDC4,#6FE4DB)"><svg data-page-node-id="yXIJT8fxusoKNgyGxfYmCE" viewBox="0 0 24 24"><path data-page-node-id="I7EXHXNI288DwBWBB9W9Y1" d="M21 4H3a1 1 0 00-1 1v14a1 1 0 001 1h18a1 1 0 001-1V5a1 1 0 00-1-1zM4 6h16v2H4V6zm0 4h10v2H4v-2zm0 4h16v2H4v-2z"/></svg></div>
-        <div data-page-node-id="0r3565XB2bStl8WVwmGqlZ" class="mc-text"><h3 data-page-node-id="DGNKxE7dcDSrR3xJ4LJYF9" class="i18n-module" data-key="modPoem"><!--pnid:hb6O3dI3wOSU7Ly9OYpUs2-->古诗花园</h3><p data-page-node-id="77Uu4hWqXfCFZPvOGzDehn" class="i18n-module-desc" data-key="modPoemDesc"><!--pnid:QMPTByqDMxuVZiNL6ympk2-->经典古诗拼音朗读</p></div>
-      </div>
-      <div data-page-node-id="BUVQyDpDHTdpaJXdd2cVyn" class="module-card" onclick="switchPage('number')">
-        <div data-page-node-id="uRpR4iQ0iB7j4JYgN7Jit2" class="mc-icon" style="background:linear-gradient(135deg,#FFE66D,#FFD700)"><svg data-page-node-id="rxybxNO153PDZutu38jUXE" viewBox="0 0 24 24"><path data-page-node-id="SY6u6VfqB6sxjqsD17c8SW" d="M4 4h4v4H4V4zm6 0h4v4h-4V4zm6 0h4v4h-4V4zM4 10h4v4H4v-4zm6 0h4v4h-4v-4zm6 0h4v4h-4v-4zM4 16h4v4H4v-4zm6 0h4v4h-4v-4zm6 0h4v4h-4v-4z"/></svg></div>
-        <div data-page-node-id="Pt7AZb4joUmWISRkreyqOl" class="mc-text"><h3 data-page-node-id="h34EqfrkEuoIrzcNmOIX7d" class="i18n-module" data-key="modNumber"><!--pnid:lmQ6nCTBU9d6Kg3Nq8xxm0-->数学城</h3><p data-page-node-id="Jnt8k92DNOPCh4zvLEKWo1" class="i18n-module-desc" data-key="modNumberDesc"><!--pnid:a1xIPSmkoTVtnysgAVaxTf-->100 以内加减 · 乘法口诀</p></div>
-      </div>
-      <div data-page-node-id="wyCiYVT23cmhnvq73f95R6" class="module-card" onclick="switchPage('logic')">
-        <div data-page-node-id="f1vvv5v4FMHIySNffMK1xS" class="mc-icon" style="background:linear-gradient(135deg,#95E67E,#7BD96A)"><svg data-page-node-id="585XVUigJ3CCmc5h9Y8DId" viewBox="0 0 24 24"><path data-page-node-id="kaC5X3E5oZSBPWEHDVtyIT" d="M5 5h5v5H5V5zm9 0h5v5h-5V5zM5 14h5v5H5v-5z"/><path data-page-node-id="DGx5D0yKzD3dMDsbJu6Yc5" d="M14 14h5v5h-5v-5z" fill="none" stroke="white" stroke-dasharray="2 1" stroke-width="1.5"/></svg></div>
-        <div data-page-node-id="6uPBVZuTZvlKM2lrX0faW9" class="mc-text"><h3 data-page-node-id="KDuP9yVIVeivfyGlvBb1EB" class="i18n-module" data-key="modLogic"><!--pnid:TYTaADj3yVDpaxLdKJWGiO-->逻辑挑战</h3><p data-page-node-id="38vjThdy68Pb1kfs1VVXSr" class="i18n-module-desc" data-key="modLogicDesc"><!--pnid:B1Fz0WeyFgyRZeOOuvCbiL-->找规律配对排序</p></div>
-      </div>
       <div data-page-node-id="jqS8WGALHTY9rWgl9tr0mD" class="module-card" onclick="switchPage('adventure')">
         <div data-page-node-id="xnYETaLeTBdKaARuNEsUeF" class="mc-icon" style="background:linear-gradient(135deg,#C47AFF,#A855F7)"><svg data-page-node-id="UgIVdkEftxscS2N5hcXgR0" viewBox="0 0 24 24"><path data-page-node-id="hUSQrvx345oPkpvif0fQx3" d="M3 6l3-3h12l3 3v12l-3 3H6l-3-3V6z"/><circle data-page-node-id="ZG3VKNlhjz610K9gsN2LiB" cx="9" cy="10" fill="white" r="1.5"/><circle data-page-node-id="9twW9FwTNngGpwVtSKGOM6" cx="15" cy="10" fill="white" r="1.5"/><path data-page-node-id="bFW8xWbg7Tl3lOG4gibDnY" d="M8 15h8" stroke="white" stroke-linecap="round" stroke-width="1.5"/></svg></div>
         <div data-page-node-id="jXOn5IRjW3z1AMjT9hCkWC" class="mc-text"><h3 data-page-node-id="zwhKd3UyKk54ZhwDM28lLh" class="i18n-module" data-key="modAdventure"><!--pnid:6LIWXx4hJk1GmEB7ydHmbr-->闯关冒险</h3><p data-page-node-id="b9W6oM7uZ4UFCdfpaOcABM" class="i18n-module-desc" data-key="modAdventureDesc"><!--pnid:0YWUzwGnjSdi0iaUL3g66X-->综合闯关赢星星</p></div>
       </div>
+      <div class="module-card" onclick="switchPage('graph')">
+        <div class="mc-icon" style="background:linear-gradient(135deg,#5B8DEF,#7FB0FF)"><svg viewBox="0 0 24 24"><path d="M12 2.5a2.6 2.6 0 100 5.2 2.6 2.6 0 000-5.2zM5 16.3a2.6 2.6 0 100 5.2 2.6 2.6 0 000-5.2zM19 16.3a2.6 2.6 0 100 5.2 2.6 2.6 0 000-5.2z"/><path d="M12 8.2v3.4M11.2 12.2l-4.9 4M12.8 12.2l4.9 4" fill="none" stroke="white" stroke-width="1.7" stroke-linecap="round"/></svg></div>
+        <div class="mc-text"><h3 class="i18n-module" data-key="modGraph">知识图谱</h3><p class="i18n-module-desc" data-key="modGraphDesc">1-6 年级知识点学习路径</p></div>
+      </div>
+    </div>
+
+
+  </div>
+  <!-- ===== 知识图谱（卡片地图：科目筛选 / 年级卡片 / 右侧操作+详情面板） ===== -->
+  <div class="page" id="page-graph">
+    <h2 class="km-page-title">知识图谱</h2>
+    <div class="km-layout">
+      <div class="km-wrap">
+        <div class="km-toolbar">
+          <div class="km-subject-tabs" id="kmSubjectTabs">
+            <button type="button" class="km-tab active" data-科目="math" style="--tab色:#2F5FD0">数学</button>
+            <button type="button" class="km-tab" data-科目="chinese" style="--tab色:#D63C74">语文</button>
+            <button type="button" class="km-tab" data-科目="english" style="--tab色:#1F9C93">英语</button>
+            <button type="button" class="km-tab" data-科目="science" style="--tab色:#8E3FD6">科学</button>
+          </div>
+        </div>
+        <div class="km-total" id="kmTotal" style="margin-bottom:12px"></div>
+        <div id="kmBody"></div>
+      </div>
+      <aside class="kg-panel" id="kgPanelWrap">
+        <div class="kg-panel-actions">
+          <button type="button" class="km-act" onclick="km标记('done')">已学会</button>
+          <button type="button" class="km-act" onclick="km标记('todo')">待学习</button>
+        </div>
+        <div class="kg-panel-body" id="kgPanel"></div>
+      </aside>
     </div>
   </div>
   <div data-page-node-id="5jh2ge4MS1OqGvFGMjUlmQ" class="page" id="page-alphabet">
     <h2 data-page-node-id="XG0aXkUWvE4eXZgLC7KMi9" class="section-title"><svg data-page-node-id="MD7zGRowtwDgIlBtosMiYX" fill="#FF6B9D" height="24" viewBox="0 0 24 24" width="24" style="vertical-align:middle"><path data-page-node-id="4zw5c9TFMSfIkX4ojwpcH9" d="M5 4h2v16H5V4zm4 0h1.5l4.5 9.5V4H17v16h-1.5L11 10.5V20H9V4zm9 0h2l3 16h-2l-.5-3h-3l-.5 3h-2l3-16zm1 2.5L18.2 15h1.6L19 6.5z"/></svg><!--pnid:4w5w5j8AhWjlTZQVj9B6MY--> 英语岛</h2>
     <div data-page-node-id="BIAUxaLGRzdSUYmEJLnOAi" class="sub-tabs">
-      <button data-page-node-id="AKMcc7EQ9L1SghfU5Wy0bk" class="sub-tab active" data-subtab="alpha-cards"><!--pnid:MaH9jJhIwJAa5GUf3TF6RI-->字母卡片</button>
-      <button data-page-node-id="Fwz8ULVjjU8gXv7GJgdqXB" class="sub-tab" data-subtab="alpha-match"><!--pnid:Tem4Q2nbCRAs9bsHR2ADW8-->配对游戏</button>
+      <button data-page-node-id="Fwz8ULVjjU8gXv7GJgdqXB" class="sub-tab active" data-subtab="alpha-match"><!--pnid:Tem4Q2nbCRAs9bsHR2ADW8-->配对游戏</button>
       <button data-page-node-id="IeyR64gu1xGkhPVgaeoX6U" class="sub-tab" data-subtab="alpha-phonics"><!--pnid:Q6nzkB0eUo7zj0lGrs5XRH-->自然拼读</button>
-      <button data-page-node-id="P9YnoamvFN7fkWou8AtBuP" class="sub-tab" data-subtab="alpha-listen"><!--pnid:KkQQLMbcOGq7pHqcVSFLFH-->听音选图</button>
-    </div>
-    <!--pnid:XbwwEsKzbZi2m8SHBaEilo--><!-- 字母卡片 -->
-    <div data-page-node-id="Nyt3WWNaFEmixCU5hBzuvX" id="alpha-cards">
-      <div data-page-node-id="htMtT9BSxNfIzTToNTpHm6" class="letter-grid" id="letterGrid"></div>
+      <button data-page-node-id="P9YnoamvFN7fkWou8AtBuP" class="sub-tab" data-subtab="alpha-listen"><!--pnid:KkQQLMbcOGq7pHqcVSFLFH-->看词选图</button>
+      <button class="sub-tab" data-subtab="alpha-word">听音选词</button>
     </div>
     <!--pnid:TcIRydqXQkMxciMBYo5a9R--><!-- 配对游戏 -->
-    <div data-page-node-id="1YRrKVq4I7t52qdRzDx80k" id="alpha-match" style="display:none">
+    <div data-page-node-id="1YRrKVq4I7t52qdRzDx80k" id="alpha-match" class="sub-page">
       <div data-page-node-id="RB3PX1oS6Ox7HHTq8F3N52" class="match-game">
         <p data-page-node-id="Thumui1hW4Ho2fDzaCTVaw" style="color:#666; margin-bottom:12px"><!--pnid:RtYC3jhIjKGb3CXUkWlSFE-->找出大写字母对应的小写字母 👇</p>
         <div data-page-node-id="rQgdpEMaTPrYjOTtv6nZxY" class="match-question">
@@ -1333,46 +2187,66 @@ button:active {
         </div>
         <div data-page-node-id="6j6f9SYzw88IBq2r0ukasT" class="match-options" id="matchOptions"></div>
         <div style="display:flex; gap:12px; justify-content:center; margin-top:20px;">
-          <button data-page-node-id="YhYu3lDLl8zQSPijTZ0Md2" class="next-btn" onclick="prevMatchQuestion()" style="background:var(--blue); flex:1; max-width:170px;"><!--pnid:VnZiStPTYpcmRsYvuyhn8x-->⬅️ 上一题</button>
-          <button class="next-btn" onclick="generateMatchQuestion()" style="flex:1; max-width:170px;">下一题 ➡️</button>
+          <button data-page-node-id="YhYu3lDLl8zQSPijTZ0Md2" class="next-btn" onclick="prevMatchQuestion()" style="background:var(--blue); flex:1; max-width:170px;"><!--pnid:VnZiStPTYpcmRsYvuyhn8x--> 上一题</button>
+          <button class="next-btn" onclick="generateMatchQuestion()" style="flex:1; max-width:170px;">下一题</button>
         </div>
       </div>
     </div>
     <!--pnid:z89bD8VsiUfA5nBXodYq3Y--><!-- 自然拼读 -->
-    <div data-page-node-id="z0ZvX8mpYZ5RMxcwTlMDcO" id="alpha-phonics" style="display:none">
+    <div data-page-node-id="z0ZvX8mpYZ5RMxcwTlMDcO" id="alpha-phonics" class="sub-page" style="display:none">
       <p data-page-node-id="zlNLs65nrEi5XmJOpYj4z2" style="color:#666; margin-bottom:16px"><!--pnid:krkpq3T7a0U9kxKvEgWFLU-->点击卡片，听一听字母的常见发音和例词 🗣️</p>
       <div data-page-node-id="7TLfS1Ro6cGREA6ut2QAQV" class="phonics-grid" id="phonicsGrid"></div>
     </div>
-    <!--pnid:SjsPw3G504JMnRtmIlA1YR--><!-- 听音选图 -->
-    <div data-page-node-id="Zl9wE46sYITOkhBGniMMd6" id="alpha-listen" style="display:none">
+    <!--pnid:SjsPw3G504JMnRtmIlA1YR--><!-- 看词选图 -->
+    <div data-page-node-id="Zl9wE46sYITOkhBGniMMd6" id="alpha-listen" class="sub-page" style="display:none">
       <div data-page-node-id="z1DAjdFtitTJZZZ19c8NFD" class="calc-area">
-        <p data-page-node-id="dOwKQBI3K05AHj5VzlCqC6" style="color:#666; margin-bottom:12px"><!--pnid:4DbUVBJNHd4UQH7ctENd2A-->听一听读音，选出对应的图片 👂</p>
-        <button data-page-node-id="LmS8gmK66S1fxSrkjC5jZD" class="next-btn" onclick="playListenWord()" style="background:var(--blue); margin-bottom:20px"><!--pnid:rK7GAGyCUXfq3V0woulyEr-->🔊 再听一遍</button>
+        <button data-page-node-id="LmS8gmK66S1fxSrkjC5jZD" id="listenWordBtn" class="next-btn" onclick="replayListenWord()" style="background:var(--blue); margin-bottom:20px"><!--pnid:rK7GAGyCUXfq3V0woulyEr--> 单词</button>
         <div data-page-node-id="wk1mfJGaCFzjOzw21LVIYj" class="listen-options" id="listenOptions"></div>
         <div data-page-node-id="OgjdqFALq1V9tJUpkvQjiG" id="listenAnswer" style="margin-top:16px; min-height:34px; font-size:22px; color:var(--purple)"></div>
         <div style="display:flex; gap:12px; justify-content:center;">
-          <button class="next-btn" onclick="prevListenQuestion()" style="background:var(--blue); flex:1; max-width:170px;">⬅️ 上一题</button>
-          <button data-page-node-id="bHz7DM2DfzWUHceGCUAsLQ" class="next-btn" onclick="generateListenQuestion()" style="flex:1; max-width:170px;"><!--pnid:slc66t3bjR5xMPaN1emCGJ-->下一题 ➡️</button>
+          <button class="next-btn" onclick="prevListenQuestion()" style="background:var(--blue); flex:1; max-width:170px;">上一题</button>
+          <button data-page-node-id="bHz7DM2DfzWUHceGCUAsLQ" class="next-btn" onclick="generateListenQuestion()" style="flex:1; max-width:170px;"><!--pnid:slc66t3bjR5xMPaN1emCGJ-->下一题</button>
+        </div>
+      </div>
+    </div>
+    <!-- 听音选词 -->
+    <div id="alpha-word" class="sub-page" style="display:none">
+      <div class="calc-area">
+        <button class="next-btn" onclick="replayPickWord()" style="background:var(--blue); margin-bottom:20px"> 再听一遍</button>
+        <div class="word-options" id="pickOptions"></div>
+        <div id="pickAnswer" style="margin-top:16px; min-height:34px; font-size:22px; color:var(--purple)"></div>
+        <div style="display:flex; gap:12px; justify-content:center;">
+          <button class="next-btn" onclick="prevPickQuestion()" style="background:var(--blue); flex:1; max-width:170px;">上一题</button>
+          <button class="next-btn" onclick="generatePickQuestion()" style="flex:1; max-width:170px;">下一题</button>
         </div>
       </div>
     </div>
   </div>
 
-  <!--pnid:7cMwjCklf836KrpPidaIWU--><!-- ===== 古诗花园 ===== -->
-  <div data-page-node-id="jRrE9MGTSyjmuRdDQShML9" class="page" id="page-poem">
-    <h2 data-page-node-id="pao9KnOcJ1zZ5f5uHauUiG" class="section-title"><svg data-page-node-id="ivMik2qoMnzpAtixiSPna0" fill="#4ECDC4" height="24" viewBox="0 0 24 24" width="24" style="vertical-align:middle"><path data-page-node-id="aHOvHbcQaAiLEoL67nJpcu" d="M21 4H3a1 1 0 00-1 1v14a1 1 0 001 1h18a1 1 0 001-1V5a1 1 0 00-1-1zM4 6h16v2H4V6zm0 4h10v2H4v-2zm0 4h16v2H4v-2z"/></svg><!--pnid:UieFXDyeEvPynanxOYFZ80--> 古诗花园</h2>
-    <div data-page-node-id="6ahYOMqlZedJ7nHEKIzb9b" class="sub-tabs">
-      <button data-page-node-id="DWsWlyxr70r9VdfSRhVRDQ" class="sub-tab active" data-subtab="poem-cards"><!--pnid:neaV4b6VOG5M0l8xuTQXkR-->古诗卡片</button>
-      <button data-page-node-id="gUeHlZiDzE6XhRh4tSPpv4" class="sub-tab" data-subtab="poem-quiz"><!--pnid:uyvF5pUVf3UBdLiCO7O5kC-->古诗问答</button>
+  <!-- ===== 语文天地（古诗卡片 / 古诗问答 / 语文综合） ===== -->
+  <div class="page" id="page-chinese">
+    <h2 class="section-title"><svg fill="#D63C74" height="24" viewBox="0 0 24 24" width="24" style="vertical-align:middle"><path d="M4 19h16v2H4v-2zm2.2-4h11.6l-1.1 3H7.3l-1.1-3zM12 4c2.6 0 4.8 1 5.9 2.7.8 1.2.9 2.6.4 3.9-.4-1.2-1.2-2.3-2.4-3.1C14.6 6.6 13.3 6.2 12 6.2S9.4 6.6 8.1 7.5C6.9 8.3 6.1 9.4 5.7 10.6c-.5-1.3-.4-2.7.4-3.9C7.2 5 9.4 4 12 4zm0 3.4c1.9 0 3.6.7 4.7 1.9-.9 1.5-2.7 2.5-4.7 2.5s-3.8-1-4.7-2.5c1.1-1.2 2.8-1.9 4.7-1.9z"/></svg> 语文天地</h2>
+    <div class="sub-tabs">
+      <button class="sub-tab active" data-subtab="poem-cards">古诗卡片</button>
+      <button class="sub-tab" data-subtab="poem-quiz">古诗问答</button>
+      <button class="sub-tab" data-subtab="chin-quiz">语文综合</button>
     </div>
-    <div data-page-node-id="4hHyAKDfWrEwOeUQciSphf" id="poem-cards">
+    <!-- 古诗卡片 -->
+    <div id="poem-cards" class="sub-page">
       <div class="poem-layout">
         <div class="poem-main" id="poemMain"></div>
         <div class="poem-side" id="poemSide"></div>
       </div>
     </div>
-    <div data-page-node-id="5bDKxtdPXekeCsZ5lNGIia" id="poem-quiz" style="display:none">
-      <div data-page-node-id="vd9vtR0gNe1hx1D0JHX05n" class="logic-card" id="poemQuizCard"></div>
+    <!-- 古诗问答 -->
+    <div id="poem-quiz" class="sub-page" style="display:none">
+      <div class="logic-card" id="poemQuizCard"></div>
+    </div>
+    <!-- 语文综合 -->
+    <div id="chin-quiz" class="sub-page" style="display:none">
+      <div class="logic-card">
+        <div id="chinCard"></div>
+      </div>
     </div>
   </div>
 
@@ -1381,63 +2255,43 @@ button:active {
     <h2 data-page-node-id="I22BnHzA4DQ5mwMdNX5ZlL" class="section-title"><svg data-page-node-id="WVKbeBBeodThdaXj99XSdp" fill="#FFE66D" height="24" viewBox="0 0 24 24" width="24" style="vertical-align:middle"><path data-page-node-id="0UlyJRP0nwGZs5ibNiJeAd" d="M4 4h4v4H4V4zm6 0h4v4h-4V4zm6 0h4v4h-4V4zM4 10h4v4H4v-4zm6 0h4v4h-4v-4zm6 0h4v4h-4v-4zM4 16h4v4H4v-4zm6 0h4v4h-4v-4zm6 0h4v4h-4v-4z"/></svg><!--pnid:BOiwA4EFuhd2v86h8pYeQC--> 数学城</h2>
     <div data-page-node-id="9CSHPBDIVyVF2cAMn8PdIG" class="sub-tabs">
       <button data-page-node-id="ne5K5a3KeMl53mEKECdTDL" class="sub-tab active" data-subtab="num-calc"><!--pnid:wN3cXy8wtvA729kGNmghAa-->口算练习</button>
-      <button data-page-node-id="BPmSmKg0DBBTMe084UcFtT" class="sub-tab" data-subtab="num-mul"><!--pnid:lgemApUeHOp9h5Y5qEg46x-->乘法口诀</button>
-      <button data-page-node-id="ra6wyELJHEjOR4jpfVCMOO" class="sub-tab" data-subtab="num-div"><!--pnid:kHOoybEZ2jRAJtTVMuLUbk-->除法口诀</button>
+      <button data-page-node-id="BPmSmKg0DBBTMe084UcFtT" class="sub-tab" data-subtab="num-mul"><!--pnid:lgemApUeHOp9h5Y5qEg46x-->乘除口诀</button>
       <button data-page-node-id="knsvz2hNOCAkh53QZVZ6YL" class="sub-tab" data-subtab="num-sudoku"><!--pnid:k2AECBR5ETIH7Htm0ilZeR-->数独训练</button>
     </div>
-    <!--pnid:3ydxu9IV8PkMYZhfPHU6pI--><!-- 除法口诀 -->
-    <div data-page-node-id="8a8rOdbct5pb9Ugf2bZfxR" id="num-div" style="display:none">
-      <div data-page-node-id="XkVbqbDyh97HBUeb7Mfdo7" class="calc-area">
-        <div data-page-node-id="sQvrk4vaOizc8XHWmh8Tn7" class="math-level" id="divLevelTag"><!--pnid:BDty1YDOlGPtPwZrM1eBbM-->第 1 级</div>
-        <p data-page-node-id="QWaFrfE71iB8v5ZGjA2JWW" style="color:#666; margin-bottom:12px"><!--pnid:bjbEmw9owjXf2U7Exr8O7X-->用口诀算除法，商是几？➗</p>
-        <div data-page-node-id="V7v3G7SxDnKgKprTyShLpp" class="calc-question" id="divQuestion"><!--pnid:vMAENMOENeU5CgoDXRja5i-->72 ÷ 8 = ?</div>
-        <div data-page-node-id="zBYrDJpanv52Y66Jq4sjbj" class="calc-options" id="divOptions"></div>
-        <div style="display:flex; gap:12px; justify-content:center; margin-top:16px;">
-          <button class="next-btn" onclick="prevDivQuestion()" style="background:var(--blue); flex:1; max-width:170px;">⬅️ 上一题</button>
-          <button data-page-node-id="URAZy62ADgIdfYb5zqTlXe" class="next-btn" onclick="generateDivQuestion()" style="flex:1; max-width:170px;"><!--pnid:kbg6nS6tZdX7h15C6b9mug-->下一题 ➡️</button>
-        </div>
-      </div>
-    </div>
     <!--pnid:KIPKZcI2BL4bp3PAgGYjM7--><!-- 数独训练 -->
-    <div data-page-node-id="3RPFupWqTWVak8SV1aquvr" id="num-sudoku" style="display:none">
+    <div data-page-node-id="3RPFupWqTWVak8SV1aquvr" id="num-sudoku" class="sub-page" style="display:none">
       <div data-page-node-id="and5OUncH7ZniVchNd6icw" class="calc-area">
-        <div data-page-node-id="8xmAgvPKm2FwiaENt1sxgv" class="math-level" id="sudokuLevelTag"><!--pnid:ldRT0YD7WWBoPS5Rd9oW0d-->第 1 级</div>
         <div class="sudoku-layout">
           <div class="sudoku-left">
             <div data-page-node-id="54OapLoiUcHVokIB9XweZX" class="sudoku-board" id="sudokuBoard"></div>
           </div>
           <div class="sudoku-right">
-            <p class="sudoku-rule" id="sudokuRule"></p>
             <p class="sudoku-tip">把数字拖进空格（也可以点格子切换数字）</p>
             <div data-page-node-id="6kuPuDZRH1AY0tozsh5Sd9" class="sudoku-pool" id="sudokuPool"><!-- 数字池由 JS 按当前数字组动态渲染 --></div>
             <div data-page-node-id="wEWxxBxsaSY0SAegsnqWBZ" id="sudokuMsg" style="min-height:34px; font-size:17px; color:var(--purple)"></div>
-            <button class="next-btn" onclick="hintSudoku()" style="background:var(--green);">💡 提示一下</button>
+            <button class="next-btn" onclick="hintSudoku()" style="background:var(--green);">提示一下</button>
             <div style="display:flex; gap:10px;">
-              <button class="next-btn" onclick="resetSudoku()" style="background:var(--yellow); color:#333; flex:1;">🔄 重置</button>
-              <button data-page-node-id="f4z55jEa9wKHBTsl0uf3sZ" class="next-btn" onclick="generateSudoku()" style="flex:1;"><!--pnid:RpDew3s8wJOdzV7calR0OA-->换一题 🔄</button>
+              <button class="next-btn" onclick="resetSudoku()" style="background:var(--yellow); color:#333; flex:1;">重置</button>
+              <button data-page-node-id="f4z55jEa9wKHBTsl0uf3sZ" class="next-btn" onclick="generateSudoku()" style="flex:1;"><!--pnid:RpDew3s8wJOdzV7calR0OA-->换一题</button>
             </div>
           </div>
         </div>
       </div>
     </div>
-    <!--pnid:YCcEjoG862oaR0tzqAEXvl--><!-- 乘法口诀 -->
-    <div data-page-node-id="kKjIw3BTaaVquLNOCGSrDE" id="num-mul" style="display:none">
+    <!--pnid:YCcEjoG862oaR0tzqAEXvl--><!-- 乘除口诀（乘法口诀 + 除法口诀合并） -->
+    <div data-page-node-id="kKjIw3BTaaVquLNOCGSrDE" id="num-mul" class="sub-page" style="display:none">
       <div data-page-node-id="YWt4StpZkEQYonHa5pgV05" class="calc-area">
-        <div data-page-node-id="ytHLpLHe1kvjd3FNwz99HY" class="math-level" id="mulLevelTag"><!--pnid:Sgh1n2j9n1TWtxPeywe3Sj-->第 1 级</div>
-        <p data-page-node-id="fovafdg4NcpMW3do4pQhfv" style="color:#666; margin-bottom:12px"><!--pnid:U8Okb8IETd80bVpRkfht1u-->背一背口诀，乘出来是几？✖️</p>
         <div data-page-node-id="JegBpLwLwSS2GyJqaVzhxB" class="calc-question" id="mulQuestion"><!--pnid:pBAdgFLbgR9Yj2n1MOmOBf-->6 × 7 = ?</div>
         <div data-page-node-id="nhYMrrj6p2IaN9qSQq18Pq" class="calc-options" id="mulOptions"></div>
         <div style="display:flex; gap:12px; justify-content:center; margin-top:16px;">
-          <button class="next-btn" onclick="prevMulQuestion()" style="background:var(--blue); flex:1; max-width:170px;">⬅️ 上一题</button>
-          <button data-page-node-id="Si1vbI3u9GgmhSvwruC3Hp" class="next-btn" onclick="generateMulQuestion()" style="flex:1; max-width:170px;"><!--pnid:qQqb5XOb3HjMt9fiGttx2u-->下一题 ➡️</button>
+          <button class="next-btn" onclick="prevMulQuestion()" style="background:var(--blue); flex:1; max-width:170px;">上一题</button>
+          <button data-page-node-id="Si1vbI3u9GgmhSvwruC3Hp" class="next-btn" onclick="generateMulQuestion()" style="flex:1; max-width:170px;"><!--pnid:qQqb5XOb3HjMt9fiGttx2u-->下一题</button>
         </div>
       </div>
     </div>
     <!--pnid:aEIHbpAYXpmUtxQXHsEVzl--><!-- 口算练习 -->
-    <div data-page-node-id="K3OG41GkD4CqgKnoy3Fb2L" id="num-calc">
+    <div data-page-node-id="K3OG41GkD4CqgKnoy3Fb2L" id="num-calc" class="sub-page">
       <div data-page-node-id="q2YKDKQMXJ47hSgKp4KN8M" class="calc-area">
-        <div data-page-node-id="qW6u9vw9fJZ2kghIfIW2WB" class="math-level" id="calcLevelTag"><!--pnid:ukkKBqJIig5Y02c35JG4Kf-->第 1 级</div>
-        <p data-page-node-id="fV3981ydpU9mW8Hv52ubuR" style="color:#666; margin-bottom:12px"><!--pnid:xHXZZAQfAf9kuuKm2GfXf3-->看竖式算一算，答对 3 题就升一级 🤔</p>
         <div class="calc-vlayout">
           <div class="calc-vleft" id="calcVertical"></div>
           <div class="calc-vright">
@@ -1445,8 +2299,8 @@ button:active {
           </div>
         </div>
         <div style="display:flex; gap:12px; justify-content:center; margin-top:16px;">
-          <button class="next-btn" onclick="prevCalcQuestion()" style="background:var(--blue); flex:1; max-width:170px;">⬅️ 上一题</button>
-          <button data-page-node-id="vmmF0uICODBMkVCI3PQAxP" class="next-btn" onclick="generateCalcQuestion()" style="flex:1; max-width:170px;"><!--pnid:G4zZ052Ct8qlOfKIhmnCSq-->下一题 ➡️</button>
+          <button class="next-btn" onclick="prevCalcQuestion()" style="background:var(--blue); flex:1; max-width:170px;">上一题</button>
+          <button data-page-node-id="vmmF0uICODBMkVCI3PQAxP" class="next-btn" onclick="generateCalcQuestion()" style="flex:1; max-width:170px;"><!--pnid:G4zZ052Ct8qlOfKIhmnCSq-->下一题</button>
         </div>
       </div>
     </div>
@@ -1460,13 +2314,13 @@ button:active {
       <button data-page-node-id="HZyAS7g762p8s2HxKQCBZ9" class="sub-tab" data-subtab="logic-pair"><!--pnid:fM0y7hwO4HMIZTMuXlgOjy-->图形配对</button>
       <button data-page-node-id="7UUV8VIEpNwFqU9ZbqWfeF" class="sub-tab" data-subtab="logic-sort"><!--pnid:yod0rBiCAVtBbmEDNwgKpA-->排序题</button>
     </div>
-    <div data-page-node-id="a4KOaeiOVeqtnweWq62g91" id="logic-pattern">
+    <div data-page-node-id="a4KOaeiOVeqtnweWq62g91" id="logic-pattern" class="sub-page">
       <div data-page-node-id="KQwjysR61vk6CHx72E9g77" class="logic-card" id="patternCard"></div>
     </div>
-    <div data-page-node-id="fF4nXxStjcN9hMYtLMkh2K" id="logic-pair" style="display:none">
+    <div data-page-node-id="fF4nXxStjcN9hMYtLMkh2K" id="logic-pair" class="sub-page" style="display:none">
       <div data-page-node-id="qT4FQjxSlnjJBlhm32puhS" class="logic-card" id="pairCard"></div>
     </div>
-    <div data-page-node-id="F126dOjzpd6cF6nZbgrdFn" id="logic-sort" style="display:none">
+    <div data-page-node-id="F126dOjzpd6cF6nZbgrdFn" id="logic-sort" class="sub-page" style="display:none">
       <div data-page-node-id="sukk1fqBg178g2oawPzcud" class="logic-card" id="sortCard"></div>
     </div>
   </div>
@@ -1475,14 +2329,12 @@ button:active {
   <div data-page-node-id="JAKLcxaCP8tgndp1NLmz5k" class="page" id="page-adventure">
     <h2 data-page-node-id="LyRtQp6vHPQLg9UW3XTAHV" class="section-title"><svg data-page-node-id="urHILYTuJ9hpfm1eGdeahB" fill="#C47AFF" height="24" viewBox="0 0 24 24" width="24" style="vertical-align:middle"><path data-page-node-id="U3xCp3YfpYa5OZ34woLDsa" d="M3 6l3-3h12l3 3v12l-3 3H6l-3-3V6z"/><circle data-page-node-id="hXcgzfyXAUt7fqWoPkceY4" cx="9" cy="10" fill="white" r="1.5"/><circle data-page-node-id="GQRET6rkW6zZk1Xd9XJ6ZE" cx="15" cy="10" fill="white" r="1.5"/><path data-page-node-id="ypL4v0yYfdhcxxmeuVnznd" d="M8 15h8" stroke="white" stroke-linecap="round" stroke-width="1.5"/></svg><!--pnid:n6GIEg2OuZSekVD0I3mkak--> 闯关冒险</h2>
     <div data-page-node-id="MZJnylRsWAkWvRIGXcznVx" class="adventure-header">
-      <div data-page-node-id="S8mFZJEMfWH1ulfkp0wc4r" class="level-info" id="advLevelInfo"><!--pnid:b2xc5kFyQXPhkFhVjI2ii9-->第 1 关</div>
-      <div data-page-node-id="BcxadWfnxd4otxex7MdLON" id="advProgress" style="font-size:14px; margin-top:6px"><!--pnid:3lCee26NHKh1sewlSqwXzM-->第 1/30 题</div>
       <div data-page-node-id="qW0Tqk5nSkQKtPDzRE1O77" class="progress-bar"><div data-page-node-id="19JXD1UO5LFbIBrqk30Yoi" class="progress-fill" id="advProgressBar" style="width:0%"></div></div>
     </div>
     <div data-page-node-id="6Miv8y3qEXBGGkcGIIUb1R" class="adventure-question" id="advQuestion">
       <div data-page-node-id="EdcLP6cZKRU6iGpqQarNBu" class="q-text" id="advQText"><!--pnid:n3VtzikavhPLDTzW7XSVSc-->准备好了吗？点击开始闯关！</div>
       <div data-page-node-id="T7ZmCFGMdoFxRpOKf3B9bo" class="adventure-options" id="advOptions"></div>
-      <button data-page-node-id="ikjmKC9rn9pCjQCEU0KWfE" class="next-btn" id="advStartBtn" onclick="startAdventure()"><!--pnid:fEx6dj3EdmWyL8IIAXAoWX-->开始闯关 🚀</button>
+      <button data-page-node-id="ikjmKC9rn9pCjQCEU0KWfE" class="next-btn" id="advStartBtn" onclick="startAdventure()"><!--pnid:fEx6dj3EdmWyL8IIAXAoWX-->开始闯关</button>
     </div>
     <!--pnid:RPIqE01LYSB2xRR1KZfGQZ--><!-- 成就墙 -->
     <div data-page-node-id="SZ9vmPww7jSekId9yZ5YDZ" class="badge-wall">
@@ -1495,6 +2347,7 @@ button:active {
 
 <script src="poems100.js"></script>
 <script src="poems100_pinyin.js"></script>
+<script src="chinese-bank.js"></script>
 <script data-page-node-id="FcbDPAeOEVgQ53pijhV1xk" data-pnid-children="Z5dBS0bvrkbvbot6FHtW96">
 /* ========================================
    宝贝学习乐园 - 核心逻辑
@@ -1713,6 +2566,36 @@ function playAudio(file, fallbackText, fallbackLang, times) {
 }
 
 function pad2(n) { return (n < 10 ? '0' : '') + n; }
+function pad3(n) { return (n < 10 ? '00' : (n < 100 ? '0' : '')) + n; }
+
+// ========== 错题本（答错的题进入闯关冒险与高难度级别复现） ==========
+// 记录规则：第一次答错就记入（哪怕后来改对了也算错题）；复现答对后移出错题本
+let wrongBook = getData('wrongBook', {});
+
+// 记录一道错题：模块名 + 题目数据（用于模块内复现）+ 快照（题面与选项，用于闯关冒险复现）
+function 记错题(模块, 数据, 快照) {
+  const 键 = 模块 + '::' + JSON.stringify(数据);
+  wrongBook[键] = { 模块: 模块, 数据: 数据, 快照: 快照 || null, 时间: Date.now() };
+  setData('wrongBook', wrongBook);
+}
+
+// 复现答对后移出错题本
+function 错题过关(模块, 数据) {
+  const 键 = 模块 + '::' + JSON.stringify(数据);
+  if (wrongBook[键]) { delete wrongBook[键]; setData('wrongBook', wrongBook); }
+}
+
+// 从错题本里抽一道指定模块的错题（没有则返回 null）
+function 抽错题(模块) {
+  const 键列表 = Object.keys(wrongBook).filter(function(k) { return wrongBook[k].模块 === 模块; });
+  if (!键列表.length) return null;
+  return wrongBook[键列表[Math.floor(Math.random() * 键列表.length)]];
+}
+
+// 某模块错题数量
+function 错题数(模块) {
+  return Object.keys(wrongBook).filter(function(k) { return wrongBook[k].模块 === 模块; }).length;
+}
 
 // ========== 答题音效（Web Audio 现场合成，无需音频文件） ==========
 let audioCtx = null;
@@ -1802,24 +2685,22 @@ document.querySelectorAll('.sub-tabs').forEach(tabGroup => {
       tabGroup.querySelectorAll('.sub-tab').forEach(t => t.classList.remove('active'));
       tab.classList.add('active');
       const target = tab.dataset.subtab;
+      updateLevelTag();
       // 数学城：切换练习题型时先结算上一轮
-      const mathTabMap = { 'num-calc': '口算', 'num-mul': '乘法', 'num-div': '除法', 'num-sudoku': '数独' };
+      const mathTabMap = { 'num-calc': '口算', 'num-mul': '乘除', 'num-sudoku': '数独' };
       if (mathTabMap[target]) switchMathType(mathTabMap[target]);
-      // 听音选图：点开这个子页才播放当前题（App 刚启动时保持安静）
+      // 看词选图 / 听音选词：点开这个子页才播放当前题（App 刚启动时保持安静）
       if (target === 'alpha-listen') {
         listenPageEntered = true;
         setTimeout(playListenWord, 300);
       }
-      // 找到同级的内容div
+      if (target === 'alpha-word') {
+        listenPageEntered = true;
+        setTimeout(function() { if (pickCurTarget) 播词条(pickCurTarget, 3); }, 300);
+      }
+      // 隐藏同组所有子页，显示目标（子页统一带 sub-page 类）
       const parent = tabGroup.parentElement;
-      const allSubs = parent.querySelectorAll('[id^="' + target.split('-')[0] + '"]');
-      // 隐藏同组所有，显示目标
-      const prefix = target.split('-')[0];
-      parent.querySelectorAll(':scope > [id]').forEach(div => {
-        if (div.id.startsWith(prefix + '-') || div.id === prefix + '-cards' || div.id === prefix + '-match' || div.id === prefix + '-calc' || div.id === prefix + '-count' || div.id === prefix + '-pattern' || div.id === prefix + '-pair' || div.id === prefix + '-sort') {
-          div.style.display = 'none';
-        }
-      });
+      parent.querySelectorAll(':scope > .sub-page').forEach(div => { div.style.display = 'none'; });
       const targetEl = document.getElementById(target);
       if (targetEl) targetEl.style.display = 'block';
     });
@@ -1827,22 +2708,7 @@ document.querySelectorAll('.sub-tabs').forEach(tabGroup => {
 });
 
 // ========== 模块1: 英语岛 ==========
-(function initAlphabet() {
-  const grid = document.getElementById('letterGrid');
-  for (let i = 0; i < 26; i++) {
-    const upper = String.fromCharCode(65 + i);
-    const lower = String.fromCharCode(97 + i);
-    const card = document.createElement('div');
-    card.className = 'letter-card';
-    card.innerHTML = `<div class="upper">${upper}</div><div class="lower">${lower}</div>`;
-    card.addEventListener('click', () => {
-      card.classList.add('flip');
-      setTimeout(() => card.classList.remove('flip'), 500);
-      playAudio('letter_' + pad2(i) + '.mp3', upper, 'en-US');
-    });
-    grid.appendChild(card);
-  }
-})();
+// （v2.0 已去掉字母卡片；字母发音 letter_00~25.mp3 保留给听音选词使用）
 
 // 字母配对游戏
 let matchAnswer = '';
@@ -1950,58 +2816,239 @@ const phonicsData = [
   });
 })();
 
-// ========== 听音选图 ==========
-const listenWords = [
-  { w: 'apple', e: '🍎' }, { w: 'banana', e: '🍌' }, { w: 'cat', e: '🐱' },
-  { w: 'dog', e: '🐶' }, { w: 'fish', e: '🐟' }, { w: 'bird', e: '🐦' },
-  { w: 'bus', e: '🚌' }, { w: 'car', e: '🚗' }, { w: 'sun', e: '☀️' },
-  { w: 'moon', e: '🌙' }, { w: 'star', e: '⭐' }, { w: 'tree', e: '🌳' },
-  { w: 'flower', e: '🌸' }, { w: 'book', e: '📚' }, { w: 'cake', e: '🍰' },
-  { w: 'milk', e: '🥛' }, { w: 'hat', e: '🎩' }, { w: 'shoe', e: '👟' },
-  { w: 'ball', e: '⚽' }, { w: 'house', e: '🏠' }, { w: 'clock', e: '⏰' },
-  { w: 'key', e: '🔑' }, { w: 'bread', e: '🍞' }, { w: 'water', e: '💧' },
-  { w: 'egg', e: '🥚' }, { w: 'panda', e: '🐼' }, { w: 'rabbit', e: '🐰' },
-  { w: 'tiger', e: '🐯' }, { w: 'monkey', e: '🐵' }, { w: 'elephant', e: '🐘' },
-  { w: 'bike', e: '🚲' }, { w: 'plane', e: '✈️' }, { w: 'ship', e: '🚢' },
-  { w: 'train', e: '🚂' }, { w: 'pencil', e: '✏️' }, { w: 'bag', e: '🎒' },
-  { w: 'umbrella', e: '☂️' }, { w: 'gift', e: '🎁' }, { w: 'candy', e: '🍬' },
-  { w: 'orange', e: '🍊' }, { w: 'grape', e: '🍇' }, { w: 'watermelon', e: '🍉' },
-  { w: 'rice', e: '🍚' }, { w: 'noodle', e: '🍜' }, { w: 'rainbow', e: '🌈' },
-  { w: 'snowman', e: '⛄' }, { w: 'cloud', e: '☁️' }, { w: 'duck', e: '🦆' }
+// ========== 看词选图 + 听音选词（v2.0 重构：10 关 × 3 题，难度递增） ==========
+// 英语词库：约 300 词，覆盖小学三年级及日常词汇
+// 分类：26 个英文字母、交际用语、人物与家庭成员、身体部位、颜色、数字、动物、
+//       食物、水果、简单形容词（含大小长短）、基础动词、12 月份、星期、科技媒体、日常名词
+// 字段：w=单词 c=中文 e=表情图(空=无图，仅用于听音选词) lv=难度1-10 L=字母条目
+const EN_WORDS = [
+  // 26 个英文字母（仅用于听音选词）
+  { w:'A', c:'字母A', e:'', lv:1, L:1 }, { w:'B', c:'字母B', e:'', lv:1, L:1 }, { w:'C', c:'字母C', e:'', lv:1, L:1 },
+  { w:'D', c:'字母D', e:'', lv:1, L:1 }, { w:'E', c:'字母E', e:'', lv:1, L:1 }, { w:'F', c:'字母F', e:'', lv:1, L:1 },
+  { w:'G', c:'字母G', e:'', lv:1, L:1 }, { w:'H', c:'字母H', e:'', lv:1, L:1 }, { w:'I', c:'字母I', e:'', lv:1, L:1 },
+  { w:'J', c:'字母J', e:'', lv:1, L:1 }, { w:'K', c:'字母K', e:'', lv:1, L:1 }, { w:'L', c:'字母L', e:'', lv:1, L:1 },
+  { w:'M', c:'字母M', e:'', lv:1, L:1 }, { w:'N', c:'字母N', e:'', lv:1, L:1 }, { w:'O', c:'字母O', e:'', lv:1, L:1 },
+  { w:'P', c:'字母P', e:'', lv:1, L:1 }, { w:'Q', c:'字母Q', e:'', lv:1, L:1 }, { w:'R', c:'字母R', e:'', lv:1, L:1 },
+  { w:'S', c:'字母S', e:'', lv:1, L:1 }, { w:'T', c:'字母T', e:'', lv:1, L:1 }, { w:'U', c:'字母U', e:'', lv:1, L:1 },
+  { w:'V', c:'字母V', e:'', lv:1, L:1 }, { w:'W', c:'字母W', e:'', lv:1, L:1 }, { w:'X', c:'字母X', e:'', lv:1, L:1 },
+  { w:'Y', c:'字母Y', e:'', lv:1, L:1 }, { w:'Z', c:'字母Z', e:'', lv:1, L:1 },
+  // 交际用语
+  { w:'hello', c:'你好', e:'👋', lv:1 }, { w:'hi', c:'嗨', e:'👋', lv:1 }, { w:'yes', c:'是', e:'✅', lv:1 },
+  { w:'no', c:'不是', e:'❌', lv:1 }, { w:'OK', c:'好的', e:'👌', lv:1 }, { w:'thank you', c:'谢谢你', e:'🙏', lv:2 },
+  { w:'goodbye', c:'再见', e:'👋', lv:2 }, { w:'sorry', c:'对不起', e:'😢', lv:2 }, { w:'please', c:'请', e:'🙏', lv:2 },
+  { w:'welcome', c:'欢迎', e:'🎉', lv:3 }, { w:'good morning', c:'早上好', e:'🌅', lv:3 }, { w:'good night', c:'晚安', e:'🌙', lv:3 },
+  { w:'see you', c:'回头见', e:'👋', lv:3 }, { w:'happy birthday', c:'生日快乐', e:'🎂', lv:4 }, { w:'good luck', c:'祝你好运', e:'🍀', lv:4 },
+  { w:'how are you', c:'你好吗', e:'😊', lv:4 }, { w:'nice to meet you', c:'很高兴认识你', e:'🤝', lv:5 }, { w:'excuse me', c:'打扰一下', e:'🙋', lv:5 },
+  { w:'my name is', c:'我的名字叫', e:'🏷️', lv:6 }, { w:"you're welcome", c:'不客气', e:'😄', lv:6 },
+  // 人物与家庭成员
+  { w:'family', c:'家庭', e:'👨‍👩‍👧‍👦', lv:2 }, { w:'father', c:'爸爸', e:'👨', lv:1 }, { w:'mother', c:'妈妈', e:'👩', lv:1 },
+  { w:'dad', c:'爸爸', e:'👨', lv:2 }, { w:'mum', c:'妈妈', e:'👩', lv:2 }, { w:'boy', c:'男孩', e:'👦', lv:1 },
+  { w:'girl', c:'女孩', e:'👧', lv:1 }, { w:'man', c:'男人', e:'👨', lv:2 }, { w:'woman', c:'女人', e:'👩', lv:2 },
+  { w:'brother', c:'哥哥；弟弟', e:'👦', lv:3 }, { w:'sister', c:'姐姐；妹妹', e:'👧', lv:3 }, { w:'friend', c:'朋友', e:'🧑‍🤝‍🧑', lv:2 },
+  { w:'grandfather', c:'爷爷；外公', e:'👴', lv:4 }, { w:'grandmother', c:'奶奶；外婆', e:'👵', lv:4 }, { w:'uncle', c:'叔叔；舅舅', e:'🧔', lv:5 },
+  { w:'aunt', c:'姑姑；阿姨', e:'👩‍🦰', lv:5 }, { w:'teacher', c:'老师', e:'👩‍🏫', lv:2 }, { w:'student', c:'学生', e:'🧑‍🎓', lv:3 },
+  { w:'doctor', c:'医生', e:'🧑‍⚕️', lv:4 }, { w:'baby', c:'婴儿', e:'👶', lv:3 }, { w:'people', c:'人们', e:'👥', lv:5 },
+  // 身体部位
+  { w:'body', c:'身体', e:'🧍', lv:4 }, { w:'head', c:'头', e:'👤', lv:3 }, { w:'face', c:'脸', e:'😀', lv:3 },
+  { w:'eye', c:'眼睛', e:'👁️', lv:2 }, { w:'ear', c:'耳朵', e:'👂', lv:3 }, { w:'nose', c:'鼻子', e:'👃', lv:3 },
+  { w:'mouth', c:'嘴', e:'👄', lv:3 }, { w:'hand', c:'手', e:'✋', lv:2 }, { w:'arm', c:'手臂', e:'💪', lv:4 },
+  { w:'leg', c:'腿', e:'🦵', lv:4 }, { w:'foot', c:'脚', e:'🦶', lv:3 }, { w:'finger', c:'手指', e:'☝️', lv:5 },
+  { w:'hair', c:'头发', e:'💇', lv:5 },
+  // 颜色
+  { w:'red', c:'红色', e:'🔴', lv:1 }, { w:'blue', c:'蓝色', e:'🔵', lv:1 }, { w:'yellow', c:'黄色', e:'🟡', lv:1 },
+  { w:'green', c:'绿色', e:'🟢', lv:1 }, { w:'black', c:'黑色', e:'⚫', lv:2 }, { w:'white', c:'白色', e:'⚪', lv:2 },
+  { w:'pink', c:'粉色', e:'🌸', lv:3 }, { w:'purple', c:'紫色', e:'🟣', lv:3 }, { w:'orange', c:'橙色；橙子', e:'🍊', lv:3 },
+  { w:'brown', c:'棕色', e:'🟤', lv:4 }, { w:'grey', c:'灰色', e:'🩶', lv:6 }, { w:'gold', c:'金色', e:'🏅', lv:6 },
+  // 数字
+  { w:'one', c:'一', e:'1️⃣', lv:1 }, { w:'two', c:'二', e:'2️⃣', lv:1 }, { w:'three', c:'三', e:'3️⃣', lv:1 },
+  { w:'four', c:'四', e:'4️⃣', lv:1 }, { w:'five', c:'五', e:'5️⃣', lv:1 }, { w:'six', c:'六', e:'6️⃣', lv:1 },
+  { w:'seven', c:'七', e:'7️⃣', lv:1 }, { w:'eight', c:'八', e:'8️⃣', lv:1 }, { w:'nine', c:'九', e:'9️⃣', lv:1 },
+  { w:'ten', c:'十', e:'🔟', lv:1 }, { w:'eleven', c:'十一', e:'👦', lv:4 }, { w:'twelve', c:'十二', e:'🕐', lv:4 },
+  { w:'twenty', c:'二十', e:'📋', lv:5 }, { w:'hundred', c:'百', e:'💯', lv:5 }, { w:'first', c:'第一', e:'🥇', lv:6 },
+  { w:'second', c:'第二', e:'🥈', lv:6 }, { w:'third', c:'第三', e:'🥉', lv:6 },
+  // 动物
+  { w:'cat', c:'猫', e:'🐱', lv:1 }, { w:'dog', c:'狗', e:'🐶', lv:1 }, { w:'fish', c:'鱼；鱼肉', e:'🐟', lv:1 },
+  { w:'bird', c:'鸟', e:'🐦', lv:2 }, { w:'duck', c:'鸭子', e:'🦆', lv:2 }, { w:'pig', c:'猪', e:'🐷', lv:2 },
+  { w:'hen', c:'母鸡', e:'🐔', lv:5 }, { w:'chicken', c:'小鸡；鸡肉', e:'🐓', lv:4 }, { w:'cow', c:'奶牛', e:'🐮', lv:3 },
+  { w:'horse', c:'马', e:'🐴', lv:3 }, { w:'sheep', c:'绵羊', e:'🐑', lv:4 }, { w:'goat', c:'山羊', e:'🐐', lv:6 },
+  { w:'rabbit', c:'兔子', e:'🐰', lv:2 }, { w:'mouse', c:'老鼠', e:'🐭', lv:4 }, { w:'tiger', c:'老虎', e:'🐯', lv:2 },
+  { w:'lion', c:'狮子', e:'🦁', lv:3 }, { w:'elephant', c:'大象', e:'🐘', lv:3 }, { w:'monkey', c:'猴子', e:'🐵', lv:3 },
+  { w:'panda', c:'熊猫', e:'🐼', lv:2 }, { w:'bear', c:'熊', e:'🐻', lv:3 }, { w:'wolf', c:'狼', e:'🐺', lv:7 },
+  { w:'fox', c:'狐狸', e:'🦊', lv:5 }, { w:'frog', c:'青蛙', e:'🐸', lv:4 }, { w:'snake', c:'蛇', e:'🐍', lv:6 },
+  { w:'bee', c:'蜜蜂', e:'🐝', lv:4 },
+  // 食物
+  { w:'rice', c:'米饭', e:'🍚', lv:2 }, { w:'bread', c:'面包', e:'🍞', lv:2 }, { w:'noodles', c:'面条', e:'🍜', lv:3 },
+  { w:'cake', c:'蛋糕', e:'🍰', lv:2 }, { w:'egg', c:'鸡蛋', e:'🥚', lv:2 }, { w:'milk', c:'牛奶', e:'🥛', lv:2 },
+  { w:'water', c:'水', e:'💧', lv:1 }, { w:'juice', c:'果汁', e:'🧃', lv:3 }, { w:'tea', c:'茶', e:'🍵', lv:4 },
+  { w:'meat', c:'肉', e:'🥩', lv:4 }, { w:'candy', c:'糖果', e:'🍬', lv:2 }, { w:'chocolate', c:'巧克力', e:'🍫', lv:6 },
+  { w:'ice cream', c:'冰淇淋', e:'🍦', lv:4 }, { w:'hamburger', c:'汉堡包', e:'🍔', lv:4 }, { w:'hot dog', c:'热狗', e:'🌭', lv:5 },
+  { w:'soup', c:'汤', e:'🥣', lv:6 }, { w:'biscuit', c:'饼干', e:'🍪', lv:6 },   { w:'chip', c:'薯条', e:'🍟', lv:6 },  // 水果
+  { w:'apple', c:'苹果', e:'🍎', lv:1 }, { w:'banana', c:'香蕉', e:'🍌', lv:1 }, { w:'pear', c:'梨', e:'🍐', lv:3 },
+  { w:'grape', c:'葡萄', e:'🍇', lv:3 }, { w:'watermelon', c:'西瓜', e:'🍉', lv:3 }, { w:'peach', c:'桃子', e:'🍑', lv:5 },
+  { w:'strawberry', c:'草莓', e:'🍓', lv:5 }, { w:'mango', c:'芒果', e:'🥭', lv:6 }, { w:'pineapple', c:'菠萝', e:'🍍', lv:7 },
+  { w:'lemon', c:'柠檬', e:'🍋', lv:6 }, { w:'cherry', c:'樱桃', e:'🍒', lv:7 },
+  // 简单形容词（含大小长短）
+  { w:'big', c:'大的', e:'🐘', lv:1 }, { w:'small', c:'小的', e:'🐭', lv:1 }, { w:'long', c:'长的', e:'📏', lv:2 },
+  { w:'short', c:'短的；矮的', e:'✏️', lv:2 }, { w:'tall', c:'高的', e:'🦒', lv:3 }, { w:'fat', c:'胖的', e:'🐷', lv:3 },
+  { w:'thin', c:'瘦的；薄的', e:'🖊️', lv:4 }, { w:'hot', c:'热的', e:'🔥', lv:2 }, { w:'cold', c:'冷的', e:'❄️', lv:2 },
+  { w:'warm', c:'温暖的', e:'🌤️', lv:5 }, { w:'cool', c:'凉爽的', e:'🍃', lv:5 }, { w:'new', c:'新的', e:'🆕', lv:3 },
+  { w:'old', c:'旧的；老的', e:'🏺', lv:3 }, { w:'young', c:'年轻的', e:'🧒', lv:6 }, { w:'happy', c:'开心的', e:'😊', lv:2 },
+  { w:'sad', c:'悲伤的', e:'😢', lv:3 }, { w:'good', c:'好的', e:'👍', lv:1 }, { w:'bad', c:'坏的', e:'👎', lv:3 },
+  { w:'beautiful', c:'漂亮的', e:'🌷', lv:5 }, { w:'fast', c:'快的', e:'🏎️', lv:4 }, { w:'slow', c:'慢的', e:'🐢', lv:4 },
+  // 基础动词
+  { w:'go', c:'去', e:'🚶', lv:3 }, { w:'come', c:'来', e:'🏃‍♀️', lv:4 }, { w:'run', c:'跑', e:'🏃', lv:2 },
+  { w:'jump', c:'跳', e:'🦘', lv:3 }, { w:'walk', c:'走路', e:'🚶‍♂️', lv:4 }, { w:'sing', c:'唱歌', e:'🎤', lv:3 },
+  { w:'dance', c:'跳舞', e:'💃', lv:4 }, { w:'read', c:'读', e:'📖', lv:3 }, { w:'write', c:'写', e:'✍️', lv:4 },
+  { w:'draw', c:'画画', e:'🎨', lv:4 }, { w:'eat', c:'吃', e:'🍽️', lv:2 }, { w:'drink', c:'喝', e:'🥤', lv:3 },
+  { w:'play', c:'玩', e:'⚽', lv:2 }, { w:'sleep', c:'睡觉', e:'😴', lv:3 }, { w:'swim', c:'游泳', e:'🏊', lv:4 },
+  { w:'fly', c:'飞', e:'🕊️', lv:3 }, { w:'open', c:'打开', e:'📂', lv:5 }, { w:'close', c:'关闭', e:'🚪', lv:6 },
+  { w:'look', c:'看', e:'👀', lv:4 }, { w:'listen', c:'听', e:'👂', lv:4 },
+  // 12 个月份
+  { w:'January', c:'一月', e:'🧣', lv:6 }, { w:'February', c:'二月', e:'💝', lv:7 }, { w:'March', c:'三月', e:'🌱', lv:6 },
+  { w:'April', c:'四月', e:'🌧️', lv:6 }, { w:'May', c:'五月', e:'🌷', lv:6 }, { w:'June', c:'六月', e:'🏖️', lv:7 },
+  { w:'July', c:'七月', e:'🍉', lv:7 }, { w:'August', c:'八月', e:'🌞', lv:7 }, { w:'September', c:'九月', e:'🎒', lv:8 },
+  { w:'October', c:'十月', e:'🍁', lv:8 }, { w:'November', c:'十一月', e:'🍂', lv:8 }, { w:'December', c:'十二月', e:'❄️', lv:8 },
+  // 星期
+  { w:'Monday', c:'星期一', e:'📅', lv:4 }, { w:'Tuesday', c:'星期二', e:'📅', lv:4 }, { w:'Wednesday', c:'星期三', e:'📅', lv:5 },
+  { w:'Thursday', c:'星期四', e:'📅', lv:5 }, { w:'Friday', c:'星期五', e:'🎉', lv:4 }, { w:'Saturday', c:'星期六', e:'😎', lv:4 },
+  { w:'Sunday', c:'星期日', e:'⛱️', lv:4 },
+  // 科技媒体
+  { w:'TV', c:'电视', e:'📺', lv:3 }, { w:'computer', c:'电脑', e:'💻', lv:4 }, { w:'phone', c:'电话', e:'☎️', lv:3 },
+  { w:'mobile phone', c:'手机', e:'📱', lv:4 }, { w:'robot', c:'机器人', e:'🤖', lv:4 }, { w:'camera', c:'照相机', e:'📷', lv:5 },
+  { w:'radio', c:'收音机', e:'📻', lv:7 }, { w:'Internet', c:'互联网', e:'🌐', lv:8 }, { w:'game', c:'游戏', e:'🎮', lv:3 },
+  { w:'email', c:'电子邮件', e:'📧', lv:7 }, { w:'laptop', c:'笔记本电脑', e:'💻', lv:8 },
+  // 日常名词
+  { w:'book', c:'书', e:'📕', lv:1 }, { w:'pen', c:'钢笔', e:'🖊️', lv:3 }, { w:'pencil', c:'铅笔', e:'✏️', lv:2 },
+  { w:'ruler', c:'尺子', e:'📐', lv:3 }, { w:'bag', c:'书包', e:'🎒', lv:2 }, { w:'school', c:'学校', e:'🏫', lv:3 },
+  { w:'classroom', c:'教室', e:'🧑‍🏫', lv:6 }, { w:'desk', c:'课桌', e:'🛗', lv:4 }, { w:'chair', c:'椅子', e:'🪑', lv:4 },
+  { w:'door', c:'门', e:'🚪', lv:3 }, { w:'window', c:'窗户', e:'🪟', lv:5 }, { w:'bed', c:'床', e:'🛏️', lv:3 },
+  { w:'home', c:'家', e:'🏠', lv:2 }, { w:'room', c:'房间', e:'🛋️', lv:4 }, { w:'kitchen', c:'厨房', e:'🍳', lv:7 },
+  { w:'car', c:'小汽车', e:'🚗', lv:1 }, { w:'bus', c:'公共汽车', e:'🚌', lv:3 }, { w:'bike', c:'自行车', e:'🚲', lv:3 },
+  { w:'train', c:'火车', e:'🚂', lv:3 }, { w:'plane', c:'飞机', e:'✈️', lv:3 }, { w:'ship', c:'轮船', e:'🚢', lv:4 },
+  { w:'sun', c:'太阳', e:'☀️', lv:1 }, { w:'moon', c:'月亮', e:'🌙', lv:1 }, { w:'star', c:'星星', e:'⭐', lv:2 },
+  { w:'sky', c:'天空', e:'🌌', lv:5 }, { w:'cloud', c:'云', e:'☁️', lv:4 }, { w:'rain', c:'雨', e:'🌧️', lv:3 },
+  { w:'snow', c:'雪', e:'❄️', lv:3 }, { w:'wind', c:'风', e:'🌬️', lv:6 }, { w:'rainbow', c:'彩虹', e:'🌈', lv:4 },
+  { w:'tree', c:'树', e:'🌳', lv:2 }, { w:'flower', c:'花', e:'🌸', lv:2 }, { w:'grass', c:'草', e:'🌿', lv:6 },
+  { w:'forest', c:'森林', e:'🌲', lv:7 }, { w:'river', c:'河流', e:'🏞️', lv:6 }, { w:'sea', c:'大海', e:'🌊', lv:4 },
+  { w:'mountain', c:'高山', e:'⛰️', lv:6 }, { w:'ball', c:'球', e:'⚽', lv:2 }, { w:'kite', c:'风筝', e:'🪁', lv:4 },
+  { w:'toy', c:'玩具', e:'🧸', lv:3 }, { w:'hat', c:'帽子', e:'🎩', lv:2 }, { w:'shoe', c:'鞋', e:'👟', lv:3 },
+  { w:'clothes', c:'衣服', e:'👕', lv:4 }, { w:'clock', c:'时钟', e:'🕐', lv:3 }, { w:'key', c:'钥匙', e:'🔑', lv:3 },
+  { w:'money', c:'钱', e:'💰', lv:6 }, { w:'box', c:'盒子', e:'📦', lv:5 }, { w:'gift', c:'礼物', e:'🎁', lv:3 },
+  { w:'umbrella', c:'雨伞', e:'☂️', lv:4 }, { w:'cup', c:'杯子', e:'🍵', lv:4 }, { w:'plate', c:'盘子', e:'🍽️', lv:7 },
+  { w:'knife', c:'小刀', e:'🔪', lv:7 }, { w:'spoon', c:'勺子', e:'🥄', lv:7 }, { w:'street', c:'街道', e:'🛣️', lv:7 },
+  { w:'park', c:'公园', e:'🎡', lv:4 }, { w:'zoo', c:'动物园', e:'🦓', lv:4 }, { w:'farm', c:'农场', e:'🚜', lv:5 },
+  { w:'hospital', c:'医院', e:'🏥', lv:7 }, { w:'city', c:'城市', e:'🏙️', lv:8 }, { w:'world', c:'世界', e:'🌍', lv:8 },
+  { w:'music', c:'音乐', e:'🎵', lv:4 }, { w:'film', c:'电影', e:'🎬', lv:7 }, { w:'story', c:'故事', e:'📚', lv:6 },
+  { w:'picture', c:'图画', e:'🖼️', lv:5 }, { w:'homework', c:'作业', e:'📝', lv:7 }, { w:'week', c:'星期；周', e:'📆', lv:6 },
+  { w:'year', c:'年', e:'🗓️', lv:5 }, { w:'today', c:'今天', e:'📍', lv:5 }, { w:'tomorrow', c:'明天', e:'➡️', lv:6 },
+  { w:'birthday', c:'生日', e:'🎂', lv:4 }, { w:'festival', c:'节日', e:'🏮', lv:8 }, { w:'spring', c:'春天', e:'🌱', lv:5 },
+  { w:'summer', c:'夏天', e:'🏖️', lv:5 }, { w:'autumn', c:'秋天', e:'🍂', lv:7 }, { w:'winter', c:'冬天', e:'⛄', lv:6 }
 ];
-let listenAnswerWord = '';
-let listenAnswerIdx = -1;   // 当前答案词在 listenWords 中的索引，用于定位预生成音频
-let listenRecent = [];   // 最近出过的词，避免连着重复
 
-// 优先从「最近没出过」的词里抽，抽完一轮再重置
-function pickListenWord() {
-  let avail = listenWords.filter(function(w) { return listenRecent.indexOf(w.w) < 0; });
-  if (!avail.length) { listenRecent = []; avail = listenWords; }
-  const t = avail[Math.floor(Math.random() * avail.length)];
-  listenRecent.push(t.w);
-  if (listenRecent.length > 16) listenRecent.shift();
+// 给词条编号音频文件名：字母条目用 letter_00~25.mp3，普通词依次 word_000、word_001...
+(function 标音频编号() {
+  let 序号 = 0;
+  EN_WORDS.forEach(function(t, i) {
+    if (t.L) { t.aud = 'letter_' + pad2(i) + '.mp3'; }
+    else { t.aud = 'word_' + pad3(序号) + '.mp3'; 序号++; }
+  });
+})();
+
+// 英语岛关卡进度（看词选图 / 听音选词 各 10 关，每答对 3 题升 1 关）
+const ENG_LEVEL_MAX = 10;
+let engLevel = getData('engLevel', { '看词选图': 1, '听音选词': 1 });
+let engDone = getData('engDone', { '看词选图': 0, '听音选词': 0 });
+
+function engLevelUp(模块) {
+  if (engLevel[模块] < ENG_LEVEL_MAX) {
+    engDone[模块] = (engDone[模块] || 0) + 1;
+    if (engDone[模块] >= LEVEL_NEED) {
+      engLevel[模块]++;
+      engDone[模块] = 0;
+      setTimeout(function() { showToast('升级啦！' + 模块 + ' 第 ' + engLevel[模块] + ' 关', 2200); }, 1300);
+    }
+  }
+  setData('engLevel', engLevel);
+  setData('engDone', engDone);
+  updateTabBadges();
+  updateEngLevelTag();
+}
+
+function updateEngLevelTag() {
+  const 标1 = document.getElementById('lookLevelTag');
+  const 标2 = document.getElementById('pickLevelTag');
+  if (标1) 标1.textContent = '第 ' + engLevel['看词选图'] + ' 关' + (engLevel['看词选图'] >= ENG_LEVEL_MAX ? ' · 已通关' : ' · 本关 ' + (engDone['看词选图'] || 0) + '/' + LEVEL_NEED + ' 题');
+  if (标2) 标2.textContent = '第 ' + engLevel['听音选词'] + ' 关' + (engLevel['听音选词'] >= ENG_LEVEL_MAX ? ' · 已通关' : ' · 本关 ' + (engDone['听音选词'] || 0) + '/' + LEVEL_NEED + ' 题');
+}
+
+// 按关卡取词池：第 k 关可抽难度 <= k+1 的词（低关简单词，难度递增）；需要有图参数用于看词选图
+function 抽词池(关卡, 需要有图) {
+  return EN_WORDS.filter(function(t) {
+    if (t.lv > 关卡 + 1) return false;
+    if (需要有图 && (!t.e || t.L)) return false;
+    return true;
+  });
+}
+
+// 播放一个词条的发音（进入页面后才播；字母用 letter 音频，单词用预生成 mp3，缺文件自动回退）
+function 播词条(t, 次数) {
+  if (!listenPageEntered) return;
+  playAudio(t.aud, t.w, 'en-US', 次数 || 1);
+}
+
+// 从词池抽一个最近没出过的词
+function 抽新词(池, 最近表) {
+  let 可用 = 池.filter(function(t) { return 最近表.indexOf(t.w) < 0; });
+  if (!可用.length) { 最近表.length = 0; 可用 = 池; }
+  const t = 可用[Math.floor(Math.random() * 可用.length)];
+  最近表.push(t.w);
+  if (最近表.length > 16) 最近表.shift();
   return t;
 }
 
+// ---------- 看词选图 ----------
+let listenAnswerWord = '';
+let listenAnswerIdx = -1;
+let listenCurTarget = null;    // 当前题的词条对象
+let listenIsReview = false;    // 当前题是否为错题复现
+let listenReviewKey = null;    // 错题本里的数据键
+const listenRecent = [];
 const listenHistory = createHistory();
 
 function generateListenQuestion(data) {
   let target;
+  listenIsReview = false; listenReviewKey = null;
   if (data === undefined) {
-    target = pickListenWord();
-    listenHistory.push(listenWords.indexOf(target));
+    // 第 4 关起有概率复现错题
+    const 错 = engLevel['看词选图'] >= 4 ? 抽错题('看词选图') : null;
+    if (错 && 错.数据 && EN_WORDS[错.数据.i] && EN_WORDS[错.数据.i].e && !EN_WORDS[错.数据.i].L) {
+      target = EN_WORDS[错.数据.i];
+      listenIsReview = true;
+      listenReviewKey = 错.数据;
+    } else {
+      target = 抽新词(抽词池(engLevel['看词选图'], true), listenRecent);
+    }
+    listenHistory.push(EN_WORDS.indexOf(target));
   } else {
-    target = listenWords[data];
+    target = EN_WORDS[data];
+    listenHistory.push(data);
   }
+  listenCurTarget = target;
   listenAnswerWord = target.w;
-  listenAnswerIdx = listenWords.indexOf(target);
+  listenAnswerIdx = EN_WORDS.indexOf(target);
   document.getElementById('listenAnswer').textContent = '';
+  // 「单词」按钮显示当前词（点按钮 = 再听一遍这个词的发音）
+  const 词钮 = document.getElementById('listenWordBtn');
+  if (词钮) 词钮.textContent = target.w;
 
+  // 4 个选项：排除与答案同表情的词，避免歧义
+  const 池 = 抽词池(engLevel['看词选图'] + 2, true);
   const options = [target];
   let guard = 0;
-  while (options.length < 4 && guard++ < 300) {
-    const cand = listenWords[Math.floor(Math.random() * listenWords.length)];
-    if (!options.some(o => o.w === cand.w)) options.push(cand);
+  while (options.length < 4 && guard++ < 600) {
+    const cand = 池[Math.floor(Math.random() * 池.length)];
+    // 干扰项：排除同名词、与答案同表情的词、以及与已有选项同表情的词（避免按钮歧义）
+    if (cand.w !== target.w && cand.e !== target.e && !options.some(o => o.w === cand.w || o.e === cand.e)) options.push(cand);
   }
   const arr = options.sort(() => Math.random() - 0.5);
 
@@ -2015,31 +3062,32 @@ function generateListenQuestion(data) {
       if (btn.classList.contains('correct') || btn.classList.contains('wrong')) return;
       if (o.w === listenAnswerWord) {
         btn.classList.add('correct');
-        document.getElementById('listenAnswer').textContent = '✅ ' + target.w + ' ' + target.e;
-        playAudio('word_' + pad2(listenAnswerIdx) + '.mp3', target.w, 'en-US', 2);
-        showToast('听对啦！🎉');
+        document.getElementById('listenAnswer').textContent = '✅ ' + target.w + ' ' + target.c;
+        播词条(target, 2);
+        showToast('选对啦！🎉');
         addStars(1);
         addCorrect();
+        engLevelUp('看词选图');
+        if (listenIsReview) 错题过关('看词选图', listenReviewKey);
         autoNext(container, generateListenQuestion);
       } else {
         btn.classList.add('wrong');
         playWrongSound();
         showToast('再听一遍试试 💪');
+        记错题('看词选图', { i: listenAnswerIdx }, { q: '听「' + listenAnswerWord + '」的发音，选出对应的图', opts: arr.map(x => x.e), ans: target.e });
       }
     });
     container.appendChild(btn);
   });
 
-  setTimeout(playListenWord, 400);
+  setTimeout(function() { 播词条(target, 3); }, 400);
 }
 
-// 每题自动朗读 3 遍（播放预生成单词音频）
-// 注意：listenPageEntered 为 false 时（App 刚启动、还没点开「听音选图」）一律不播放
+// 每题自动朗读 3 遍；点「单词」按钮（replayListenWord）每点一次额外播 1 遍
+// 注意：listenPageEntered 为 false 时（App 刚启动、还没点开看词选图）一律不播放
 let listenPageEntered = false;
-function playListenWord() {
-  if (!listenPageEntered) return;
-  if (listenAnswerIdx >= 0) playAudio('word_' + pad2(listenAnswerIdx) + '.mp3', listenAnswerWord, 'en-US', 3);
-}
+function playListenWord() { if (listenCurTarget) 播词条(listenCurTarget, 3); }
+function replayListenWord() { if (listenCurTarget) 播词条(listenCurTarget, 1); }
 
 function prevListenQuestion() {
   const d = listenHistory.prev();
@@ -2047,6 +3095,83 @@ function prevListenQuestion() {
 }
 
 generateListenQuestion();
+
+// ---------- 听音选词 ----------
+let pickCurTarget = null;
+let pickIsReview = false;
+let pickReviewKey = null;
+const pickRecent = [];
+const pickHistory = createHistory();
+
+function generatePickQuestion(data) {
+  let target;
+  pickIsReview = false; pickReviewKey = null;
+  if (data === undefined) {
+    // 第 4 关起有概率复现错题
+    const 错 = engLevel['听音选词'] >= 4 ? 抽错题('听音选词') : null;
+    if (错 && 错.数据 && EN_WORDS[错.数据.i]) {
+      target = EN_WORDS[错.数据.i];
+      pickIsReview = true;
+      pickReviewKey = 错.数据;
+    } else {
+      target = 抽新词(抽词池(engLevel['听音选词'], false), pickRecent);
+    }
+    pickHistory.push(EN_WORDS.indexOf(target));
+  } else {
+    target = EN_WORDS[data];
+  }
+  pickCurTarget = target;
+  document.getElementById('pickAnswer').textContent = '';
+
+  // 4 个文本选项（干扰项从同范围词池抽，排除同名词）
+  const 池 = 抽词池(engLevel['听音选词'] + 2, false);
+  const options = [target];
+  let guard = 0;
+  while (options.length < 4 && guard++ < 600) {
+    const cand = 池[Math.floor(Math.random() * 池.length)];
+    if (cand.w !== target.w && !options.some(o => o.w === cand.w)) options.push(cand);
+  }
+  const arr = options.sort(() => Math.random() - 0.5);
+
+  const container = document.getElementById('pickOptions');
+  container.innerHTML = '';
+  arr.forEach(o => {
+    const btn = document.createElement('button');
+    btn.className = 'word-btn';
+    btn.innerHTML = '<span class="w-en">' + o.w + '</span><span class="w-cn">' + o.c + '</span>';
+    btn.addEventListener('click', () => {
+      if (btn.classList.contains('correct') || btn.classList.contains('wrong')) return;
+      if (o.w === target.w) {
+        btn.classList.add('correct');
+        document.getElementById('pickAnswer').textContent = '✅ ' + target.w + ' ' + target.c;
+        播词条(target, 2);
+        showToast('选对啦！🎉');
+        addStars(1);
+        addCorrect();
+        engLevelUp('听音选词');
+        if (pickIsReview) 错题过关('听音选词', pickReviewKey);
+        autoNext(container, generatePickQuestion);
+      } else {
+        btn.classList.add('wrong');
+        playWrongSound();
+        showToast('再听一遍试试 💪');
+        记错题('听音选词', { i: EN_WORDS.indexOf(target) }, { q: '听发音选出正确的单词（音频：' + target.w + '）', opts: arr.map(x => x.w), ans: target.w });
+      }
+    });
+    container.appendChild(btn);
+  });
+
+  setTimeout(function() { 播词条(target, 3); }, 400);
+}
+
+function replayPickWord() { if (pickCurTarget) 播词条(pickCurTarget, 1); }
+
+function prevPickQuestion() {
+  const d = pickHistory.prev();
+  if (d !== null) generatePickQuestion(d);
+}
+
+generatePickQuestion();
 
 // ========== 模块2: 古诗花园（100 首，诗库见 poems100.js） ==========
 const poems = POEMS100;
@@ -2087,12 +3212,12 @@ function showRandomPoem(data) {
     '<div class="poem-author">' + p.d + ' · ' + p.a + '</div>' +
     '<div class="poem-body">' + bodyHTML + '</div>' +
     '<div class="poem-actions">' +
-      '<button class="read-btn">🔊 朗读</button>' +
-      '<button class="prev-btn">⬅️ 上一首</button>' +
+      '<button class="read-btn">朗读</button>' +
+      '<button class="prev-btn">上一首</button>' +
       '<button class="next-btn">换一首</button>' +
     '</div>';
   mainEl.querySelector('.read-btn').addEventListener('click', function () {
-    playAudio('poem_' + pad2(idx) + '.mp3', fullText, 'zh-CN');
+    playAudio('poem_' + pad3(idx) + '.mp3', fullText, 'zh-CN');
   });
   mainEl.querySelector('.prev-btn').addEventListener('click', function () {
     const d = poemCardHistory.prev();
@@ -2109,24 +3234,32 @@ function showRandomPoem(data) {
 showRandomPoem();
 
 // ========== 古诗问答（接句 / 问作者） ==========
+// 分句：逗号、句号、问号、叹号都是分隔符（此前漏了？！，导致"问渠那得清如许？为有源头活水来"被当成一句）
 function poemSentences(p) {
-  return p.lines.join('').split(/[，。]/).map(s => s.trim()).filter(s => s.length >= 3);
+  return p.lines.join('').split(/[，。？！]/).map(s => s.trim()).filter(s => s.length >= 3);
 }
 
 const poemQuizHistory = createHistory();
 
 function generatePoemQuiz(data) {
   const card = document.getElementById('poemQuizCard');
-  let d;
+  let d, 是复现 = false, 键 = null;
   if (data === undefined) {
-    const pi = randInt(0, poems.length - 1);
-    const sents0 = poemSentences(poems[pi]);
-    const askAuthor = Math.random() < 0.4 || sents0.length < 2;
-    const si = askAuthor ? 0 : randInt(0, sents0.length - 2);
-    d = { pi: pi, askAuthor: askAuthor, si: si };
-    poemQuizHistory.push(d);
+    // 有概率复现答错的题（30%，避免连续卡在同一道错题上）
+    const 错 = Math.random() < 0.3 ? 抽错题('古诗问答') : null;
+    if (错 && 错.数据 && poems[错.数据.pi]) {
+      d = 错.数据; 是复现 = true; 键 = 错.数据;
+    } else {
+      const pi = randInt(0, poems.length - 1);
+      const sents0 = poemSentences(poems[pi]);
+      const askAuthor = Math.random() < 0.4 || sents0.length < 2;
+      const si = askAuthor ? 0 : randInt(0, sents0.length - 2);
+      d = { pi: pi, askAuthor: askAuthor, si: si };
+      poemQuizHistory.push(d);
+    }
   } else {
     d = data;
+    poemQuizHistory.push(d);
   }
   const p = poems[d.pi];
   const sents = poemSentences(p);
@@ -2144,26 +3277,39 @@ function generatePoemQuiz(data) {
     poems.forEach(o => {
       if (o !== p) poemSentences(o).forEach(s => pool.push(s));
     });
-    options = [...new Set(pool)].sort(() => Math.random() - 0.5).slice(0, 3).concat([answer]);
+    // 先剔除与答案相同的句子再抽 3 个干扰项，避免界面上出现两个正确选项
+    const 干扰 = [...new Set(pool)].filter(o => o !== answer);
+    options = 干扰.sort(() => Math.random() - 0.5).slice(0, 3).concat([answer]);
   }
 
   const shuffled = options.sort(() => Math.random() - 0.5);
 
   // 左栏完整题面：标题、朝代、（非作者题时含作者）、诗句；仅把要回答的部分留空
+  // v2.0：空缺处不再显示三个短横，只留一条下划线；考作者时下划线设在朝代旁
   let leftHTML;
   if (d.askAuthor) {
-    leftHTML = p.lines.join('<br>') +
-      '<div class="quiz-blank-line">作者：<span class="quiz-blank">＿＿＿</span></div>';
+    leftHTML = p.lines.join('<br>');
   } else {
-    leftHTML = p.lines.slice(0, d.si + 1).join('<br>') +
-      '<div class="quiz-blank-line">' + (sents[d.si + 1] ? '<span class="quiz-blank">＿＿＿</span>' : '') + '</div>';
+    // 整首诗都显示出来，只把答案那一句挖空（连同其后紧跟的标点一并吞掉，空位更干净）
+    // 注意：String.replace 传字符串时 [，。？！]? 会被当字面量，必须用正则才能吞掉标点
+    const 答案句 = sents[d.si + 1] || '';
+    const 挖空 = '<span class="quiz-blank"></span>';
+    const 答案正则 = 答案句 ? new RegExp(答案句.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '[，。？！]?') : null;
+    let 已挖空 = false;
+    leftHTML = p.lines.map(function (行) {
+      if (!已挖空 && 答案正则 && 答案正则.test(行)) {
+        已挖空 = true;
+        return 行.replace(答案正则, 挖空);
+      }
+      return 行;
+    }).join('<br>');
   }
 
   card.innerHTML = `
     <div class="quiz-layout">
       <div class="quiz-left">
         <div class="quiz-poem-title">《${p.t}》</div>
-        <div class="quiz-poem-author">${p.d}${d.askAuthor ? '' : ' · ' + p.a}</div>
+        <div class="quiz-poem-author">${p.d}${d.askAuthor ? ' · <span class="quiz-blank" id="quizAuthorBlank"></span>' : ' · ' + p.a}</div>
         <div class="quiz-poem-lines">${leftHTML}</div>
       </div>
       <div class="quiz-right">
@@ -2172,8 +3318,8 @@ function generatePoemQuiz(data) {
           `<button class="logic-btn" style="width:100%; max-width:none; height:auto; min-height:52px; font-size:18px; padding:10px 14px;" data-val="${o}">${o}</button>`
         ).join('')}</div>
         <div style="display:flex; gap:10px; margin-top:14px;">
-          <button class="next-btn" style="flex:1; background:var(--blue);" onclick="prevPoemQuiz()">⬅️ 上一题</button>
-          <button class="next-btn" style="flex:1;" onclick="generatePoemQuiz()">下一题 ➡️</button>
+          <button class="next-btn" style="flex:1; background:var(--blue);" onclick="prevPoemQuiz()">上一题</button>
+          <button class="next-btn" style="flex:1;" onclick="generatePoemQuiz()">下一题</button>
         </div>
       </div>
     </div>
@@ -2184,18 +3330,20 @@ function generatePoemQuiz(data) {
       if (btn.classList.contains('correct') || btn.classList.contains('wrong')) return;
       if (btn.dataset.val === answer) {
         btn.classList.add('correct');
-        // 把正确答案填进左栏空位
+        // 把正确答案填进空位（接句题在诗句里，作者题在朝代旁）
         const blank = card.querySelector('.quiz-blank');
         if (blank) blank.textContent = answer;
         showToast('答对啦！🎉');
         addStars(1);
         addCorrect();
         showStarAnimation(btn.getBoundingClientRect().x, btn.getBoundingClientRect().y);
+        if (是复现) 错题过关('古诗问答', 键);
         autoNext(card, generatePoemQuiz);
       } else {
         btn.classList.add('wrong');
         playWrongSound();
         showToast('再想想哦 💪');
+        if (!是复现) 记错题('古诗问答', d, { q: qText + '（《' + p.t + '》' + p.d + '）', opts: shuffled.slice(), ans: answer });
       }
     });
   });
@@ -2207,6 +3355,105 @@ function prevPoemQuiz() {
 }
 
 generatePoemQuiz();
+
+// ========== 语文天地：语文综合（10 关 × 3 题，难度递增，题库见 chinese-bank.js） ==========
+// 题库涵盖：成语典故、歇后语、脑筋急转弯、反义词、偏旁部首、笔画顺序、间架结构、拼读、量词
+const CHIN_LEVEL_MAX = 10;
+let chinLevel = getData('chinLevel', 1);
+let chinDone = getData('chinDone', 0);
+const chinHistory = createHistory();
+let chinCur = null;          // 当前题在题库中的索引
+let chinIsReview = false;    // 当前题是否为错题复现
+let chinReviewKey = null;    // 错题本数据键
+const chinRecent = [];       // 最近出过的题，降低重复率
+
+function generateChinQuiz(data) {
+  const card = document.getElementById('chinCard');
+  if (!card || typeof CHINESE_BANK === 'undefined' || !CHINESE_BANK.length) return;
+  let 题索引, 是复现 = false, 键 = null;
+  if (data === undefined) {
+    // 第 4 关起有概率复现答错的题
+    const 错 = chinLevel >= 4 && Math.random() < 0.3 ? 抽错题('语文综合') : null;
+    if (错 && 错.数据 && typeof 错.数据.i === 'number' && CHINESE_BANK[错.数据.i]) {
+      题索引 = 错.数据.i; 是复现 = true; 键 = 错.数据;
+    } else {
+      // 第 k 关从难度 <= k+1 的题里抽，难度依次增加
+      const 池 = [];
+      CHINESE_BANK.forEach(function(t, i) { if (t.lv <= chinLevel + 1) 池.push(i); });
+      const 全范围 = 池.length ? 池 : CHINESE_BANK.map(function(t, i) { return i; });
+      // 优先抽最近没出过的题，全部出过一轮后再放开
+      let 备选 = 全范围.filter(function(i) { return chinRecent.indexOf(i) < 0; });
+      if (!备选.length) { chinRecent.length = 0; 备选 = 全范围; }
+      题索引 = 备选[randInt(0, 备选.length - 1)];
+      chinRecent.push(题索引);
+      if (chinRecent.length > 25) chinRecent.shift();
+      chinHistory.push(题索引);
+    }
+  } else {
+    题索引 = data;
+  }
+  chinCur = 题索引;
+  const t = CHINESE_BANK[题索引];
+
+  // 选项随机排序
+  const 答案文本 = t.opts[t.ans];
+  const arr = t.opts.slice().sort(() => Math.random() - 0.5);
+
+  card.innerHTML = `
+    <div style="margin-bottom:12px"><span class="math-level" style="background:var(--pink); margin-bottom:0">${t.t}</span></div>
+    <div class="logic-title" style="font-size:20px; color:#333; margin-bottom:16px">${t.q}</div>
+    <div class="logic-options" style="display:grid; grid-template-columns:repeat(2, minmax(0, 1fr)); gap:12px; max-width:560px; margin:0 auto;">${arr.map(o =>
+      `<button class="logic-btn" style="width:100%; max-width:none; height:auto; min-height:56px; font-size:18px; padding:12px 16px;" data-val="${o}">${o}</button>`
+    ).join('')}</div>
+    <div id="chinAnswer" style="margin-top:14px; min-height:30px; font-size:17px; color:var(--purple)"></div>
+    <div style="display:flex; gap:14px; justify-content:center; margin-top:14px;">
+      <button class="next-btn" style="flex:none; width:170px; background:var(--blue);" onclick="prevChinQuiz()">上一题</button>
+      <button class="next-btn" style="flex:none; width:170px;" onclick="generateChinQuiz()">下一题</button>
+    </div>
+  `;
+
+  card.querySelectorAll('.logic-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      if (btn.classList.contains('correct') || btn.classList.contains('wrong')) return;
+      if (btn.dataset.val === 答案文本) {
+        btn.classList.add('correct');
+        if (t.exp) document.getElementById('chinAnswer').textContent = '✅ ' + t.exp;
+        showToast('答对啦！🎉');
+        addStars(1);
+        addCorrect();
+        showStarAnimation(btn.getBoundingClientRect().x, btn.getBoundingClientRect().y);
+        // 每答对 3 题升 1 关，最高 10 关
+        if (chinLevel < CHIN_LEVEL_MAX) {
+          chinDone++;
+          if (chinDone >= LEVEL_NEED) {
+            chinLevel++;
+            chinDone = 0;
+            setTimeout(function() { showToast('升级啦！语文综合 第 ' + chinLevel + ' 关', 2200); }, 1300);
+          }
+        }
+        setData('chinLevel', chinLevel);
+        setData('chinDone', chinDone);
+        updateTabBadges();
+        updateLevelTag();
+        if (是复现) 错题过关('语文综合', 键);
+        autoNext(card, generateChinQuiz);
+      } else {
+        btn.classList.add('wrong');
+        playWrongSound();
+        showToast('再想想哦 💪');
+        // 首次答错即记入错题本（先错后改对也算）
+        if (!是复现) 记错题('语文综合', { i: 题索引 }, { q: t.q, opts: arr.slice(), ans: 答案文本 });
+      }
+    });
+  });
+}
+
+function prevChinQuiz() {
+  const d = chinHistory.prev();
+  if (d !== null) generateChinQuiz(d);
+}
+
+generateChinQuiz();
 
 // ========== 模块3: 数学城 ==========
 
@@ -2221,22 +3468,87 @@ function randInt(min, max) {
 }
 
 // ========== 数学城难度等级 ==========
-const MATH_LEVEL_MAX = { '口算': 6, '乘法': 5, '除法': 5, '数独': 5 };
+const MATH_LEVEL_MAX = { '口算': 10, '乘除': 10, '数独': 10 };
 const LEVEL_NEED = 3;   // 每级答对 3 题升一级
-const LEVEL_TAG_ID = { '口算': 'calcLevelTag', '乘法': 'mulLevelTag', '除法': 'divLevelTag', '数独': 'sudokuLevelTag' };
-let mathLevel = getData('mathLevel', { '口算': 1, '乘法': 1, '除法': 1, '数独': 1 });
-let levelDone = getData('levelDone', { '口算': 0, '乘法': 0, '除法': 0, '数独': 0 });
+const LEVEL_TAG_ID = { '口算': 'calcLevelTag', '乘除': 'mulLevelTag', '数独': 'sudokuLevelTag' };
+// v2.0：乘法口诀与除法口诀合并为「乘除」，旧进度自动迁移（取两者中较高的关卡）
+let mathLevel = (function() {
+  const 旧 = getData('mathLevel', {});
+  return {
+    '口算': 旧['口算'] || 1,
+    '乘除': Math.max(旧['乘除'] || 1, 旧['乘法'] || 1, 旧['除法'] || 1),
+    '数独': 旧['数独'] || 1
+  };
+})();
+let levelDone = getData('levelDone', { '口算': 0, '乘除': 0, '数独': 0 });
+
+// 子 Tab 通关状态：v2.0 按钮上不再显示 x/10 进度文字，满 10 关只把按钮设为实心（金色）
+function updateTabBadges() {
+  const 表 = [
+    { 键: 'num-calc', 取关: function() { return mathLevel['口算']; } },
+    { 键: 'num-mul', 取关: function() { return mathLevel['乘除']; } },
+    { 键: 'num-sudoku', 取关: function() { return mathLevel['数独']; } },
+    { 键: 'logic-pattern', 取关: function() { return logicLevel['pattern']; } },
+    { 键: 'logic-pair', 取关: function() { return logicLevel['pair']; } },
+    { 键: 'logic-sort', 取关: function() { return logicLevel['sort']; } },
+    { 键: 'alpha-listen', 取关: function() { return engLevel['看词选图']; } },
+    { 键: 'alpha-word', 取关: function() { return engLevel['听音选词']; } },
+    { 键: 'chin-quiz', 取关: function() { return chinLevel; } }
+  ];
+  表.forEach(function(项) {
+    const 钮 = document.querySelector('.sub-tab[data-subtab="' + 项.键 + '"]');
+    if (!钮) return;
+    钮.classList.toggle('cleared', (项.取关() || 1) >= 10);
+  });
+}
 
 function updateLevelTag() {
   Object.keys(LEVEL_TAG_ID).forEach(function(k) {
     const el = document.getElementById(LEVEL_TAG_ID[k]);
     if (!el) return;
     const maxed = mathLevel[k] >= MATH_LEVEL_MAX[k];
-    el.textContent = '第 ' + mathLevel[k] + ' 级' + (maxed ? ' · 已满级' : ' · 本级 ' + levelDone[k] + '/' + LEVEL_NEED + ' 题');
+    el.textContent = '第 ' + mathLevel[k] + ' 级' + (maxed ? ' · 已满级' : ' · 本级 ' + (levelDone[k] || 0) + '/' + LEVEL_NEED + ' 题');
   });
+  // 逻辑挑战的关卡标签：跟随当前子题型
+  const 逻辑标 = document.getElementById('logicLevelTag');
+  if (逻辑标) {
+    const 激活 = document.querySelector('#page-logic .sub-tab.active');
+    const 键 = 激活 ? 激活.getAttribute('data-subtab').replace('logic-', '') : 'pattern';
+    const L = logicLevel[键] || 1;
+    const 通关 = L >= LOGIC_LEVEL_MAX;
+    逻辑标.textContent = '第 ' + L + ' 关' + (通关 ? ' · 已通关' : ' · 本关 ' + (logicDone[键] || 0) + '/' + LEVEL_NEED + ' 题');
+  }
+  // 英语岛两个模块 + 语文综合的关卡标签
+  updateEngLevelTag();
+  const chin标 = document.getElementById('chinLevelTag');
+  if (chin标 && typeof chinLevel !== 'undefined') {
+    chin标.textContent = '第 ' + chinLevel + ' 关' + (chinLevel >= CHIN_LEVEL_MAX ? ' · 已通关' : ' · 本关 ' + (chinDone || 0) + '/' + LEVEL_NEED + ' 题');
+  }
 }
 
 // 答对一题后推进等级进度
+// ---------- 逻辑挑战关卡：同样 10 关、每关答对 3 题升级 ----------
+const LOGIC_LEVEL_MAX = 10;
+let logicLevel = getData('logicLevel', { 'pattern': 1, 'pair': 1, 'sort': 1 });
+let logicDone = getData('logicDone', { 'pattern': 0, 'pair': 0, 'sort': 0 });
+const LOGIC_NAME = { 'pattern': '找规律', 'pair': '图形配对', 'sort': '排序题' };
+
+function logicLevelUp(类型) {
+  if ((logicLevel[类型] || 1) >= LOGIC_LEVEL_MAX) return;
+  logicDone[类型] = (logicDone[类型] || 0) + 1;
+  if (logicDone[类型] >= LEVEL_NEED) {
+    logicLevel[类型]++;
+    logicDone[类型] = 0;
+    const 名 = LOGIC_NAME[类型] || 类型;
+    if (logicLevel[类型] > LOGIC_LEVEL_MAX) logicLevel[类型] = LOGIC_LEVEL_MAX;
+    setTimeout(function() { showToast('升级啦！' + 名 + ' 第 ' + logicLevel[类型] + ' 关', 2200); }, 1300);
+  }
+  setData('logicLevel', logicLevel);
+  setData('logicDone', logicDone);
+  updateLevelTag();
+  updateTabBadges();
+}
+
 function mathLevelUp(type) {
   if (mathLevel[type] < MATH_LEVEL_MAX[type]) {
     levelDone[type]++;
@@ -2248,6 +3560,7 @@ function mathLevelUp(type) {
   }
   setData('mathLevel', mathLevel);
   setData('levelDone', levelDone);
+  updateTabBadges();
   updateLevelTag();
 }
 
@@ -2265,8 +3578,16 @@ function makeOptions(ans, spread) {
 }
 
 // 按等级出口算题：10 以内 → 20 以内 → 两位数±一位数 → 进退位 → 两位数±两位数 → 三数连加
+// 按等级出口算题：10 以内 → 20 以内 → 两位数 → 三位数加减
+// 10 级为三年级上水平（万以内的加减法，含进位退位）封顶
 function makeCalcQuestion(level) {
-  const L = Math.min(level, 6);
+  const L = Math.min(level, 10);
+  // v2.0：口算加入乘法表乘法（九九口诀范围），3 级起出现，难度越高占比略增
+  if (L >= 3 && Math.random() < Math.min(0.1 + L * 0.02, 0.25)) {
+    const 上限 = L <= 5 ? 5 : 9;   // 先练 1~5 的口诀，高等级用全部 1~9
+    const a = randInt(2, 上限), b = randInt(2, 上限);
+    return { q: a + ' × ' + b, ans: a * b, mul: true };
+  }
   const isAdd = Math.random() > 0.4;
   let a, b;
   if (L === 1) {
@@ -2289,38 +3610,87 @@ function makeCalcQuestion(level) {
   } else if (L === 5) {
     if (isAdd) { a = randInt(10, 60); b = randInt(10, Math.max(10, 88 - a)); }
     else { a = randInt(22, 99); b = randInt(10, a - 1); }
-  } else {
+  } else if (L === 6) {
     if (Math.random() < 0.3) {
       const x = randInt(11, 40), y = randInt(11, 40), z = randInt(2, 9);
       return { q: x + ' + ' + y + ' + ' + z, ans: x + y + z };
     }
     if (isAdd) { a = randInt(15, 65); b = randInt(10, 99 - a); }
     else { a = randInt(30, 99); b = randInt(10, a - 1); }
+  } else if (L === 7) {
+    // 整十整百数加减（万以内加减法的起步）
+    if (isAdd) { a = randInt(2, 6) * 100 + randInt(1, 9) * 10; b = randInt(1, 3) * 100; }
+    else { a = randInt(4, 9) * 100; b = randInt(1, 3) * 100 + randInt(1, 9) * 10; }
+  } else if (L === 8) {
+    // 三位数 ± 两位数：个位、十位都不进退位
+    const 百 = randInt(1, 8), 十 = randInt(1, 7), 个 = randInt(1, 4);
+    a = 百 * 100 + 十 * 10 + 个;
+    if (isAdd) { b = randInt(1, 9 - 个) + randInt(1, 9 - 十) * 10; }
+    else { b = randInt(1, 个) + randInt(1, 十) * 10; }
+  } else if (L === 9) {
+    // 三位数 ± 三位数：各数位都不进退位
+    const 甲百 = randInt(2, 9), 甲十 = randInt(1, 8), 甲个 = randInt(1, 8);
+    a = 甲百 * 100 + 甲十 * 10 + 甲个;
+    if (isAdd) {
+      b = randInt(1, 9 - 甲百) * 100 + randInt(1, 9 - 甲十) * 10 + randInt(1, 9 - 甲个);
+    } else {
+      b = Math.max(1, randInt(0, 甲百 - 1) * 100 + randInt(0, 甲十) * 10 + randInt(0, 甲个));
+    }
+  } else {
+    // 三位数 ± 三位数：含进位与退位（三年级上的重点难点）
+    if (isAdd) {
+      a = randInt(1, 8) * 100 + randInt(1, 9) * 10 + randInt(1, 9);
+      b = randInt(1, 9) * 100 + randInt(1, 9) * 10 + randInt(1, 9);
+    } else {
+      a = randInt(3, 9) * 100 + randInt(1, 9) * 10 + randInt(1, 9);
+      b = randInt(101, a - 1);
+    }
   }
   return isAdd ? { q: a + ' + ' + b, ans: a + b } : { q: a + ' - ' + b, ans: a - b };
 }
 
-// 按等级出乘法题：小口诀 → 大口诀 → 全口诀 → 两位数×一位数 → 更大两位数
+// 按等级出乘法题：口诀入门 → 全口诀 → 整十数×一位数 → 两位数×一位数 → 三位数×一位数 → 两位数×两位数
+// 10 级为三年级下水平（两位数乘两位数）封顶
 function makeMulQuestion(level) {
-  const L = Math.min(level, 5);
+  const L = Math.min(level, 10);
   let a, b;
   if (L === 1) { a = randInt(2, 5); b = randInt(2, 5); }
   else if (L === 2) { a = randInt(2, 7); b = randInt(2, 6); }
   else if (L === 3) { a = randInt(3, 9); b = randInt(3, 9); }
   else if (L === 4) { a = randInt(11, 19); b = randInt(2, 5); }
-  else { a = randInt(12, 25); b = randInt(2, 9); }
+  else if (L === 5) { a = randInt(12, 25); b = randInt(2, 9); }
+  else if (L === 6) { a = randInt(2, 9) * 10; b = randInt(2, 9); }
+  else if (L === 7) {
+    // 两位数 × 一位数，个位相乘不进位
+    const 十位 = randInt(1, 4), 个位 = randInt(1, 3);
+    a = 十位 * 10 + 个位;
+    b = randInt(2, Math.max(2, Math.floor(9 / 个位)));
+  }
+  else if (L === 8) { a = randInt(12, 49); b = randInt(4, 9); }
+  else if (L === 9) { a = randInt(101, 899); b = randInt(2, 9); }
+  else { a = randInt(12, 49); b = randInt(12, 39); }
   return { a: a, b: b, q: a + ' × ' + b, ans: a * b };
 }
 
-// 按等级出除法题：小除法 → 表内除法 → 全表内 → 商是两位数 → 三位数÷一位数
+// 按等级出除法题：表内除法 → 整十数÷一位数 → 两位数÷一位数 → 三位数÷一位数
+// 10 级为三年级下水平（三位数除以一位数，商中间或末尾有 0）封顶
 function makeDivQuestion(level) {
-  const L = Math.min(level, 5);
+  const L = Math.min(level, 10);
   let b, c;
   if (L === 1) { b = randInt(2, 4); c = randInt(2, 5); }
   else if (L === 2) { b = randInt(2, 6); c = randInt(2, 6); }
   else if (L === 3) { b = randInt(2, 9); c = randInt(2, 9); }
   else if (L === 4) { b = randInt(2, 9); c = randInt(5, 12); }
-  else { b = randInt(3, 9); c = randInt(11, 20); }
+  else if (L === 5) { b = randInt(3, 9); c = randInt(11, 20); }
+  else if (L === 6) { b = randInt(2, 9); c = randInt(2, 9) * 10; }
+  else if (L === 7) { b = randInt(2, 9); c = randInt(11, 24); }
+  else if (L === 8) { b = randInt(3, 9); c = randInt(25, 49); }
+  else if (L === 9) { b = randInt(2, 9); c = randInt(102, 246); }
+  else {
+    // 商中间或末尾带 0（三年级下难点）
+    c = Math.random() < 0.5 ? randInt(101, 109) : randInt(11, 24) * 10;
+    b = randInt(2, 9);
+  }
   return { b: b, c: c, q: (b * c) + ' ÷ ' + b, ans: c };
 }
 
@@ -2370,15 +3740,24 @@ function verticalCalcHTML(expr) {
 }
 
 function generateCalcQuestion(data) {
-  let q;
+  let q, 是复现 = false, 键 = null;
   if (data === undefined) {
-    q = makeCalcQuestion(mathLevel['口算']);
-    calcHistory.push({ q: q.q, ans: q.ans });
+    // 高难度（第 4 级起）有概率复现答错的题
+    const 错 = mathLevel['口算'] >= 4 ? 抽错题('口算') : null;
+    if (错 && 错.数据 && 错.数据.q && typeof 错.数据.ans === 'number') {
+      q = 错.数据; 是复现 = true; 键 = 错.数据;
+    } else {
+      q = makeCalcQuestion(mathLevel['口算']);
+      calcHistory.push({ q: q.q, ans: q.ans });
+    }
   } else {
     q = data;
   }
   calcAnswer = q.ans;
-  document.getElementById('calcVertical').innerHTML = verticalCalcHTML(q.q);
+  // 乘法口诀题不走竖式，直接大字显示
+  document.getElementById('calcVertical').innerHTML = q.mul
+    ? '<div class="calc-plain-q">' + q.q + ' = ?</div>'
+    : verticalCalcHTML(q.q);
 
   const arr = makeOptions(calcAnswer, 10);
   const container = document.getElementById('calcOptions');
@@ -2397,6 +3776,7 @@ function generateCalcQuestion(data) {
         showStarAnimation(btn.getBoundingClientRect().x, btn.getBoundingClientRect().y);
         mathRoundTick(true);
         mathLevelUp('口算');
+        if (是复现) 错题过关('口算', 键);
         autoNext(container, generateCalcQuestion);
       } else {
         btn.style.background = '#FF6B6B';
@@ -2404,6 +3784,8 @@ function generateCalcQuestion(data) {
         btn.style.color = '#fff';
         showToast('不对哦，答案是 ' + calcAnswer + ' 💪');
         mathRoundTick(false);
+        // 首次答错即记入错题本（先错后改对也算）；复现题答错不移除
+        if (!是复现) 记错题('口算', { q: q.q, ans: q.ans }, { q: q.q + ' = ?', opts: null, ans: String(q.ans) });
       }
     });
     container.appendChild(btn);
@@ -2417,27 +3799,51 @@ function prevCalcQuestion() {
 
 generateCalcQuestion();
 
-// 乘法口诀（表内乘法 2-9）
+// 乘除口诀（v2.0：乘法口诀 + 除法口诀合并，每题随机出乘法或除法）
+// 数据结构：{t:'m', a, b} 乘法   {t:'d', b, c} 除法（被除数 = b*c）
 let mulAnswer = 0;
 const mulHistory = createHistory();
 
-function generateMulQuestion(data) {
-  let m;
-  if (data === undefined) {
-    m = makeMulQuestion(mathLevel['乘法']);
-    mulHistory.push({ a: m.a, b: m.b });
-  } else {
-    m = { a: data.a, b: data.b, q: data.a + ' × ' + data.b, ans: data.a * data.b };
-  }
-  mulAnswer = m.ans;
-  document.getElementById('mulQuestion').textContent = m.q + ' = ?';
+function 乘除题文本(m) {
+  return m.t === 'm' ? (m.a + ' × ' + m.b) : ((m.b * m.c) + ' ÷ ' + m.b);
+}
+function 乘除题答案(m) {
+  return m.t === 'm' ? m.a * m.b : m.c;
+}
 
-  // 干扰项优先取邻近乘积（最容易混淆的那几个）
+function generateMulQuestion(data) {
+  let m, 是复现 = false, 键 = null;
+  if (data === undefined) {
+    // 高难度（第 4 级起）有概率复现答错的题
+    const 错 = mathLevel['乘除'] >= 4 ? 抽错题('乘除') : null;
+    if (错 && 错.数据 && 错.数据.t) {
+      m = 错.数据; 是复现 = true; 键 = 错.数据;
+    } else {
+      m = Math.random() < 0.5
+        ? (function() { const x = makeMulQuestion(mathLevel['乘除']); return { t: 'm', a: x.a, b: x.b }; })()
+        : (function() { const x = makeDivQuestion(mathLevel['乘除']); return { t: 'd', b: x.b, c: x.c }; })();
+      mulHistory.push(m);
+    }
+  } else {
+    m = { t: data.t, a: data.a, b: data.b, c: data.c };
+  }
+  const 题目文本 = 乘除题文本(m);
+  mulAnswer = 乘除题答案(m);
+  document.getElementById('mulQuestion').textContent = 题目文本 + ' = ?';
+
+  // 干扰项优先取邻近乘积/商（最容易混淆的那几个）
   const options = new Set([mulAnswer]);
-  [mulAnswer - m.a, mulAnswer + m.a, mulAnswer - m.b, mulAnswer + m.b, mulAnswer - 1, mulAnswer + 1]
-    .filter(v => v >= 1 && v !== mulAnswer)
-    .sort(() => Math.random() - 0.5)
-    .forEach(v => { if (options.size < 4) options.add(v); });
+  if (m.t === 'm') {
+    [mulAnswer - m.a, mulAnswer + m.a, mulAnswer - m.b, mulAnswer + m.b, mulAnswer - 1, mulAnswer + 1]
+      .filter(v => v >= 1 && v !== mulAnswer)
+      .sort(() => Math.random() - 0.5)
+      .forEach(v => { if (options.size < 4) options.add(v); });
+  } else {
+    [mulAnswer - 1, mulAnswer + 1, mulAnswer + 2, mulAnswer - 2, m.b]
+      .filter(v => v >= 1 && v !== mulAnswer)
+      .sort(() => Math.random() - 0.5)
+      .forEach(v => { if (options.size < 4) options.add(v); });
+  }
   let guard = 0;
   while (options.size < 4 && guard++ < 300) {
     const v = Math.max(1, mulAnswer + randInt(-12, 12));
@@ -2460,14 +3866,17 @@ function generateMulQuestion(data) {
         addCorrect();
         showStarAnimation(btn.getBoundingClientRect().x, btn.getBoundingClientRect().y);
         mathRoundTick(true);
-        mathLevelUp('乘法');
+        mathLevelUp('乘除');
+        if (是复现) 错题过关('乘除', 键);
         autoNext(container, generateMulQuestion);
       } else {
         btn.style.background = '#FF6B6B';
         playWrongSound();
         btn.style.color = '#fff';
-        showToast('不对哦，' + m.q + ' = ' + mulAnswer + ' 💪');
+        showToast('不对哦，' + 题目文本 + ' = ' + mulAnswer + ' 💪');
         mathRoundTick(false);
+        // 首次答错即记入错题本（先错后改对也算）
+        if (!是复现) 记错题('乘除', m, { q: 题目文本 + ' = ?', opts: null, ans: String(mulAnswer) });
       }
     });
     container.appendChild(btn);
@@ -2480,69 +3889,6 @@ function prevMulQuestion() {
 }
 
 generateMulQuestion();
-
-// 除法口诀（表内除法，与乘法口诀配套）
-let divAnswer = 0;
-const divHistory = createHistory();
-
-function generateDivQuestion(data) {
-  let d;
-  if (data === undefined) {
-    d = makeDivQuestion(mathLevel['除法']);
-    divHistory.push({ b: d.b, c: d.c });
-  } else {
-    d = { b: data.b, c: data.c, q: (data.b * data.c) + ' ÷ ' + data.b, ans: data.c };
-  }
-  divAnswer = d.ans;
-  document.getElementById('divQuestion').textContent = d.q + ' = ?';
-
-  const options = new Set([divAnswer]);
-  [divAnswer - 1, divAnswer + 1, divAnswer + 2, divAnswer - 2, d.b]
-    .filter(v => v >= 1 && v !== divAnswer)
-    .sort(() => Math.random() - 0.5)
-    .forEach(v => { if (options.size < 4) options.add(v); });
-  let guard = 0;
-  while (options.size < 4 && guard++ < 300) {
-    const v = Math.max(1, divAnswer + randInt(-6, 6));
-    if (v !== divAnswer) options.add(v);
-  }
-  const arr = [...options].sort(() => Math.random() - 0.5);
-
-  const container = document.getElementById('divOptions');
-  container.innerHTML = '';
-  arr.forEach(n => {
-    const btn = document.createElement('button');
-    btn.className = 'calc-btn';
-    btn.textContent = n;
-    btn.addEventListener('click', () => {
-      if (n === divAnswer) {
-        btn.style.background = 'var(--green)';
-        btn.style.color = '#fff';
-        showToast('算对啦！🎉');
-        addStars(1);
-        addCorrect();
-        showStarAnimation(btn.getBoundingClientRect().x, btn.getBoundingClientRect().y);
-        mathRoundTick(true);
-        mathLevelUp('除法');
-        autoNext(container, generateDivQuestion);
-      } else {
-        btn.style.background = '#FF6B6B';
-        playWrongSound();
-        btn.style.color = '#fff';
-        showToast('不对哦，' + d.q + ' = ' + divAnswer + ' 💪');
-        mathRoundTick(false);
-      }
-    });
-    container.appendChild(btn);
-  });
-}
-
-function prevDivQuestion() {
-  const d = divHistory.prev();
-  if (d !== null) generateDivQuestion(d);
-}
-
-generateDivQuestion();
 
 // 数独训练（4×4 / 5×5：每行每列不重复，4×4 还要求每个 2×2 宫不重复）
 // 填数方式：按下数字直接滑到目标格抬起即填（兼容触屏与鼠标），点击格子仍可循环切换
@@ -2557,10 +3903,15 @@ let sudokuDragHint = null;  // 当前高亮的目标格
 let sudokuInitial = [];     // 本题初始盘面（重置用）
 const SUDOKU_LEVELS = [
   { n: 4, blanks: 6,  maxStart: 0 },   // 第 1 级：4×4 挖 6，数字固定 1-4
-  { n: 4, blanks: 8,  maxStart: 2 },   // 第 2 级：4×4 挖 8，数字组范围加大
-  { n: 4, blanks: 10, maxStart: 5 },   // 第 3 级：4×4 挖 10，数字组范围更大
-  { n: 5, blanks: 10, maxStart: 4 },   // 第 4 级：难度升 3 次后变为 5×5，挖 10
-  { n: 5, blanks: 15, maxStart: 4 }    // 第 5 级：5×5 挖 15
+  { n: 4, blanks: 7,  maxStart: 2 },   // 第 2 级
+  { n: 4, blanks: 8,  maxStart: 4 },   // 第 3 级
+  { n: 4, blanks: 9,  maxStart: 6 },   // 第 4 级
+  { n: 4, blanks: 10, maxStart: 8 },   // 第 5 级：4×4 挖到 10 格
+  { n: 5, blanks: 8,  maxStart: 4 },   // 第 6 级：升为 5×5
+  { n: 5, blanks: 10, maxStart: 4 },   // 第 7 级
+  { n: 5, blanks: 11, maxStart: 5 },   // 第 8 级
+  { n: 5, blanks: 12, maxStart: 5 },   // 第 9 级
+  { n: 5, blanks: 13, maxStart: 6 }    // 第 10 级：5×5 挖 13 格
 ];
 
 // 每两题更换一次数字组：在等级允许的范围内随机取 n 个连续数字
@@ -2613,14 +3964,6 @@ function generateSudoku() {
   }
   const msg = document.getElementById('sudokuMsg');
   if (msg) msg.textContent = '';
-  // 规则文案跟随当前棋盘与数字组动态更新
-  const ruleEl = document.getElementById('sudokuRule');
-  if (ruleEl) {
-    const poolText = sudokuNums.join('、');
-    ruleEl.textContent = (sudokuN === 4
-      ? '每一行、每一列、每个 2×2 宫里，' + poolText + ' 都不能重复'
-      : '每一行、每一列里，' + poolText + ' 都不能重复') + ' 🧩';
-  }
   renderSudokuPool();
   renderSudoku();
   // 保存初始盘面，供「重置」恢复
@@ -2822,8 +4165,10 @@ updateLevelTag();
 // ========== 模块4: 逻辑挑战 ==========
 
 // 找规律（动态生成：等差数列 / 周期规律 / 递增重复）
-function makePatternQuestion() {
-  const r = Math.random();
+// 关卡越高，后面的题型（更难）出现得越多
+function makePatternQuestion(level) {
+  const L = Math.min(Math.max(level || 1, 1), 10);
+  const r = Math.random() * (0.3 + 0.7 * (L - 1) / 9);
   const s = v => String(v);
 
   // A. 等差数列（递增 / 递减，含两位数）
@@ -2894,7 +4239,7 @@ function generatePattern(data) {
   const card = document.getElementById('patternCard');
   let q;
   if (data === undefined) {
-    q = makePatternQuestion();
+    q = makePatternQuestion(logicLevel['pattern']);
     patternHistory.push(q);
   } else {
     q = data;
@@ -2916,8 +4261,8 @@ function generatePattern(data) {
       `<button class="logic-btn" data-val="${o}">${o}</button>`
     ).join('')}</div>
     <div style="display:flex; gap:10px; justify-content:center; margin-top:6px;">
-      <button class="next-btn" style="background:var(--blue); flex:1; max-width:170px;" onclick="prevPattern()">⬅️ 上一题</button>
-      <button class="next-btn" style="flex:1; max-width:170px;" onclick="generatePattern()">下一题 ➡️</button>
+      <button class="next-btn" style="background:var(--blue); flex:1; max-width:170px;" onclick="prevPattern()">上一题</button>
+      <button class="next-btn" style="flex:1; max-width:170px;" onclick="generatePattern()">下一题</button>
     </div>
   `;
 
@@ -2926,7 +4271,7 @@ function generatePattern(data) {
       if (btn.classList.contains('correct') || btn.classList.contains('wrong')) return;
       if (btn.dataset.val === q.answer) {
         btn.classList.add('correct');
-        showToast('太聪明了！🎉');
+        showToast('太聪明了！🎉'); logicLevelUp('pattern');
         addStars(1);
         addCorrect();
         showStarAnimation(btn.getBoundingClientRect().x, btn.getBoundingClientRect().y);
@@ -2949,6 +4294,7 @@ generatePattern();
 
 // 图形辨析（找异类 / 找完全相同的相似图形）
 // 图形辨析用的类别（同类内更像，异类更隐蔽）与高相似图形组
+// v2.5：类别 8→22 组、相似组 8→22 组，大幅降低重复感
 const pairCategories = {
   '水果': ['🍎','🍌','🍇','🍉','🍓'],
   '蔬菜': ['🥕','🥦','🌽','🍅','🥒'],
@@ -2957,7 +4303,21 @@ const pairCategories = {
   '交通工具': ['🚗','🚌','🚲','✈️','🚂'],
   '文具': ['✏️','📕','📐','🖍️','📎'],
   '甜点': ['🍰','🍩','🍪','🧁','🍫'],
-  '花草': ['🌸','🌻','🌹','🌷','🌼']
+  '花草': ['🌸','🌻','🌹','🌷','🌼'],
+  '乐器': ['🎹','🎸','🥁','🎺','🎻'],
+  '运动': ['⚽','🏀','🏈','🎾','🏐'],
+  '天气': ['☀️','🌧️','⛈️','❄️','🌪️'],
+  '鸟类': ['🐦','🦜','🦉','🐤','🦆'],
+  '昆虫': ['🦋','🐝','🐞','🐜','🦗'],
+  '家具': ['🛏️','🛋️','🪑','🚪','🪟'],
+  '电器': ['📱','💻','📺','📻','⏰'],
+  '饮品': ['🥤','☕','🍵','🧃','🥛'],
+  '表情': ['😍','🤩','😎','🥳','😴'],
+  '玩具': ['🧸','🪀','🪁','🎮','🎲'],
+  '身体': ['✋','🦶','👂','👃','👄'],
+  '建筑': ['🏠','🏫','🏥','🏰','🏢'],
+  '服装': ['👕','👖','👗','🎩','👟'],
+  '主食': ['🍚','🍜','🍞','🥟','🍳']
 };
 const pairSimilarGroups = [
   ['😀','😃','😄','😁','😆','🙂'],
@@ -2967,17 +4327,36 @@ const pairSimilarGroups = [
   ['🌸','🌺','🌻','🌼','🌷','💐'],
   ['🍎','🍏','🍐','🍊','🍋','🍈'],
   ['🚗','🚕','🚙','🚌','🚓','🚐'],
-  ['🐱','🐈','🐯','🦁','🐅','🐆']
+  ['🐱','🐈','🐯','🦁','🐅','🐆'],
+  ['🔴','🟠','🟡','🟢','🔵','🟣'],
+  ['🌒','🌓','🌔','🌕','🌖','🌗'],
+  ['🕐','🕑','🕒','🕓','🕔','🕕'],
+  ['1️⃣','2️⃣','3️⃣','4️⃣','5️⃣','6️⃣'],
+  ['🌳','🌲','🌴','🌵','🌱','🎋'],
+  ['🍏','🍐','🍈','🍋','🍌','🍉'],
+  ['🥕','🌽','🌶️','🥒','🥬','🥦'],
+  ['🙃','😉','😊','😇','🥰','😍'],
+  ['🐶','🐺','🦊','🦝','🐕','🐩'],
+  ['☀️','🌤️','⛅','🌥️','☁️','🌦️'],
+  ['🔹','🔶','🔸','🔷','💠','⚙️'],
+  ['▶️','⏸️','⏹️','⏺️','⏭️','⏮️'],
+  ['🐈','🐕','🐇','🐹','🦜','🐠'],
+  ['⬛','⬜','◼️','◻️','▪️','▫️']
 ];
 
 const pairHistory = createHistory();
 
 // 出题数据（与渲染分离，便于「上一题」回放）
-function makePairQuestion() {
-  const pick = arr => arr[randInt(0, arr.length - 1)];
-  let title, targetHtml, answer, options;
+// 关卡越高，「找出完全一样的图案」（干扰项高度相似）出现得越多
+// v2.5：题目特征去重（pairRecent），连续出题不重复
+const pairRecent = [];
 
-  if (Math.random() > 0.45) {
+function makePairQuestion(level) {
+  const L = Math.min(Math.max(level || 1, 1), 10);
+  const pick = arr => arr[randInt(0, arr.length - 1)];
+  let title, targetHtml, answer, options, 特征;
+
+  if (Math.random() < 0.75 - 0.5 * (L - 1) / 9) {
     // A. 找不同类：五个同类 + 一个异类
     const cats = Object.keys(pairCategories);
     const mainCat = pick(cats);
@@ -2989,23 +4368,33 @@ function makePairQuestion() {
     options = mains.concat([odd]);
     title = '哪一个和其他五个不是同一类？🤔';
     targetHtml = '';
+    特征 = 'A:' + mainCat + ':' + otherCat + ':' + odd;
   } else {
     // B. 找出和上面完全一样的（干扰项高度相似）
-    const group = pick(pairSimilarGroups);
+    const 组序 = randInt(0, pairSimilarGroups.length - 1);
+    const group = pairSimilarGroups[组序];
     answer = pick(group);
     const others = group.filter(g => g !== answer).sort(() => Math.random() - 0.5).slice(0, 5);
     options = others.concat([answer]);
     title = '找出和上面完全一样的图案 👀';
     targetHtml = `<div class="logic-sequence" style="font-size:60px;">${answer}</div>`;
+    特征 = 'B:' + 组序 + ':' + answer;
   }
-  return { title: title, targetHtml: targetHtml, answer: answer, options: options };
+  return { title: title, targetHtml: targetHtml, answer: answer, options: options, 特征: 特征 };
 }
 
 function generatePair(data) {
   const card = document.getElementById('pairCard');
   let q;
   if (data === undefined) {
-    q = makePairQuestion();
+    // 连续出题去重：同一特征最多间隔 12 题才会再出现
+    let 尝试 = 0;
+    do {
+      q = makePairQuestion(logicLevel['pair']);
+      尝试++;
+    } while (pairRecent.indexOf(q.特征) >= 0 && 尝试 < 25);
+    pairRecent.push(q.特征);
+    if (pairRecent.length > 12) pairRecent.shift();
     pairHistory.push(q);
   } else {
     q = data;
@@ -3020,8 +4409,8 @@ function generatePair(data) {
       `<button class="logic-btn" data-val="${o}">${o}</button>`
     ).join('')}</div>
     <div style="display:flex; gap:10px; justify-content:center; margin-top:6px;">
-      <button class="next-btn" style="background:var(--blue); flex:1; max-width:170px;" onclick="prevPair()">⬅️ 上一题</button>
-      <button class="next-btn" style="flex:1; max-width:170px;" onclick="generatePair()">下一题 ➡️</button>
+      <button class="next-btn" style="background:var(--blue); flex:1; max-width:170px;" onclick="prevPair()">上一题</button>
+      <button class="next-btn" style="flex:1; max-width:170px;" onclick="generatePair()">下一题</button>
     </div>
   `;
 
@@ -3030,7 +4419,7 @@ function generatePair(data) {
       if (btn.classList.contains('correct') || btn.classList.contains('wrong')) return;
       if (btn.dataset.val === q.answer) {
         btn.classList.add('correct');
-        showToast('好眼力！🎉');
+        showToast('好眼力！🎉'); logicLevelUp('pair');
         addStars(1);
         addCorrect();
         showStarAnimation(btn.getBoundingClientRect().x, btn.getBoundingClientRect().y);
@@ -3054,9 +4443,11 @@ generatePair();
 // 排序题（三种题型：含负数排序 / 两位数排序 / 算式结果排序；升降序随机）
 const sortHistory = createHistory();
 
-function makeSortQuestion() {
+// 关卡越高，后面的模式（更难）出现得越多
+function makeSortQuestion(level) {
+  const L = Math.min(Math.max(level || 1, 1), 10);
   const upward = Math.random() > 0.4;
-  const mode = Math.random();
+  const mode = Math.random() * (0.4 + 0.6 * (L - 1) / 9);
   let items = [];
   let title = '';
 
@@ -3110,7 +4501,7 @@ function generateSort(data) {
   const card = document.getElementById('sortCard');
   let q;
   if (data === undefined) {
-    q = makeSortQuestion();
+    q = makeSortQuestion(logicLevel['sort']);
     sortHistory.push(q);
   } else {
     q = data;
@@ -3133,9 +4524,9 @@ function generateSort(data) {
       `<button class="logic-btn sort-pick" data-val="${it.label}">${it.label}</button>`
     ).join('')}</div>
     <div style="display:flex; gap:10px; justify-content:center; margin-top:6px; flex-wrap:wrap;">
-      <button class="next-btn" style="background:var(--blue);" onclick="prevSort()">⬅️ 上一题</button>
-      <button class="next-btn" onclick="generateSort()">下一题 ➡️</button>
-      <button class="next-btn" style="background:var(--yellow);color:#333;" onclick="resetSort()">重选 🔄</button>
+      <button class="next-btn" style="background:var(--blue);" onclick="prevSort()">上一题</button>
+      <button class="next-btn" onclick="generateSort()">下一题</button>
+      <button class="next-btn" style="background:var(--yellow);color:#333;" onclick="resetSort()">重选</button>
     </div>
   `;
 
@@ -3150,7 +4541,7 @@ function generateSort(data) {
 
       if (picked.length === len) {
         if (picked.join('|') === answerStr) {
-          showToast('排对了！🎉');
+          showToast('排对了！🎉'); logicLevelUp('sort');
           addStars(2);
           addCorrect();
           showStarAnimation();
@@ -3178,14 +4569,52 @@ generateSort();
 
 // ========== 模块5: 闯关冒险 ==========
 let advLevel = getData('advLevel', 1);
-const ADV_TOTAL = 30;   // 每关题数
-const ADV_PASS = 18;    // 过关需答对题数（60%）
+const ADV_TOTAL = 5;     // 每关题数
+const ADV_PASS = 3;      // 过关需答对题数
+const ADV_LEVEL_MAX = 10; // 总关卡数
 let advQuestion = 0;
 let advCorrectCount = 0;
 let advActive = false;
 
-// 题库生成器 - 从各模块随机抽题
+// 同一关内题目不重复：抽到重复的重新抽（最多试 30 次，避免死循环）
+const advUsedTexts = new Set();
 function generateAdventureQuestion() {
+  // v2.0：有概率复现错题本里的题（先错后改对的也算错题）
+  if (Math.random() < 0.3) {
+    const 键列表 = Object.keys(wrongBook);
+    if (键列表.length) {
+      const 选 = wrongBook[键列表[Math.floor(Math.random() * 键列表.length)]];
+      const 快 = 选.快照;
+      if (快 && 快.q && 快.ans !== undefined && 快.ans !== null) {
+        let opts = 快.opts;
+        if (!opts || !opts.length) {
+          // 口算 / 乘除类错题没有固定选项，现场生成邻近数字选项
+          const 数 = Number(快.ans);
+          if (!isNaN(数)) opts = makeOptions(数, 10).map(String);
+        }
+        if (opts && opts.length >= 2) {
+          return {
+            text: '错题重现 ' + 快.q,
+            options: opts.slice(0, 4),
+            answer: Math.max(0, opts.indexOf(快.ans)),
+            复现模块: 选.模块,
+            复现数据: 选.数据
+          };
+        }
+      }
+    }
+  }
+  let 题 = null;
+  for (let i = 0; i < 30; i++) {
+    题 = generateAdventureQuestionRaw();
+    if (!advUsedTexts.has(题.text)) break;
+  }
+  advUsedTexts.add(题.text);
+  return 题;
+}
+
+// 题库生成器 - 从各模块随机抽题
+function generateAdventureQuestionRaw() {
   const types = ['letter', 'number', 'poem', 'logic'];
   const type = types[Math.floor(Math.random() * types.length)];
   let question = { text: '', options: [], answer: 0 };
@@ -3210,12 +4639,12 @@ function generateAdventureQuestion() {
       const isAdd = Math.random() > 0.4;
       let a, b, ans;
       if (isAdd) {
-        a = Math.floor(Math.random() * 8) + 1;
-        b = Math.floor(Math.random() * (10 - a));
+        a = Math.floor(Math.random() * (8 + advLevel * 2)) + 1;
+        b = Math.floor(Math.random() * Math.max(2, 10 + advLevel * 4 - a));
         ans = a + b;
         question.text = `${a} + ${b} = ?`;
       } else {
-        a = Math.floor(Math.random() * 8) + 2;
+        a = Math.floor(Math.random() * (8 + advLevel * 2)) + 2;
         b = Math.floor(Math.random() * a);
         ans = a - b;
         question.text = `${a} - ${b} = ?`;
@@ -3272,7 +4701,7 @@ function startAdventure() {
   advCorrectCount = 0;
   advActive = true;
   document.getElementById('advStartBtn').style.display = 'none';
-  document.getElementById('advLevelInfo').textContent = `第 ${advLevel} 关`;
+  advUsedTexts.clear();   // 每关重新开始去重
   showNextAdvQuestion();
 }
 
@@ -3284,7 +4713,6 @@ function showNextAdvQuestion() {
     return;
   }
 
-  document.getElementById('advProgress').textContent = `第 ${advQuestion}/${ADV_TOTAL} 题`;
   document.getElementById('advProgressBar').style.width = ((advQuestion - 1) / ADV_TOTAL * 100) + '%';
 
   const q = generateAdventureQuestion();
@@ -3307,6 +4735,8 @@ function showNextAdvQuestion() {
         addCorrect();
         showStarAnimation(btn.getBoundingClientRect().x, btn.getBoundingClientRect().y);
         showToast('正确！🎉');
+        // 复现的错题答对后移出错题本
+        if (q.复现模块) 错题过关(q.复现模块, q.复现数据);
       } else {
         btn.classList.add('wrong');
         playWrongSound();
@@ -3326,7 +4756,8 @@ function finishLevel() {
 
   if (passed) {
     levels++;
-    advLevel++;
+    const 全部通关 = advLevel >= ADV_LEVEL_MAX;
+    advLevel = Math.min(advLevel + 1, ADV_LEVEL_MAX);
     setData('levels', levels);
     setData('advLevel', advLevel);
     addStars(3); // 过关额外奖励
@@ -3334,20 +4765,22 @@ function finishLevel() {
     // 检查是否获得徽章
     checkBadges();
 
-    document.getElementById('advQText').textContent = `🎉 恭喜通关！答对 ${advCorrectCount}/${ADV_TOTAL} 题！`;
+    document.getElementById('advQText').textContent = 全部通关
+      ? `🎉 全部 ${ADV_LEVEL_MAX} 关都通关啦！本关答对 ${advCorrectCount}/${ADV_TOTAL} 题`
+      : `🎉 恭喜通关！答对 ${advCorrectCount}/${ADV_TOTAL} 题！`;
     document.getElementById('advOptions').innerHTML = '';
-    document.getElementById('advStartBtn').textContent = '下一关 🚀';
+    document.getElementById('advStartBtn').textContent = 全部通关 ? '再玩一遍' : '下一关';
     document.getElementById('advStartBtn').style.display = '';
     showToast('🏆 太棒了，过关啦！');
   } else {
     document.getElementById('advQText').textContent = `答对 ${advCorrectCount}/${ADV_TOTAL} 题，需要答对 ${ADV_PASS} 题才能过关，再试一次吧！`;
     document.getElementById('advOptions').innerHTML = '';
-    document.getElementById('advStartBtn').textContent = '重新挑战 💪';
+    document.getElementById('advStartBtn').textContent = '重新挑战';
     document.getElementById('advStartBtn').style.display = '';
     showToast('加油，再来一次！💪');
   }
 
-  document.getElementById('advLevelInfo').textContent = `第 ${advLevel} 关`;
+  advUsedTexts.clear();   // 每关重新开始去重
   advActive = false;
   updateStarDisplay();
   renderBadges();
@@ -3393,6 +4826,858 @@ function renderBadges() {
   });
 }
 
+/* ==========================================================
+   首页知识图谱（1-6 年级 · 数学 语文 英语 科学）
+   数据来自 knowledge-graph.js，共 120 个知识点
+   渲染方式：原生 SVG，不引入任何第三方库，完全离线可用
+   布局规则：横轴按年级分列，纵轴按前置层级排列（基础在下、进阶在上）
+   ========================================================== */
+
+// 画布虚拟坐标系尺寸（viewBox 基准，与容器像素无关）
+// 树状布局比原来的网格布局需要更大空间：数学树最深 12 层、16 个叶节点
+const kg画布宽 = 1500;
+const kg画布高 = 1000;
+
+// 运行状态（localStorage 数据异常时回退为空对象，避免读到 null 导致报错）
+let kg进度 = getData('kgProgress', {});
+if (!kg进度 || typeof kg进度 !== 'object' || Array.isArray(kg进度)) kg进度 = {};
+let kg科目 = 'all';
+let kg年级 = 'all';
+let kg搜索 = '';
+let kg选中 = null;
+let kg节点数 = 0;
+let kg视图 = { x: 0, y: 0, w: kg画布宽, h: kg画布高 };
+let kg已设视图 = false;
+let kg位置表 = {};   // 当前各节点的虚拟坐标，用于"点击最近节点"兜底
+
+// DOM 引用（初始化时赋值，避免重复查询）
+let kg画布元素 = null;
+let kg容器元素 = null;
+let kg面板元素 = null;
+let kg提示元素 = null;
+
+/* ---------- 数据筛选 ---------- */
+function kg筛选() {
+  return KG知识点.filter(function (n) {
+    if (kg科目 !== 'all' && n.学科 !== kg科目) return false;
+    if (kg年级 !== 'all' && n.年级 !== Number(kg年级)) return false;
+    return true;
+  });
+}
+
+function kg取状态(id) {
+  return kg进度[id] || 'todo';
+}
+
+function kg取节点(id) {
+  const 命中 = KG知识点.filter(function (x) { return x.id === id; });
+  return 命中[0] || null;
+}
+
+/* ---------- 拓扑分层：无前置为第 0 层，其余取前置层最大值加 1 ---------- */
+function kg分层(列表) {
+  const 层 = {};
+  const 集 = {};
+  列表.forEach(function (n) { 集[n.id] = 1; 层[n.id] = 0; });
+  for (let 轮 = 0; 轮 < 20; 轮++) {
+    let 变了 = false;
+    列表.forEach(function (n) {
+      let 最大 = -1;
+      (n.前置 || []).forEach(function (p) {
+        if (集[p] && 层[p] > 最大) 最大 = 层[p];
+      });
+      const 新层 = Math.min(最大 < 0 ? 0 : 最大 + 1, 14);
+      if (层[n.id] !== 新层) { 层[n.id] = 新层; 变了 = true; }
+    });
+    if (!变了) break;
+  }
+  return 层;
+}
+
+/* ---------- 学科绘制区域：单科占满画布，全科分四象限 ---------- */
+function kg取区域(学科, 单科) {
+  if (单科) return { x0: 70, y0: 66, x1: kg画布宽 - 70, y1: kg画布高 - 40 };
+  const 中x = kg画布宽 / 2;
+  const 中y = kg画布高 / 2;
+  const 表 = {
+    math:    { x0: 40,       y0: 38,       x1: 中x - 24,      y1: 中y - 16 },
+    chinese: { x0: 中x + 24, y0: 38,       x1: kg画布宽 - 40, y1: 中y - 16 },
+    english: { x0: 40,       y0: 中y + 16, x1: 中x - 24,      y1: kg画布高 - 38 },
+    science: { x0: 中x + 24, y0: 中y + 16, x1: kg画布宽 - 40, y1: kg画布高 - 38 }
+  };
+  return 表[学科];
+}
+
+/* ---------- 构建树 ----------
+   每个知识点认一个"主父"：在它的前置里挑层级最高的那个（离它最近的一步）。
+   只允许"层级低 → 层级高"的父子关系，因此父子链严格递增，不可能成环。
+   一个知识点有多个前置时，非主干的那几条仍然保留为关联线，信息不丢。   */
+function kg建树(列表, 层表) {
+  const 集 = {};
+  列表.forEach(function (n) { 集[n.id] = 1; });
+  const 父表 = {};
+  const 子表 = {};
+
+  列表.slice().sort(function (a, b) {
+    return (层表[a.id] || 0) - (层表[b.id] || 0);
+  }).forEach(function (n) {
+    let 主父 = null;
+    (n.前置 || []).forEach(function (p) {
+      if (!集[p]) return;
+      if ((层表[p] || 0) < (层表[n.id] || 0)) {
+        if (!主父 || (层表[p] || 0) > (层表[主父] || 0)) 主父 = p;
+      }
+    });
+    父表[n.id] = 主父;
+    if (主父) {
+      if (!子表[主父]) 子表[主父] = [];
+      子表[主父].push(n.id);
+    }
+  });
+
+  const 关联对 = [];
+  列表.forEach(function (n) {
+    (n.前置 || []).forEach(function (p) {
+      if (集[p] && 父表[n.id] !== p) 关联对.push([p, n.id]);
+    });
+  });
+
+  return { 父表: 父表, 子表: 子表, 关联对: 关联对 };
+}
+
+/* ---------- 树状布局 ----------
+   横向：所有叶节点在区域内均匀铺开
+   纵向：层级 0（基础知识点、低年级）在最下，层级越高越靠上
+   父节点横坐标 = 其所有子节点横坐标的中点，从而形成标准的树形分支      */
+function kg树定位(列表, 层表, 区) {
+  const 树 = kg建树(列表, 层表);
+  const 位置 = {};
+  const 根们 = 列表.filter(function (n) { return !树.父表[n.id]; }).map(function (n) { return n.id; });
+
+  const 上边 = 区.y0 + 50;    // 顶部留出节点文字标签的空间
+  const 下边 = 区.y1 - 46;    // 底部留给学科名称
+  let 最大层 = 1;
+  列表.forEach(function (n) {
+    const l = 层表[n.id] || 0;
+    if (l > 最大层) 最大层 = l;
+  });
+
+  function 取y(id) {
+    return 下边 - ((层表[id] || 0) / 最大层) * (下边 - 上边);
+  }
+
+  // 先序收集叶节点：它们决定横向占位
+  const 叶子们 = [];
+  const 收集 = function (id) {
+    const 子 = 树.子表[id] || [];
+    if (!子.length) { 叶子们.push(id); return; }
+    子.forEach(收集);
+  };
+  根们.forEach(收集);
+
+  const 叶宽 = (区.x1 - 区.x0) / Math.max(叶子们.length, 1);
+  const 叶序 = {};
+  叶子们.forEach(function (id, i) { 叶序[id] = i; });
+
+  // 后序定位：先定子节点，父节点再取子节点横向中点
+  const 定位 = function (id) {
+    if (位置[id]) return 位置[id];
+    const 子 = 树.子表[id] || [];
+    if (!子.length) {
+      位置[id] = { x: 区.x0 + (叶序[id] + 0.5) * 叶宽, y: 取y(id) };
+      return 位置[id];
+    }
+    let 左 = 1e9, 右 = -1e9;
+    子.forEach(function (c) {
+      const p = 定位(c);
+      if (p.x < 左) 左 = p.x;
+      if (p.x > 右) 右 = p.x;
+    });
+    位置[id] = { x: (左 + 右) / 2, y: 取y(id) };
+    return 位置[id];
+  };
+  根们.forEach(定位);
+
+  // 输出连线表：主干（父子）+ 关联（跨分支）
+  const 边表 = [];
+  列表.forEach(function (n) {
+    if (树.父表[n.id]) 边表.push({ 源: 树.父表[n.id], 目: n.id, 主干: true });
+  });
+  树.关联对.forEach(function (对) {
+    边表.push({ 源: 对[0], 目: 对[1], 主干: false });
+  });
+
+  const 层间距 = (下边 - 上边) / 最大层;
+  return {
+    位置: 位置,
+    边表: 边表,
+    最小间距: Math.min(叶宽, 层间距)
+  };
+}
+
+/* ---------- 位置计算：按学科分区，每科一棵树 ---------- */
+function kg计算布局(列表) {
+  const 位置 = {};
+  const 边表 = [];
+  let 最小间距 = 9999;
+  const 单科 = kg科目 !== 'all';
+  const 学科们 = 单科 ? [kg科目] : ['math', 'chinese', 'english', 'science'];
+
+  学科们.forEach(function (学科) {
+    const 本科 = 列表.filter(function (n) { return n.学科 === 学科; });
+    if (!本科.length) return;
+    const 区 = kg取区域(学科, 单科);
+    const 层表 = kg分层(本科);
+    const 结果 = kg树定位(本科, 层表, 区);
+
+    for (const 编号 in 结果.位置) 位置[编号] = 结果.位置[编号];
+    结果.边表.forEach(function (边) { 边表.push(边); });
+    if (结果.最小间距 < 最小间距) 最小间距 = 结果.最小间距;
+  });
+
+  return { 位置: 位置, 边表: 边表, 最小间距: 最小间距 };
+}
+
+/* ---------- 学科图形（热区为透明圆，触屏上扩大可点范围） ---------- */
+function kg图形(形, 半径, 填充色, 描边色, 热区半径) {
+  const 公共 = 'class="kg-shape" fill="' + 填充色 + '" stroke="' + 描边色 + '"';
+  let 热区 = '';
+  if (热区半径 && 热区半径 > 半径 + 1) {
+    热区 = '<circle class="kg-hit" r="' + 热区半径.toFixed(1) + '" fill="transparent"/>';
+  }
+  if (形 === 'rect') {
+    return 热区 + '<rect ' + 公共 + ' x="' + (-半径) + '" y="' + (-半径) + '" width="' + (半径 * 2) +
+      '" height="' + (半径 * 2) + '" rx="5"/>';
+  }
+  if (形 === 'triangle') {
+    const 高 = 半径 * 1.2;
+    const 宽 = 半径 * 1.12;
+    return 热区 + '<polygon ' + 公共 + ' points="0,' + (-高) + ' ' + 宽 + ',' + 高 + ' ' + (-宽) + ',' + 高 + '"/>';
+  }
+  if (形 === 'diamond') {
+    return 热区 + '<polygon ' + 公共 + ' points="0,' + (-半径 * 1.18) + ' ' + (半径 * 1.06) + ',0 0,' +
+      (半径 * 1.18) + ' ' + (-半径 * 1.06) + ',0"/>';
+  }
+  return 热区 + '<circle ' + 公共 + ' r="' + (半径 - 0.5) + '"/>';
+}
+
+/* ---------- 标签过长时截断 ---------- */
+function kg截断(文字, 上限) {
+  const 限 = 上限 || 9;
+  return 文字.length > 限 ? 文字.slice(0, 限 - 1) + '…' : 文字;
+}
+
+/* ---------- 渲染 ---------- */
+function kg渲染() {
+  if (!kg画布元素) return;
+  const 列表 = kg筛选();
+  const 布局 = kg计算布局(列表);
+  const 位置 = 布局.位置;
+  kg位置表 = 位置;
+  kg节点数 = 列表.length;
+
+  // 节点与标签尺寸按密度自适应（树状布局比网格稀疏，节点可以画得更醒目）
+  const 字号 = 列表.length > 70 ? 12 : (列表.length > 34 ? 16 : 19);
+  const 半径 = 列表.length > 70 ? 12 : (列表.length > 34 ? 16 : 20);
+  // 触控热区：在不与相邻节点重叠的前提下尽量放大（上限为节点直径的 1.6 倍）
+  const 热区半径 = Math.max(半径, Math.min(半径 * 1.6, 布局.最小间距 * 0.45));
+
+  // 连线：主干用垂直出入的三次贝塞尔（树状分叉感），跨分支关联用弧线
+  let 连线 = '';
+  布局.边表.forEach(function (边) {
+    const a = 位置[边.源];
+    const b = 位置[边.目];
+    if (!a || !b) return;
+    let d;
+    if (边.主干) {
+      const 控1y = a.y + (b.y - a.y) * 0.45;
+      const 控2y = b.y - (b.y - a.y) * 0.45;
+      d = 'M' + a.x.toFixed(1) + ',' + a.y.toFixed(1) +
+        ' C' + a.x.toFixed(1) + ',' + 控1y.toFixed(1) +
+        ' ' + b.x.toFixed(1) + ',' + 控2y.toFixed(1) +
+        ' ' + b.x.toFixed(1) + ',' + b.y.toFixed(1);
+    } else {
+      const 中x = (a.x + b.x) / 2;
+      const 中y = (a.y + b.y) / 2 + Math.abs(b.y - a.y) * 0.12;
+      d = 'M' + a.x.toFixed(1) + ',' + a.y.toFixed(1) +
+        ' Q' + 中x.toFixed(1) + ',' + 中y.toFixed(1) +
+        ' ' + b.x.toFixed(1) + ',' + b.y.toFixed(1);
+    }
+    const 类名 = 边.主干 ? 'kg-edge' : 'kg-edge kg-edge-soft';
+    const 箭头 = 边.主干 ? 'url(#kgArrow)' : 'url(#kgArrowSoft)';
+    连线 += '<path class="' + 类名 + '" marker-end="' + 箭头 +
+      '" data-src="' + 边.源 + '" data-dst="' + 边.目 + '" d="' + d + '"/>';
+  });
+
+  // 节点
+  let 节点 = '';
+  列表.forEach(function (n) {
+    const p = 位置[n.id];
+    if (!p) return;
+    const 科 = KG学科[n.学科];
+    const 态 = KG状态[kg取状态(n.id)];
+    const 命中 = kg搜索 && n.名称.indexOf(kg搜索) >= 0;
+    const 淡化 = kg搜索 && !命中;
+    节点 += '<g class="kg-node' + (淡化 ? ' dim' : '') + '" data-id="' + n.id +
+      '" transform="translate(' + p.x.toFixed(1) + ',' + p.y.toFixed(1) + ')">' +
+      kg图形(科.形, 半径, 态.色, 科.色, 热区半径) +
+      '<text class="kg-label' + (命中 ? ' hi' : '') + '" style="font-size:' + 字号 + 'px" y="' +
+      (半径 + 字号 + 2) + '">' + kg截断(n.名称) + '</text>' +
+      '</g>';
+  });
+
+  const 箭头定义 = '<defs>'
+    + '<marker id="kgArrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7"'
+    + ' orient="auto" markerUnits="userSpaceOnUse"><path d="M0,0 L10,5 L0,10 z" fill="#B9C7E0"/></marker>'
+    + '<marker id="kgArrowSoft" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6"'
+    + ' orient="auto" markerUnits="userSpaceOnUse"><path d="M0,0 L10,5 L0,10 z" fill="#DDE4EF"/></marker>'
+    + '</defs>';
+
+  kg画布元素.innerHTML = 箭头定义 + '<g>' + 连线 + '</g><g>' + 节点 + '</g>';
+
+  if (!kg已设视图) {
+    kg视图 = { x: 0, y: 0, w: kg画布宽, h: kg画布高 };
+    kg已设视图 = true;
+  }
+  kg应用视图();
+  kg更新统计(列表);
+  kg更新分区();
+}
+
+/* ---------- 视图（缩放与平移） ---------- */
+function kg应用视图() {
+  if (!kg画布元素) return;
+  kg画布元素.setAttribute('viewBox',
+    kg视图.x.toFixed(1) + ' ' + kg视图.y.toFixed(1) + ' ' + kg视图.w.toFixed(1) + ' ' + kg视图.h.toFixed(1));
+  kg更新标签显示();
+}
+
+/* 标签是否显示：节点较少时直接显示；节点很多时需放大到一定程度才显示，避免糊成一团 */
+function kg更新标签显示() {
+  if (!kg画布元素 || !kg容器元素) return;
+  const 容器宽 = kg容器元素.clientWidth || 1000;
+  const 比例 = 容器宽 / kg视图.w;
+  kg画布元素.classList.toggle('show-labels', kg节点数 <= 55 || 比例 > 1.02);
+}
+
+function kg缩放(因子, 中心x, 中心y) {
+  const 新宽 = Math.max(160, Math.min(kg画布宽 * 4, kg视图.w / 因子));
+  const 比例 = 新宽 / kg视图.w;   // 新视图相对当前视图的缩放比例
+  const cx = (中心x === undefined || 中心x === null) ? kg视图.x + kg视图.w / 2 : 中心x;
+  const cy = (中心y === undefined || 中心y === null) ? kg视图.y + kg视图.h / 2 : 中心y;
+  kg视图.x = cx - (cx - kg视图.x) * 比例;
+  kg视图.y = cy - (cy - kg视图.y) * 比例;
+  kg视图.w = 新宽;
+  kg视图.h = kg视图.h * 比例;
+  kg应用视图();
+}
+
+function kg缩放按钮(因子) {
+  kg缩放(因子);
+}
+
+function kg复位视图() {
+  kg视图 = { x: 0, y: 0, w: kg画布宽, h: kg画布高 };
+  kg应用视图();
+  showToast('视图已复位');
+}
+
+function kg滚动到图谱() {
+  const 区 = document.getElementById('kgSection');
+  if (区) 区.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+/* 屏幕坐标换算成画布虚拟坐标（供滚轮定点缩放使用） */
+function kg屏幕转虚拟(clientX, clientY) {
+  const r = kg画布元素.getBoundingClientRect();
+  if (!r.width || !r.height) return { x: kg视图.x + kg视图.w / 2, y: kg视图.y + kg视图.h / 2 };
+  const 比例 = Math.min(r.width / kg视图.w, r.height / kg视图.h);
+  const 偏x = (r.width - kg视图.w * 比例) / 2;
+  const 偏y = (r.height - kg视图.h * 比例) / 2;
+  return {
+    x: kg视图.x + (clientX - r.left - 偏x) / 比例,
+    y: kg视图.y + (clientY - r.top - 偏y) / 比例
+  };
+}
+
+/* 全科视图显示四象限分区底色，单科视图隐藏 */
+function kg更新分区() {
+  const 区 = document.getElementById('kgZones');
+  if (区) 区.style.display = kg科目 === 'all' ? 'grid' : 'none';
+}
+
+/* ---------- 统计条 ---------- */
+function kg更新统计(列表) {
+  const 表 = document.getElementById('kgSub');
+  if (!表) return;
+  let 已掌握 = 0, 学习中 = 0;
+  列表.forEach(function (n) {
+    const s = kg取状态(n.id);
+    if (s === 'done') 已掌握++;
+    else if (s === 'doing') 学习中++;
+  });
+  const 科名 = kg科目 === 'all' ? '全部科目' : KG学科[kg科目].名称;
+  const 级名 = kg年级 === 'all' ? '1-6 年级' : kg年级 + ' 年级';
+  表.innerHTML = 科名 + ' · ' + 级名 + ' · 共 <b>' + 列表.length + '</b> 个知识点'
+    + ' · 已掌握 ' + 已掌握 + ' · 学习中 ' + 学习中 + ' · 未开始 ' + (列表.length - 已掌握 - 学习中);
+}
+
+/* ---------- 详情面板 ---------- */
+function kg显示详情(id) {
+  const n = kg取节点(id);
+  if (!n) return;
+  kg选中 = id;
+  const 科 = KG学科[n.学科];
+  const 态 = KG状态[kg取状态(id)];
+  const 后续 = KG知识点.filter(function (x) { return (x.前置 || []).indexOf(id) >= 0; });
+
+  let h = '';
+  const 大类 = KM板块归类[n.板块] || n.板块;
+  const 大类色 = KM板块色[大类] || { 底: '#F1F5F9', 字: '#475569' };
+  h += '<div class="kg-name">' + n.名称 + '</div>';
+  h += '<div class="kg-tags">'
+    + '<span class="kg-tag" style="background:' + 科.浅 + ';color:' + 科.深 + '">' + 科.名称 + '</span>'
+    + '<span class="kg-tag" style="background:#F1F5F9;color:#475569">' + n.年级 + ' 年级</span>'
+    + '<span class="kg-tag" style="background:' + 大类色.底 + ';color:' + 大类色.字 + '">' + 大类 + '</span>'
+    + '<span class="kg-tag" style="background:' + 态.浅 + ';color:' + 态.深 + '">' + 态.名称 + '</span>'
+    + '</div>';
+  h += '<div class="kg-field"><div class="kg-cap">知识点说明</div><div class="kg-val">' + n.定义 + '</div></div>';
+  h += '<div class="kg-field"><div class="kg-cap">为什么重要</div><div class="kg-val">' + n.重要性 + '</div></div>';
+
+  if (n.别名 && n.别名.length) {
+    h += '<div class="kg-field"><div class="kg-cap">别名</div><div class="kg-val">' + n.别名.join('、') + '</div></div>';
+  }
+
+  if (n.例题 && n.例题.length) {
+    h += '<div class="kg-field"><div class="kg-cap">典型例题</div><ul class="kg-ul">';
+    n.例题.forEach(function (e) { h += '<li>' + e + '</li>'; });
+    h += '</ul></div>';
+  }
+
+  h += '<div class="kg-field"><div class="kg-cap">教材位置</div><div class="kg-val">' + n.教材 + '</div></div>';
+
+  if ((n.前置 || []).length) {
+    h += '<div class="kg-field"><div class="kg-cap">前置知识（先掌握这些）</div><div class="kg-rel">';
+    n.前置.forEach(function (p) {
+      const 前 = kg取节点(p);
+      if (前) h += '<button type="button" class="kg-rel-btn" onclick="kg跳转(\'' + p + '\')">' + 前.名称 + '</button>';
+    });
+    h += '</div></div>';
+  }
+
+  if (后续.length) {
+    h += '<div class="kg-field"><div class="kg-cap">后续知识（学完可继续）</div><div class="kg-rel">';
+    后续.forEach(function (s) {
+      h += '<button type="button" class="kg-rel-btn" onclick="kg跳转(\'' + s.id + '\')">' + s.名称 + '</button>';
+    });
+    h += '</div></div>';
+  }
+
+  h += '<div class="kg-tip-line">选中知识点后，点上方「已学会」标记掌握，点「待学习」恢复未学</div>';
+
+  kg面板元素.innerHTML = h;
+}
+
+/* 点击详情面板里的前置 / 后续标签：切换到目标所在科目，定位并闪烁高亮该卡片 */
+function kg跳转(id) {
+  const n = kg取节点(id);
+  if (!n) return;
+  if (n.学科 !== km当前科目) km设科目(n.学科);
+  kg选中 = id;
+  kg显示详情(id);
+  const 卡 = document.querySelector('#kmBody .km-card[data-id="' + id + '"]');
+  if (卡) {
+    document.querySelectorAll('#kmBody .km-card.sel').forEach(function(x) { x.classList.remove('sel'); });
+    卡.classList.add('sel');
+    卡.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    卡.classList.add('km-flash');
+    setTimeout(function() { 卡.classList.remove('km-flash'); }, 1400);
+  }
+}
+
+function kg同步筛选按钮() {
+  document.querySelectorAll('#kgSubjectFilter .kg-btn').forEach(function (b) {
+    b.classList.toggle('active', b.getAttribute('data-kg-subject') === kg科目);
+  });
+  document.querySelectorAll('#kgGradeFilter .kg-btn').forEach(function (b) {
+    b.classList.toggle('active', b.getAttribute('data-kg-grade') === kg年级);
+  });
+}
+
+/* （旧的三态状态按钮已移除：点亮 / 熄灭统一走右上角 km标记） */
+
+/* ---------- 高亮某节点的前后置连线 ---------- */
+function kg高亮邻接(id) {
+  if (!kg画布元素) return;
+  const 边们 = kg画布元素.querySelectorAll('.kg-edge');
+  for (let i = 0; i < 边们.length; i++) {
+    const 是 = !!id && (边们[i].getAttribute('data-src') === id || 边们[i].getAttribute('data-dst') === id);
+    边们[i].classList.toggle('on', 是);
+  }
+}
+
+/* ---------- 交互绑定 ---------- */
+let kg拖拽起点 = null;
+let kg拖拽位移 = 0;
+
+function kg绑定交互() {
+  kg画布元素.addEventListener('pointerdown', function (e) {
+    kg拖拽起点 = { x: e.clientX, y: e.clientY, vx: kg视图.x, vy: kg视图.y };
+    kg拖拽位移 = 0;
+    kg画布元素.classList.add('dragging');
+    if (kg画布元素.setPointerCapture) {
+      try { kg画布元素.setPointerCapture(e.pointerId); } catch (err) { }
+    }
+  });
+
+  kg画布元素.addEventListener('pointermove', function (e) {
+    if (!kg拖拽起点) return;
+    const 差x = e.clientX - kg拖拽起点.x;
+    const 差y = e.clientY - kg拖拽起点.y;
+    kg拖拽位移 = Math.abs(差x) + Math.abs(差y);
+    const r = kg画布元素.getBoundingClientRect();
+    const 比例 = Math.min(r.width / kg视图.w, r.height / kg视图.h) || 1;
+    kg视图.x = kg拖拽起点.vx - 差x / 比例;
+    kg视图.y = kg拖拽起点.vy - 差y / 比例;
+    kg应用视图();
+  });
+
+  function 结束拖拽() {
+    if (!kg拖拽起点) return;
+    kg拖拽起点 = null;
+    kg画布元素.classList.remove('dragging');
+  }
+  kg画布元素.addEventListener('pointerup', 结束拖拽);
+  kg画布元素.addEventListener('pointercancel', 结束拖拽);
+
+  // 点击节点查看详情（拖拽超过阈值则不当作点击）
+  kg画布元素.addEventListener('click', function (e) {
+    if (kg拖拽位移 > 6) return;
+    const g = e.target.closest ? e.target.closest('.kg-node') : null;
+    if (g) {
+      const id = g.getAttribute('data-id');
+      kg显示详情(id);
+      kg高亮邻接(id);
+      return;
+    }
+    // 没点中节点时选取最近的知识点：密集视图下节点本身很小（热区放不下），
+    // 靠这个兜底保证手指点在附近也能选中
+    const p = kg屏幕转虚拟(e.clientX, e.clientY);
+    let 最近 = null;
+    let 最近距 = 1e9;
+    for (const 编号 in kg位置表) {
+      const q = kg位置表[编号];
+      const 距 = Math.sqrt((q.x - p.x) * (q.x - p.x) + (q.y - p.y) * (q.y - p.y));
+      if (距 < 最近距) { 最近距 = 距; 最近 = 编号; }
+    }
+    if (最近 && 最近距 <= 48) {
+      kg显示详情(最近);
+      kg高亮邻接(最近);
+    }
+  });
+
+  // 悬停提示
+  kg画布元素.addEventListener('mousemove', function (e) {
+    if (kg拖拽起点) { kg提示元素.classList.remove('show'); return; }
+    const g = e.target.closest ? e.target.closest('.kg-node') : null;
+    if (!g) {
+      kg提示元素.classList.remove('show');
+      kg高亮邻接(null);
+      return;
+    }
+    const id = g.getAttribute('data-id');
+    const n = kg取节点(id);
+    if (!n) return;
+    kg提示元素.textContent = n.名称 + ' · ' + KG学科[n.学科].名称 + n.年级 + '年级 · ' + KG状态[kg取状态(id)].名称;
+    const r = kg容器元素.getBoundingClientRect();
+    let 左 = e.clientX - r.left + 14;
+    let 上 = e.clientY - r.top + 14;
+    if (左 + kg提示元素.offsetWidth > r.width - 8) 左 = e.clientX - r.left - kg提示元素.offsetWidth - 14;
+    if (上 + kg提示元素.offsetHeight > r.height - 8) 上 = e.clientY - r.top - kg提示元素.offsetHeight - 14;
+    kg提示元素.style.left = Math.max(4, 左) + 'px';
+    kg提示元素.style.top = Math.max(4, 上) + 'px';
+    kg提示元素.classList.add('show');
+    kg高亮邻接(id);
+  });
+
+  kg画布元素.addEventListener('mouseleave', function () {
+    kg提示元素.classList.remove('show');
+    kg高亮邻接(null);
+  });
+
+  // 滚轮定点缩放
+  kg画布元素.addEventListener('wheel', function (e) {
+    e.preventDefault();
+    const p = kg屏幕转虚拟(e.clientX, e.clientY);
+    kg缩放(e.deltaY < 0 ? 1.12 : 0.89, p.x, p.y);
+  }, { passive: false });
+
+  // 科目筛选
+  document.getElementById('kgSubjectFilter').addEventListener('click', function (e) {
+    const b = e.target.closest('.kg-btn');
+    if (!b) return;
+    kg科目 = b.getAttribute('data-kg-subject');
+    kg已设视图 = false;
+    kg同步筛选按钮();
+    kg渲染();
+  });
+
+  // 年级筛选
+  document.getElementById('kgGradeFilter').addEventListener('click', function (e) {
+    const b = e.target.closest('.kg-btn');
+    if (!b) return;
+    kg年级 = b.getAttribute('data-kg-grade');
+    kg已设视图 = false;
+    kg同步筛选按钮();
+    kg渲染();
+  });
+
+  // 搜索（高亮命中、淡化其余）
+  document.getElementById('kgSearch').addEventListener('input', function (e) {
+    kg搜索 = e.target.value.trim();
+    kg渲染();
+  });
+
+  window.addEventListener('resize', kg更新标签显示);
+}
+
+/* ==========================================================
+   知识图谱 · 卡片地图视图（替代原来的树状思维导图）
+   按「学科 → 年级 → 上册/下册」铺开知识点卡片，点击点亮 / 再点取消。
+   点亮状态直接复用 kg进度：值为 done 即视为点亮，因此老的进度数据不作废。
+   ========================================================== */
+
+// 板块归类：把细分板块合并为大类，减少色块种类
+// （knowledge-graph.js 里的 板块 字段保持原值不动，仅在渲染层归类）
+const KM板块归类 = {
+  '加减法':       '数与运算',
+  '乘除法':       '数与运算',
+  '分数与小数':   '数与运算',
+  '代数初步':     '数与运算',
+  '图形与几何':   '图形与几何',
+  '量与计量':     '量与统计',
+  '数据与推理':   '量与统计',
+  '拼音识字':     '语言基础',
+  '词语句子':     '语言基础',
+  '阅读理解':     '阅读与表达',
+  '表达与习作':   '阅读与表达',
+  '古诗文与名著': '古诗文与名著',
+  '字母与语音':   '词汇与语音',
+  '词汇':         '词汇与语音',
+  '句型与语法':   '句型与运用',
+  '综合运用':     '句型与运用',
+  '物质科学':     '物质与宇宙',
+  '地球与宇宙':   '物质与宇宙',
+  '生命科学':     '生命科学',
+  '工程与技术':   '工程与技术'
+};
+
+// 板块配色（大类）：浅底深字，保证浅色主题下可读；同一科目内色系相近
+const KM板块色 = {
+  // 数学
+  '数与运算':     { 底: '#EAF1FF', 字: '#2F5FD0' },
+  '图形与几何':   { 底: '#E2F3E7', 字: '#2B7040' },
+  '量与统计':     { 底: '#FBF3D8', 字: '#7A5C00' },
+  // 语文
+  '语言基础':     { 底: '#FFEEF4', 字: '#D63C74' },
+  '阅读与表达':   { 底: '#F3E8FF', 字: '#7C3AED' },
+  '古诗文与名著': { 底: '#FFF0E0', 字: '#C05621' },
+  // 英语
+  '词汇与语音':   { 底: '#E3F8F6', 字: '#1F9C93' },
+  '句型与运用':   { 底: '#FFEBD9', 字: '#C05621' },
+  // 科学
+  '物质与宇宙':   { 底: '#F4EAFF', 字: '#8E3FD6' },
+  '生命科学':     { 底: '#E2F3E7', 字: '#2B7040' },
+  '工程与技术':   { 底: '#FBF3D8', 字: '#7A5C00' }
+};
+
+// 当前显示的科目（科目筛选：一次只显示一个科目）
+let km当前科目 = 'math';
+
+function kg点亮(id) {
+  return kg进度[id] === 'done';
+}
+
+// 点击卡片：只选中知识点并显示详情，不直接切换点亮状态
+// 标记学习状态通过右侧面板顶部的"已学会 / 待学习"按钮，且必须先选中知识点
+function km标记(状态) {
+  if (!kg选中 || !kg取节点(kg选中)) {
+    showToast('请先点击选择一个知识点');
+    return;
+  }
+  const id = kg选中;
+  if (状态 === 'done') {
+    kg进度[id] = 'done';
+    showToast('已标记为已掌握');
+  } else {
+    delete kg进度[id];
+    showToast('已标记为待学习');
+  }
+  setData('kgProgress', kg进度);
+  km渲染();
+  kg显示详情(id);
+}
+
+// 册内排序：按板块顺序聚类，相同色块横向相邻；各册板块顺序一致，纵向也趋于对齐
+function km排序卡片(列表, 板块顺序) {
+  return 列表.slice().sort(function(a, b) {
+    const 板A = KM板块归类[a.板块] || a.板块;
+    const 板B = KM板块归类[b.板块] || b.板块;
+    return 板块顺序.indexOf(板A) - 板块顺序.indexOf(板B);
+  });
+}
+
+function km卡片(n) {
+  const 亮 = kg点亮(n.id);
+  const 选中 = n.id === kg选中;
+  const 大类 = KM板块归类[n.板块] || n.板块;
+  const 色 = KM板块色[大类] || { 底: '#F1F5F9', 字: '#475569' };
+  return '<button type="button" class="km-card' + (亮 ? ' on' : '') + (选中 ? ' sel' : '') + '"'
+    + ' data-id="' + n.id + '"'
+    + ' style="--底:' + 色.底 + ';--字:' + 色.字 + '"'
+    + ' title="' + n.名称 + '｜' + 大类 + '｜' + n.教材 + '">'
+    + (亮 ? '<span class="km-check">✓</span>' : '')
+    + '<span class="km-name">' + n.名称 + '</span></button>';
+}
+
+function km渲染() {
+  const 容器 = document.getElementById('kmBody');
+  if (!容器) return;
+  const 科 = km当前科目;
+  const 本科 = KG知识点.filter(function(n) { return n.学科 === 科; });
+  if (!本科.length) return;
+  const 科信息 = KG学科[科];
+
+  // 该科板块顺序：按知识点首次出现顺序，保证同板块卡片相邻排列
+  const 板块顺序 = [];
+  本科.forEach(function(n) {
+    const 大类 = KM板块归类[n.板块] || n.板块;
+    if (板块顺序.indexOf(大类) < 0) 板块顺序.push(大类);
+  });
+
+  let html = '';
+
+  // 当前科目的板块图例
+  html += '<div class="km-legend">';
+  板块顺序.forEach(function(b) {
+    const 色 = KM板块色[b] || { 底: '#F1F5F9', 字: '#475569' };
+    html += '<span class="km-legend-item"><span class="km-swatch" style="background:' + 色.底 + ';border:1px solid ' + 色.字 + '"></span>' + b + '</span>';
+  });
+  html += '</div>';
+
+  // 只有确实存在下册知识点时才分上 / 下册（语文、英语全部在上册，则不出现册别行）
+  // v2.1：数学、科学取消上 / 下册显示，卡片直接平铺
+  const 分册 = 科 !== 'math' && 科 !== 'science' && 本科.some(function(n) { return n.册别 === '下册'; });
+
+  html += '<div class="km-grid">';
+  [1, 2, 3, 4, 5, 6].forEach(function(年级) {
+    const 本级 = 本科.filter(function(n) { return n.年级 === 年级; });
+    if (!本级.length) return;
+
+    if (分册) {
+      // 年级格子纵向跨两行，格子内放"上册 / 下册"小标签，分别对齐右侧两行卡片
+      html += '<div class="km-grade has-term"><span class="km-grade-name">' + 年级 + '年级</span>'
+        + '<span class="km-term-tag">上册</span><span class="km-term-tag">下册</span></div>';
+      const 上卡 = km排序卡片(本级.filter(function(n) { return n.册别 !== '下册'; }), 板块顺序);
+      const 下卡 = km排序卡片(本级.filter(function(n) { return n.册别 === '下册'; }), 板块顺序);
+      html += '<div class="km-cards">';
+      if (!上卡.length) html += '<span class="km-empty">—</span>';
+      上卡.forEach(function(n) { html += km卡片(n); });
+      html += '</div>';
+      html += '<div class="km-cards">';
+      if (!下卡.length) html += '<span class="km-empty">—</span>';
+      下卡.forEach(function(n) { html += km卡片(n); });
+      html += '</div>';
+    } else {
+      html += '<div class="km-grade">' + 年级 + '年级</div>';
+      const 卡 = km排序卡片(本级, 板块顺序);
+      html += '<div class="km-cards">';
+      卡.forEach(function(n) { html += km卡片(n); });
+      html += '</div>';
+    }
+  });
+  html += '</div>';
+
+  容器.innerHTML = html;
+
+  const 亮数 = 本科.filter(function(n) { return kg点亮(n.id); }).length;
+  const 进度 = document.getElementById('kmTotal');
+  if (进度) 进度.innerHTML = 科信息.名称 + ' · 共 <b>' + 本科.length + '</b> 个知识点，已掌握 <b>' + 亮数 + '</b> 个';
+}
+
+function km初始化() {
+  const 容器 = document.getElementById('kmBody');
+  if (!容器) return;
+  if (typeof KG知识点 === 'undefined' || !KG知识点.length) {
+    容器.innerHTML = '<div style="padding:60px 20px;text-align:center;color:#b6bcc6;font-size:14px">知识图谱数据未加载<br>请确认 knowledge-graph.js 与 index.html 在同一目录</div>';
+    return;
+  }
+  kg面板元素 = document.getElementById('kgPanel');
+
+  // 科目筛选按钮
+  const 标签组 = document.getElementById('kmSubjectTabs');
+  if (标签组) {
+    标签组.addEventListener('click', function(e) {
+      const b = e.target.closest('.km-tab');
+      if (!b) return;
+      km设科目(b.getAttribute('data-科目'));
+    });
+  }
+
+  // 点卡片：只选中知识点并显示详情（点亮 / 熄灭用右上角按钮）
+  容器.addEventListener('click', function(e) {
+    const 卡 = e.target.closest ? e.target.closest('.km-card') : null;
+    if (!卡) return;
+    const id = 卡.getAttribute('data-id');
+    kg选中 = id;
+    容器.querySelectorAll('.km-card.sel').forEach(function(x) { x.classList.remove('sel'); });
+    卡.classList.add('sel');
+    kg显示详情(id);
+  });
+
+  // 详情面板初始占位
+  if (kg面板元素) {
+    kg面板元素.innerHTML = '<div class="kg-empty">点击左侧知识点卡片<br>查看详情并标记学习状态</div>';
+  }
+
+  km渲染();
+}
+
+// 切换科目筛选：一次只显示一个科目
+function km设科目(科) {
+  if (!KG学科[科] || 科 === km当前科目) return;
+  km当前科目 = 科;
+  document.querySelectorAll('#kmSubjectTabs .km-tab').forEach(function(b) {
+    b.classList.toggle('active', b.getAttribute('data-科目') === km当前科目);
+  });
+  km渲染();
+}
+
+/* ---------- 初始化 ---------- */
+function kg初始化() {
+  kg画布元素 = document.getElementById('kgCanvas');
+  if (!kg画布元素) return;
+  // 数据文件（knowledge-graph.js）缺失时优雅降级，不影响页面其它模块
+  if (typeof KG知识点 === 'undefined' || !KG知识点.length) {
+    const 容器 = document.getElementById('kgWrap');
+    if (容器) {
+      容器.innerHTML = '<div style="padding:80px 20px;text-align:center;color:#b6bcc6;font-size:14px;line-height:1.9">'
+        + '知识图谱数据未加载<br><span style="font-size:12.5px">请确认 knowledge-graph.js 与 index.html 在同一目录</span></div>';
+    }
+    return;
+  }
+  kg容器元素 = document.getElementById('kgWrap');
+  kg面板元素 = document.getElementById('kgPanel');
+  kg提示元素 = document.getElementById('kgTip');
+  // 触屏设备没有滚轮，提示文案随之调整
+  const 提示语 = document.getElementById('kgHint');
+  if (提示语 && window.innerWidth <= 768) {
+    提示语.textContent = '拖动平移 · 右下按钮缩放 · 点击节点看详情';
+  }
+  kg绑定交互();
+  kg渲染();
+}
+
 // ========== 初始化 ==========
 // ========== 国际化（i18n）==========
 const I18N = {
@@ -3400,43 +5685,47 @@ const I18N = {
     title: '宝贝学习乐园 · 7 岁版',
     home: '首页', alphabet: '英语岛', poem: '古诗花园',
     number: '数学城', logic: '逻辑挑战', adventure: '闯关冒险',
-    alphabetTab: '字母', poemTab: '古诗', numberTab: '数字',
-    logicTab: '逻辑', adventureTab: '闯关',
+    chinese: '语文天地',
+    alphabetTab: '英语', poemTab: '古诗', numberTab: '数字',
+    logicTab: '逻辑', adventureTab: '闯关', chineseTab: '语文',
     welcome: '欢迎回来，小宝贝！',
     encouragement: '宝贝今天也要加油哦！',
     statStars: '获得星星', statLevels: '通过关卡',
     statBadges: '获得徽章', statQuestions: '答对题目',
     sectionAlphabet: '英语岛', sectionPoem: '古诗花园',
     sectionNumber: '数学城', sectionLogic: '逻辑挑战',
-    sectionAdventure: '闯关冒险', badgeWall: '成就墙',
-    letterCards: '字母卡片', matchGame: '配对游戏',
-    matchHint: '找出大写字母对应的小写字母 👇',
-    modAlphabet: '英语岛', modAlphabetDesc: '26个字母认读与配对',
+    sectionAdventure: '闯关冒险', sectionChinese: '语文天地', badgeWall: '成就墙',
+    modAlphabet: '英语岛', modAlphabetDesc: '看词选图 · 听音选词',
     modPoem: '古诗花园', modPoemDesc: '经典古诗拼音朗读',
-    modNumber: '数学城', modNumberDesc: '100 以内加减 · 乘法口诀',
+    modNumber: '数学城', modNumberDesc: '口算 · 乘除口诀 · 数独',
     modLogic: '逻辑挑战', modLogicDesc: '找规律配对排序',
-    modAdventure: '闯关冒险', modAdventureDesc: '综合闯关赢星星'
+    modAdventure: '闯关冒险', modAdventureDesc: '综合闯关赢星星',
+    modGraph: '知识图谱', modGraphDesc: '1-6 年级知识点学习路径',
+    graph: '知识图谱', graphTab: '图谱',
+    kgTitle: '知识图谱'
   },
   en: {
     title: 'Baby Learning Playground',
     home: 'Home', alphabet: 'Alphabet', poem: 'Poems',
     number: 'Numbers', logic: 'Logic', adventure: 'Adventure',
+    chinese: 'Chinese',
     alphabetTab: 'ABC', poemTab: 'Poems', numberTab: 'Nums',
-    logicTab: 'Logic', adventureTab: 'Quest',
+    logicTab: 'Logic', adventureTab: 'Quest', chineseTab: 'Chn',
     welcome: 'Welcome back, little one!',
     encouragement: 'Keep learning today!',
     statStars: 'Stars Earned', statLevels: 'Levels Passed',
     statBadges: 'Badges Won', statQuestions: 'Correct Answers',
     sectionAlphabet: 'Alphabet Park', sectionPoem: 'Poem Garden',
     sectionNumber: 'Math City', sectionLogic: 'Logic Challenge',
-    sectionAdventure: 'Adventure Quest', badgeWall: 'Badge Wall',
-    letterCards: 'Letter Cards', matchGame: 'Match Game',
-    matchHint: 'Match the uppercase letter with its lowercase 👇',
-    modAlphabet: 'Alphabet Park', modAlphabetDesc: '26 letters with sound & matching',
+    sectionAdventure: 'Adventure Quest', sectionChinese: 'Chinese Land', badgeWall: 'Badge Wall',
+    modAlphabet: 'Alphabet Park', modAlphabetDesc: 'See words & pick pictures',
     modPoem: 'Poem Garden', modPoemDesc: 'Classic poems with pinyin',
-    modNumber: 'Math City', modNumberDesc: 'Arithmetic to 100 & times tables',
+    modNumber: 'Math City', modNumberDesc: 'Arithmetic, times tables & sudoku',
     modLogic: 'Logic Challenge', modLogicDesc: 'Patterns, matching & sorting',
-    modAdventure: 'Adventure Quest', modAdventureDesc: 'Mixed quizzes & star rewards'
+    modAdventure: 'Adventure Quest', modAdventureDesc: 'Mixed quizzes & star rewards',
+    modGraph: 'Knowledge Map', modGraphDesc: 'Learning paths for grades 1-6',
+    graph: 'Knowledge Map', graphTab: 'Map',
+    kgTitle: 'Knowledge Map'
   }
 };
 
@@ -3444,9 +5733,9 @@ function applyI18N(lang) {
   const t = I18N[lang] || I18N.zh;
   document.documentElement.lang = lang === 'en' ? 'en' : 'zh-CN';
   document.title = t.title;
-  // 侧边栏导航文字
+  // 侧边栏导航文字（首页/英语岛/语文天地/数学城/逻辑挑战/知识图谱）
   const navItems = document.querySelectorAll('.sidebar .nav-item');
-  const navLabels = [t.home, t.alphabet, t.poem, t.number, t.logic, t.adventure];
+  const navLabels = [t.home, t.alphabet, t.chinese, t.number, t.logic, t.graph];
   navItems.forEach((el, i) => {
     const icon = el.querySelector('.nav-icon');
     if (icon) el.innerHTML = icon.outerHTML + navLabels[i];
@@ -3459,7 +5748,7 @@ function applyI18N(lang) {
   if (mHeader) { const svg = mHeader.querySelector('svg'); mHeader.innerHTML = (svg ? svg.outerHTML + ' ' : '') + t.title; }
   // 底部 Tab
   const tabs = document.querySelectorAll('.bottom-tabs .tab-item');
-  const tabLabels = [t.home, t.alphabetTab, t.poemTab, t.numberTab, t.logicTab, t.adventureTab];
+  const tabLabels = [t.home, t.alphabetTab, t.chineseTab, t.numberTab, t.logicTab, t.graphTab];
   tabs.forEach((el, i) => {
     const icon = el.querySelector('.tab-icon');
     if (icon) el.innerHTML = icon.outerHTML + tabLabels[i];
@@ -3473,18 +5762,18 @@ function applyI18N(lang) {
   const labels = document.querySelectorAll('.stat-label');
   const statTexts = [t.statStars, t.statLevels, t.statBadges, t.statQuestions];
   labels.forEach((el, i) => { if (statTexts[i]) el.textContent = statTexts[i]; });
-  // 模块标题
+  // 模块标题（英语岛/语文天地/数学城/逻辑挑战/闯关冒险）
   const sectionTitles = document.querySelectorAll('.section-title');
-  const sectionTexts = [t.sectionAlphabet, t.sectionPoem, t.sectionNumber, t.sectionLogic, t.sectionAdventure];
+  const sectionTexts = [t.sectionAlphabet, t.sectionChinese, t.sectionNumber, t.sectionLogic, t.sectionAdventure];
   sectionTitles.forEach((el, i) => {
     if (sectionTexts[i]) { const svg = el.querySelector('svg'); el.innerHTML = (svg ? svg.outerHTML + ' ' : '') + sectionTexts[i]; }
   });
   // 成就墙标题
   const badgeH3 = document.querySelector('#page-adventure h3');
   if (badgeH3) { const svg = badgeH3.querySelector('svg'); badgeH3.innerHTML = (svg ? svg.outerHTML + ' ' : '') + t.badgeWall; }
-  // 子Tab
-  const subTabs = document.querySelectorAll('#page-alphabet .sub-tab');
-  if (subTabs.length >= 2) { subTabs[0].textContent = t.letterCards; subTabs[1].textContent = t.matchGame; }
+  // 知识图谱标题
+  const kg标题 = document.querySelector('.kg-title');
+  if (kg标题) kg标题.textContent = t.kgTitle;
   // 模块卡片
   document.querySelectorAll('.i18n-module').forEach(el => { if (t[el.dataset.key]) el.textContent = t[el.dataset.key]; });
   document.querySelectorAll('.i18n-module-desc').forEach(el => { if (t[el.dataset.key]) el.textContent = t[el.dataset.key]; });
@@ -3495,6 +5784,8 @@ function applyI18N(lang) {
   updateStarDisplay();
   checkBadges();
   renderBadges();
+  updateTabBadges();
+  km初始化();
   // URL 参数支持
   const params = new URLSearchParams(window.location.search);
   const lang = params.get('lang') || 'zh';
