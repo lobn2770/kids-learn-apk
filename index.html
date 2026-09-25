@@ -14,16 +14,18 @@
 }
 
 :root {
+  /* v2.71 Apple 风格基础变量（design-systems/apple）：
+     米白画布 + 白卡发丝线 + 18px 圆角；彩色变量保留为内容色（模块图标等） */
   --pink: #FF6B9D;
   --blue: #4ECDC4;
   --yellow: #FFE66D;
   --green: #95E67E;
   --purple: #C47AFF;
-  --bg-start: #FFF5F8;
-  --bg-end: #F0FAFF;
-  --card-shadow: 0 4px 15px rgba(0,0,0,0.08);
-  --radius: 16px;
-  --font-size-base: 18px;
+  --bg-start: #F5F5F7;
+  --bg-end: #F5F5F7;
+  --card-shadow: 0 0 0 1px rgba(0,0,0,0.08);
+  --radius: 18px;
+  --font-size-base: 17px;
   --safe-bottom: env(safe-area-inset-bottom, 0px);
 }
 
@@ -219,25 +221,7 @@ button:active {
 }
 
 /* ========== 首页样式 ========== */
-.welcome-banner {
-  background: linear-gradient(135deg, #FFF0F5, #E8F8F5);
-  border-radius: var(--radius);
-  padding: 24px 30px;
-  text-align: center;
-  box-shadow: var(--card-shadow);
-  margin-bottom: 20px;
-}
-
-.welcome-banner h1 {
-  font-size: 26px;
-  color: var(--pink);
-  margin-bottom: 6px;
-}
-
-.welcome-banner p {
-  font-size: 16px;
-  color: #666;
-}
+/* v2.74：欢迎模块（.welcome-banner）已移除，首页顶部直接是学习进度卡 */
 
 .stats-grid {
   display: grid;
@@ -332,60 +316,6 @@ button:active {
   }
 }
 
-/* ========== 首页知识图谱 ========== */
-.kg-section {
-  margin-top: 20px;
-  background: #fff;
-  border-radius: var(--radius);
-  box-shadow: var(--card-shadow);
-  overflow: hidden;
-}
-
-.kg-head {
-  display: flex;
-  align-items: baseline;
-  gap: 12px;
-  flex-wrap: wrap;
-  padding: 18px 20px 0;
-}
-
-.kg-title {
-  font-size: 21px;
-  color: #333;
-}
-
-.kg-sub {
-  font-size: 13px;
-  color: #999;
-}
-
-.kg-sub b {
-  color: var(--pink);
-}
-
-/* 工具栏 */
-.kg-toolbar {
-  display: flex;
-  align-items: center;
-  gap: 10px 18px;
-  flex-wrap: wrap;
-  padding: 14px 20px;
-  border-bottom: 1px solid #f2f2f2;
-}
-
-.kg-filter {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  flex-wrap: wrap;
-}
-
-.kg-filter > label {
-  font-size: 13px;
-  color: #999;
-  margin-right: 2px;
-}
-
 .kg-btn {
   min-width: auto;
   min-height: auto;
@@ -430,187 +360,6 @@ button:active {
   border-color: var(--blue);
 }
 
-/* 图谱主体：宽屏左右分栏时，高度取「视口剩余高度」与「按画布比例算出的理想高度」中的较小值。
-   前者防止图谱被挤出屏幕，后者防止图谱过高导致 SVG 上下出现大片留白
-   （减去的 590px = 侧边栏 200 + 主区内边距 60 + 详情面板 330） */
-.kg-body {
-  display: flex;
-  align-items: stretch;
-  height: min(calc(100vh - 240px), calc((100vw - 590px) / 1.5));
-  min-height: 420px;
-  max-height: 820px;
-}
-
-.kg-canvas-wrap {
-  position: relative;
-  flex: 1;
-  min-width: 0;
-  height: 100%;
-  background: #FCFDFF;
-  overflow: hidden;
-}
-
-.kg-canvas {
-  display: block;
-  position: relative;
-  z-index: 1;
-  width: 100%;
-  height: 100%;
-  cursor: grab;
-  touch-action: none;
-  user-select: none;
-}
-
-.kg-canvas.dragging {
-  cursor: grabbing;
-}
-
-/* 学科分区标识：只用淡色文字标注，不铺背景色块（让树状结构本身成为画面主体） */
-.kg-zones {
-  position: absolute;
-  inset: 0;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  grid-template-rows: 1fr 1fr;
-  pointer-events: none;
-}
-
-.kg-zone {
-  position: relative;
-  margin: 4px;
-}
-
-.kg-zone > span {
-  position: absolute;
-  bottom: 0;
-  left: 50%;
-  transform: translateX(-50%);
-  font-size: 13px;
-  font-weight: 600;
-  letter-spacing: 4px;
-  user-select: none;
-  opacity: .5;
-}
-
-.kg-zone-math > span    { color: #6E93D6; }
-.kg-zone-chinese > span { color: #D4789C; }
-.kg-zone-english > span { color: #5FB5AD; }
-.kg-zone-science > span { color: #9E76CC; }
-
-/* 缩放按钮 */
-.kg-zoom {
-  position: absolute;
-  right: 14px;
-  bottom: 14px;
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-.kg-zoom button {
-  min-width: 34px;
-  min-height: 34px;
-  width: 34px;
-  height: 34px;
-  border-radius: 10px;
-  background: #fff;
-  border: 1px solid #e8e8e8;
-  color: #666;
-  font-size: 17px;
-  line-height: 1;
-  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
-}
-
-.kg-zoom button:hover {
-  border-color: var(--blue);
-  color: var(--blue);
-}
-
-/* 操作提示：并入底部图例栏（若浮在图谱里会压住最底层的节点名称） */
-.kg-hint {
-  color: #b6bcc6;
-}
-
-/* SVG 内部元素 */
-/* 主干连线（父 → 子）：虚线箭头，从父节点垂直向上接到子节点 */
-.kg-edge {
-  fill: none;
-  stroke: #B9C7E0;
-  stroke-width: 1.5;
-  stroke-dasharray: 6 5;
-  transition: stroke 0.15s, stroke-width 0.15s;
-}
-
-/* 跨分支关联（一个知识点有多个前置，非主干的那条）：更浅更细，避免和主干抢视线 */
-.kg-edge-soft {
-  stroke: #DDE4EF;
-  stroke-width: 1;
-  stroke-dasharray: 3 5;
-}
-
-.kg-edge.on,
-.kg-edge-soft.on {
-  stroke: var(--pink);
-  stroke-width: 2.4;
-  stroke-dasharray: none;
-}
-
-.kg-node {
-  cursor: pointer;
-  transition: opacity 0.15s;
-}
-
-.kg-node .kg-shape {
-  stroke-width: 2;
-  transition: all 0.15s;
-}
-
-.kg-node:hover .kg-shape {
-  stroke-width: 3.5;
-}
-
-.kg-node.dim {
-  opacity: 0.22;
-}
-
-.kg-label {
-  font-size: 12.5px;
-  fill: #55607A;
-  text-anchor: middle;
-  pointer-events: none;
-  display: none;
-}
-
-.kg-canvas.show-labels .kg-label {
-  display: block;
-}
-
-.kg-label.hi {
-  fill: var(--pink);
-  font-weight: 600;
-}
-
-/* 悬停提示 */
-.kg-tip {
-  position: absolute;
-  padding: 6px 10px;
-  background: #fff;
-  border: 1px solid #e8e8e8;
-  border-radius: 8px;
-  font-size: 12.5px;
-  color: #444;
-  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.1);
-  pointer-events: none;
-  opacity: 0;
-  transition: opacity 0.12s;
-  white-space: nowrap;
-  z-index: 5;
-}
-
-.kg-tip.show {
-  opacity: 1;
-}
-
 /* 详情面板（右侧常驻：上操作按钮 + 下详情内容） */
 .kg-panel {
   display: flex;
@@ -648,6 +397,62 @@ button:active {
   height: 46px;
   opacity: 0.28;
   margin-bottom: 10px;
+}
+
+/* v2.75：范围介绍视图（随科目 / 年级筛选变化） */
+.kg-range-item {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  width: 100%;
+  padding: 9px 12px;
+  margin-bottom: 6px;
+  border-radius: 10px;
+  border: 1px solid #EEF0F4;
+  background: #FBFBFC;
+  font-size: 14px;
+  color: #333;
+  text-align: left;
+  cursor: pointer;
+  transition: border-color .18s, background .18s;
+}
+
+.kg-range-item:hover {
+  border-color: #CBD5E1;
+  background: #F4F6F9;
+}
+
+.kg-range-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex: none;
+}
+
+.kg-range-name {
+  flex: 1;
+}
+
+.kg-range-meta {
+  font-size: 12px;
+  color: #86868B;
+  white-space: nowrap;
+}
+
+.kg-back-btn {
+  display: inline-block;
+  margin-bottom: 10px;
+  padding: 5px 12px;
+  border-radius: 999px;
+  border: 1px solid #E3E6EC;
+  background: #fff;
+  font-size: 12.5px;
+  color: #0066CC;
+  cursor: pointer;
+}
+
+.kg-back-btn:hover {
+  border-color: #B9C0CB;
 }
 
 .kg-name {
@@ -777,14 +582,6 @@ button:active {
 /* 横屏平板（屏高较小）时压缩首页顶部占位，让知识图谱更早进入视野。
    这些元素只出现在首页，不影响其它模块 */
 @media (min-width: 1151px) and (max-height: 1000px) {
-  .welcome-banner {
-    padding: 16px 30px;
-    margin-bottom: 14px;
-  }
-  .welcome-banner h1 {
-    font-size: 23px;
-    margin-bottom: 4px;
-  }
   .stats-grid {
     margin-bottom: 14px;
   }
@@ -796,66 +593,245 @@ button:active {
   }
 }
 
-/* 中等宽度（平板横屏、小笔记本）：侧边栏 200 + 详情面板 330 会把图谱挤得太窄，
-   改为图谱在上、详情在下的纵向布局，保证图谱可用宽度 */
-@media (min-width: 769px) and (max-width: 1150px) {
-  .kg-body {
-    flex-direction: column;
-    height: auto;
-    min-height: 0;
-    max-height: none;
-  }
-  .kg-canvas-wrap {
-    flex: none;
-    height: auto;
-    /* 画布内容比例为 1240:800，让容器按同比例留高，避免 SVG 上下出现大片空白 */
-    aspect-ratio: 1800 / 1200;
-    min-height: 420px;
-  }
-  .kg-panel {
-    width: 100%;
-    max-height: 340px;
-    border-left: none;
-    border-top: 1px solid #f2f2f2;
+/* ========== 知识图谱 v2.6（ECharts 关系图） ========== */
+/* 工具栏：科目 + 年级 + 搜索 */
+.kgv-toolbar {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.kgv-toolbar .kg-search {
+  margin-left: auto;
+}
+
+/* 图谱舞台：ECharts 容器的父级，四象限分区也画在这里面 */
+.kgv-stage {
+  position: relative;
+  height: clamp(430px, calc(100vh - 265px), 900px);
+  background: #FCFDFF;
+  border: 1px solid #EEF1F6;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.kgv-chart {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+}
+
+/* 四象限学科分区（仅四科同屏视图显示） */
+.kgv-zones {
+  position: absolute;
+  inset: 0;
+  display: none;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  pointer-events: none;
+  z-index: 0;
+}
+
+.kgv-zone {
+  position: relative;
+  margin: 6px;
+  border: 1px dashed transparent;
+  border-radius: 10px;
+}
+
+.kgv-zone > span {
+  position: absolute;
+  top: 10px;
+  left: 14px;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 3px;
+  user-select: none;
+}
+
+.kgv-zone-math    { background: rgba(91, 141, 239, 0.06);  border-color: rgba(91, 141, 239, 0.35); }
+.kgv-zone-math > span    { color: rgba(91, 141, 239, 0.75); }
+.kgv-zone-chinese { background: rgba(255, 107, 157, 0.055); border-color: rgba(255, 107, 157, 0.32); }
+.kgv-zone-chinese > span { color: rgba(214, 60, 116, 0.70); }
+.kgv-zone-english { background: rgba(78, 205, 196, 0.06);  border-color: rgba(78, 205, 196, 0.35); }
+.kgv-zone-english > span { color: rgba(31, 156, 147, 0.75); }
+.kgv-zone-science { background: rgba(196, 122, 255, 0.06); border-color: rgba(196, 122, 255, 0.32); }
+.kgv-zone-science > span { color: rgba(142, 63, 214, 0.70); }
+
+/* 底部图例与操作提示 */
+.kgv-legend {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px 14px;
+  padding: 10px 4px 0;
+  font-size: 12px;
+  color: #9aa2b1;
+}
+
+.kgv-hint {
+  margin-left: auto;
+}
+
+/* 学习进度概览（v2.75 首页横版重做：标题行 + 百分比徽章 + 三格数据卡 + 进度条） */
+.kgv-stat {
+  padding: 18px 22px 16px;
+  background: #fff;
+  border: 1px solid #ECEEF2;
+  flex-shrink: 0;
+}
+
+.kgv-stat-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  margin-bottom: 14px;
+}
+
+.kgv-stat-title {
+  font-size: 18px;
+  font-weight: 600;
+  color: #1D1D1F;
+  letter-spacing: .2px;
+}
+
+.kgv-stat-sub {
+  font-size: 12.5px;
+  color: #86868B;
+  margin-top: 3px;
+}
+
+.kgv-pct-badge {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 4px;
+  padding: 7px 16px;
+  border-radius: 999px;
+  background: rgba(0, 102, 204, 0.08);
+  color: #0066CC;
+  font-size: 22px;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -.5px;
+  white-space: nowrap;
+}
+
+.kgv-pct-badge span {
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0;
+  margin-left: 3px;
+  opacity: .85;
+}
+
+.kgv-stat-cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+
+.kgv-stat-card {
+  position: relative;
+  text-align: left;
+  padding: 12px 14px 12px 18px;
+  border-radius: 14px;
+  background: #F7F8FA;
+  border: 1px solid #EEF0F4;
+}
+
+.kgv-stat-card::before {
+  content: '';
+  position: absolute;
+  left: 7px;
+  top: 14px;
+  bottom: 14px;
+  width: 3px;
+  border-radius: 999px;
+}
+
+.kgv-stat-card .kgv-num {
+  font-size: 27px;
+  font-weight: 700;
+  line-height: 1.1;
+  letter-spacing: -.5px;
+}
+
+.kgv-stat-card .kgv-cap {
+  font-size: 12.5px;
+  color: #86868B;
+  margin-top: 4px;
+}
+
+.kgv-stat-card.done::before { background: #34C759; }
+.kgv-stat-card.done .kgv-num { color: #1E8E3E; }
+.kgv-stat-card.doing::before { background: #FF9F0A; }
+.kgv-stat-card.doing .kgv-num { color: #B26A00; }
+.kgv-stat-card.todo::before { background: #C7CCD6; }
+.kgv-stat-card.todo .kgv-num { color: #6B7280; }
+
+.kgv-bar-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-top: 14px;
+}
+
+.kgv-bar {
+  flex: 1;
+  height: 10px;
+  background: #EDEFF3;
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.kgv-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #52D97F, #34C759);
+  border-radius: 999px;
+  transition: width .5s ease;
+}
+
+.kgv-bar-text {
+  font-size: 12.5px;
+  color: #86868B;
+  white-space: nowrap;
+}
+
+/* 面板顶部三态按钮：高亮当前选中知识点的状态 */
+#kgvBtnTodo.active { background: #F1F5F9; border-color: #94A3B8; color: #475569; font-weight: 600; }
+#kgvBtnDoing.active { background: #FEF3C7; border-color: #F59E0B; color: #92400E; font-weight: 600; }
+#kgvBtnDone.active { background: #DCFCE7; border-color: #22C55E; color: #166534; font-weight: 600; }
+
+/* 窄屏（平板竖屏、手机）：压缩图谱高度 */
+@media (max-width: 1150px) {
+  .kgv-stage {
+    height: clamp(380px, calc(100vh - 330px), 620px);
   }
 }
 
 @media (max-width: 768px) {
-  /* 触屏上允许纵向滑动正常滚动页面，横向滑动才用于平移图谱 */
-  .kg-canvas {
-    touch-action: pan-y;
+  .kgv-stage {
+    height: 400px;
   }
-  .kg-body {
-    flex-direction: column;
-    height: auto;
-    min-height: 0;
-    max-height: none;
-  }
-  .kg-canvas-wrap {
-    flex: none;
-    height: auto;
-    aspect-ratio: 1800 / 1200;
-    min-height: 420px;
-  }
-  .kg-panel {
-    width: 100%;
-    max-height: 460px;
-    border-left: none;
-    border-top: 1px solid #f2f2f2;
-  }
-  .kg-search {
+  .kgv-toolbar .kg-search {
     margin-left: 0;
     width: 100%;
   }
-  .kg-search input {
+  .kgv-toolbar .kg-search input {
     width: 100%;
   }
-  .kg-title {
-    font-size: 19px;
+  .kgv-hint {
+    margin-left: 0;
+    width: 100%;
+  }
+  .kgv-stat {
+    padding: 10px 14px;
   }
 }
 
-/* ========== 知识图谱：卡片地图 ========== */
 .km-page-title {
   font-size: 24px;
   color: #333;
@@ -989,141 +965,10 @@ button:active {
   color: #fff;
 }
 
-/* 当前科目板块图例 */
-.km-legend {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 4px 12px;
-  font-size: 12px;
-  color: #9aa2b1;
-  margin-bottom: 12px;
-}
-
-.km-legend-item {
-  display: flex;
-  align-items: center;
-  gap: 4px;
-}
-
-.km-swatch {
-  width: 11px;
-  height: 11px;
-  border-radius: 3px;
-  flex-shrink: 0;
-}
-
-/* 网格两列：年级格子（含上 / 下册标签）+ 卡片区 */
-.km-grid {
-  display: grid;
-  grid-template-columns: 60px 1fr;
-  gap: 4px;
-}
-
-.km-grade {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 2px;
-  background: #F8FAFC;
-  border-radius: 8px;
-  font-size: 13px;
-  font-weight: 600;
-  color: #64748B;
-  padding: 4px 2px;
-}
-
-/* 分上下册的科目：年级格子纵向跨两行，格子内放"上册 / 下册"小标签 */
-.km-grade.has-term {
-  grid-row: span 2;
-}
-
-.km-grade-name {
-  flex-shrink: 0;
-}
-
-.km-term-tag {
-  flex: 1;
-  display: flex;
-  align-items: center;
-  font-size: 11.5px;
-  font-weight: 500;
-  color: #A8B2C1;
-}
-
-.km-cards {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 5px;
-  padding: 3px 0;
-  align-content: flex-start;
-}
-
-/* 未点亮半透明，点亮后实色 + 描边，对比明显 */
-.km-card {
-  position: relative;
-  min-width: 88px;
-  min-height: auto;
-  padding: 7px 10px;
-  border-radius: 7px;
-  border: 1.5px solid transparent;
-  background: var(--底, #F1F5F9);
-  color: var(--字, #475569);
-  font-size: 12.5px;
-  line-height: 1.35;
-  text-align: left;
-  cursor: pointer;
-  opacity: 0.62;
-  transition: opacity 0.18s, transform 0.12s, box-shadow 0.18s, border-color 0.18s;
-}
-
-.km-card:hover {
-  opacity: 0.78;
-  transform: translateY(-1px);
-  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
-}
-
-.km-card.on {
-  opacity: 1;
-  border-color: var(--字, #475569);
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.13);
-  font-weight: 600;
-}
-
-/* 当前选中的知识点卡片：蓝色光圈，提示"学会了 / 取消点亮"的作用对象 */
-.km-card.sel {
-  border-color: #5B8DEF;
-  box-shadow: 0 0 0 2.5px rgba(91, 141, 239, 0.4);
-  opacity: 1;
-}
-
-.km-check {
-  margin-right: 3px;
-  font-weight: 700;
-}
-
-.km-empty {
-  font-size: 12px;
-  color: #CBD5E1;
-  padding: 7px 4px;
-}
-
-/* 详情面板跳转定位时的闪烁提示 */
-.km-flash {
-  animation: km闪 0.55s ease-in-out 2;
-}
-
-@keyframes km闪 {
-  0%, 100% { box-shadow: 0 2px 8px rgba(0, 0, 0, 0.13); }
-  50% { box-shadow: 0 0 0 6px rgba(91, 141, 239, 0.35); transform: scale(1.04); }
-}
 
 @media (max-width: 768px) {
   .km-wrap { padding: 14px 12px 18px; }
   .km-page-title { font-size: 20px; margin-bottom: 12px; }
-  .km-grid { grid-template-columns: 44px 1fr; }
-  .km-grade { font-size: 12px; }
-  .km-card { font-size: 12px; padding: 6px 8px; }
   .km-tab { padding: 6px 13px; font-size: 13px; }
 }
 
@@ -1724,17 +1569,17 @@ button:active {
 }
 
 /* ========== 听音选词样式 ========== */
+/* 固定 2 列网格：避免窄屏下选项被拉成单列全宽（2026-09-20 用户要求 2 排显示） */
 .word-options {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
   gap: 14px;
   max-width: 620px;
   margin: 0 auto;
 }
 
 .word-options .word-btn {
-  min-width: 240px;
+  min-width: 0;
   min-height: 76px;
   height: auto;
   padding: 10px 18px;
@@ -1755,8 +1600,12 @@ button:active {
 .word-options .word-btn.correct { border-color: var(--green); background: #EAF3DE; }
 .word-options .word-btn.wrong { border-color: #FF6B6B; background: #FCEBEB; }
 
+/* 英译中：选项按钮里是纯中文文本 */
+.word-options .word-btn.cn-only { font-size: 19px; font-weight: 600; color: #333; }
+
 @media (max-width: 768px) {
-  .word-options .word-btn { min-width: 165px; min-height: 66px; }
+  .word-options { gap: 10px; }
+  .word-options .word-btn { min-height: 66px; padding: 8px 10px; }
   .word-options .word-btn .w-en { font-size: 20px; }
   .word-options .word-btn .w-cn { font-size: 13px; }
 }
@@ -1830,31 +1679,50 @@ button:active {
 .adventure-header {
   background: linear-gradient(135deg, var(--purple), var(--pink));
   border-radius: var(--radius);
-  padding: 20px;
+  padding: 16px 22px 18px;
   color: #fff;
-  text-align: center;
   margin-bottom: 20px;
   box-shadow: var(--card-shadow);
 }
 
+/* v2.75：头部补关卡信息（此前只有一根孤零零的进度条，没有文字） */
+.adventure-header .adv-head-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+}
+
 .adventure-header .level-info {
-  font-size: 24px;
-  font-weight: bold;
+  font-size: 18px;
+  font-weight: 600;
+  letter-spacing: .5px;
+}
+
+.adventure-header .adv-head-right {
+  font-size: 14px;
+  opacity: .92;
 }
 
 .adventure-header .progress-bar {
-  height: 10px;
-  background: rgba(255,255,255,0.3);
-  border-radius: 5px;
-  margin-top: 12px;
+  height: 9px;
+  background: rgba(255,255,255,0.32);
+  border-radius: 999px;
+  margin-top: 10px;
   overflow: hidden;
 }
 
 .adventure-header .progress-fill {
   height: 100%;
-  background: var(--yellow);
-  border-radius: 5px;
-  transition: width 0.3s;
+  background: linear-gradient(90deg, #FFF3A6, var(--yellow));
+  border-radius: 999px;
+  transition: width .35s ease;
+}
+
+.adventure-header .adv-head-tip {
+  margin-top: 8px;
+  font-size: 13px;
+  opacity: .88;
 }
 
 .adventure-question {
@@ -1870,6 +1738,62 @@ button:active {
   font-size: 22px;
   color: #333;
   margin-bottom: 20px;
+  line-height: 1.5;
+  white-space: pre-line;   /* v2.75：古诗类题面含换行，按行显示 */
+}
+
+/* ========== 科学配对（v2.75 新增）：左右两列点选配对 ========== */
+.match-board {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 14px;
+  max-width: 780px;
+  margin: 18px auto 0;
+}
+
+.match-col {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.match-item {
+  padding: 14px 16px;
+  border-radius: 14px;
+  border: 1px solid #E3E6EC;
+  background: #fff;
+  font-size: 18px;
+  color: #333;
+  text-align: center;
+  cursor: pointer;
+  transition: border-color .18s, background .18s, color .18s;
+}
+
+.match-item.sel {
+  border-color: #3FA9F5;
+  background: #EAF4FE;
+  color: #0B63A8;
+  font-weight: 600;
+}
+
+.match-item.matched {
+  border-color: #34C759;
+  background: #E9F9EE;
+  color: #1E8E3E;
+  pointer-events: none;
+}
+
+.match-item.wrong {
+  border-color: #FF3B30;
+  background: #FFECEC;
+  color: #B3261E;
+}
+
+.match-tip {
+  text-align: center;
+  font-size: 14px;
+  color: #86868B;
+  margin-top: 14px;
 }
 
 .adventure-options {
@@ -2063,9 +1987,260 @@ button:active {
     padding: 6px 12px;
   }
 }
+/* ==========================================================
+   v2.71 Apple 风格覆盖层（依据 design-systems/apple/DESIGN.md）
+   原则：Action Blue 唯一交互色；chrome 退后内容出彩；
+   卡片去阴影只留发丝线；pill 按钮；按压 scale(0.95)；
+   底栏毛玻璃；正文 17px；中文标题字距收敛 -0.6px
+   ========================================================== */
+:root {
+  --apple-blue: #0066CC;
+  --apple-blue-focus: #0071E3;
+  --apple-ink: #1D1D1F;
+  --apple-ink-80: #333333;
+  --apple-muted: #7A7A7A;
+  --apple-hairline: rgba(0, 0, 0, 0.08);
+  --apple-parchment: #F5F5F7;
+  --apple-pearl: #FAFAFC;
+  --apple-green: #34C759;
+  --apple-red: #FF3B30;
+}
+
+/* ---------- 画布与字体（SF 系统栈 + 17px 正文 + 近黑墨色） ---------- */
+body {
+  background: var(--apple-parchment);
+  color: var(--apple-ink);
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  font-size: 17px;
+}
+
+/* ---------- 侧边栏：白底发丝线，选中态 Action Blue ---------- */
+.sidebar {
+  background: #FFFFFF;
+  box-shadow: inset -1px 0 0 var(--apple-hairline);
+}
+
+.sidebar .logo {
+  color: var(--apple-ink);
+  font-weight: 600;
+  letter-spacing: -0.5px;
+}
+
+.sidebar .nav-item {
+  color: var(--apple-muted);
+  border-radius: 9999px;
+  font-size: 15px;
+  letter-spacing: -0.2px;
+}
+
+.sidebar .nav-item:hover {
+  background: rgba(0, 0, 0, 0.04);
+  color: var(--apple-ink);
+}
+
+.sidebar .nav-item.active {
+  background: rgba(0, 102, 204, 0.10);
+  color: var(--apple-blue);
+}
+
+/* ---------- 底部 Tab / 移动端标题：毛玻璃浮条 ---------- */
+.bottom-tabs {
+  background: rgba(245, 245, 247, 0.82);
+  -webkit-backdrop-filter: saturate(180%) blur(20px);
+  backdrop-filter: saturate(180%) blur(20px);
+  border-top: 1px solid var(--apple-hairline);
+  box-shadow: none;
+}
+
+.bottom-tabs .tab-item { color: var(--apple-muted); }
+.bottom-tabs .tab-item.active { color: var(--apple-blue); }
+
+.mobile-header {
+  background: rgba(245, 245, 247, 0.82);
+  -webkit-backdrop-filter: saturate(180%) blur(20px);
+  backdrop-filter: saturate(180%) blur(20px);
+  color: var(--apple-ink);
+  border-bottom: 1px solid var(--apple-hairline);
+}
+
+/* ---------- 标题层级：Apple tight（中文收敛到 -0.6px） ---------- */
+.section-title,
+.km-page-title {
+  color: var(--apple-ink) !important;
+  font-weight: 600 !important;
+  letter-spacing: -0.6px;
+}
+
+/* ---------- 首页卡片：白底 + 发丝线，去阴影去悬浮 ---------- */
+
+.stat-card .stat-num { color: var(--apple-ink); letter-spacing: -0.5px; }
+.stat-card .stat-label { color: var(--apple-muted); }
+
+.module-card { transition: transform 0.15s; }
+.module-card:hover {
+  transform: none;
+  box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.16) !important;
+}
+.module-card:active { transform: scale(0.98); }
+.module-card .mc-text h3 { color: var(--apple-ink); }
+.module-card .mc-text p { color: var(--apple-muted); }
+
+/* ---------- 主操作按钮：Action Blue pill（button-primary，每屏实心仅一个） ---------- */
+.next-btn,
+.poem-actions .next-btn {
+  background: var(--apple-blue) !important;
+  color: #FFFFFF !important;
+  border: none;
+  border-radius: 9999px !important;
+  font-weight: 400;
+  letter-spacing: 0;
+}
+
+/* 朗读按钮：ghost pill（白底蓝字蓝边，button-secondary-pill） */
+.read-btn,
+.poem-actions .read-btn {
+  background: #FFFFFF !important;
+  color: var(--apple-blue) !important;
+  border: 1px solid var(--apple-blue);
+  border-radius: 9999px !important;
+  font-weight: 400;
+}
+
+/* 次要按钮：pearl 胶囊（button-pearl-capsule） */
+.prev-btn,
+.poem-actions .prev-btn,
+.calc-btn-prev {
+  background: var(--apple-pearl) !important;
+  color: var(--apple-ink-80) !important;
+  border: 1px solid var(--apple-hairline);
+  border-radius: 9999px !important;
+  font-weight: 400;
+}
+
+/* ---------- 子模块 Tab：pearl 胶囊 + 选中蓝描边（configurator chip） ---------- */
+.sub-tabs .sub-tab {
+  background: var(--apple-pearl);
+  border: 1px solid var(--apple-hairline);
+  border-radius: 9999px;
+  color: var(--apple-ink-80);
+  font-size: 14px;
+  padding: 9px 18px;
+}
+
+.sub-tabs .sub-tab.active {
+  background: #FFFFFF;
+  border: 2px solid var(--apple-blue-focus);
+  color: var(--apple-ink);
+  font-weight: 600;
+}
+
+/* 通关金色 sub-tab.cleared 为内容状态色，保留不动 */
+
+/* ---------- 答题选项：hairline 卡 + iOS 语义反馈色 ---------- */
+.listen-options .listen-btn,
+.word-options .word-btn,
+.adventure-options .adv-btn,
+.logic-options button,
+.match-options button,
+.count-options button {
+  background: #FFFFFF;
+  border: 1px solid var(--apple-hairline);
+}
+
+.listen-options .listen-btn.correct,
+.word-options .word-btn.correct,
+.adventure-options .adv-btn.correct {
+  background: #E9F9EE !important;
+  border-color: var(--apple-green) !important;
+}
+
+.listen-options .listen-btn.wrong,
+.word-options .word-btn.wrong,
+.adventure-options .adv-btn.wrong {
+  background: #FDEEEE !important;
+  border-color: var(--apple-red) !important;
+}
+
+/* ---------- 知识图谱页 chrome Apple 化（科目彩色 km-tab 为内容色保留） ---------- */
+.km-wrap { background: #FFFFFF; }
+
+.km-act {
+  border-radius: 9999px;
+  border: 1px solid var(--apple-hairline);
+  background: #FFFFFF;
+}
+
+.kg-btn {
+  border-radius: 9999px;
+  border: 1px solid var(--apple-hairline);
+  background: #FFFFFF;
+}
+
+.kg-btn.active {
+  background: var(--apple-blue);
+  border-color: var(--apple-blue);
+}
+
+.kgv-toolbar .kg-search input {
+  border-radius: 9999px;
+  border: 1px solid var(--apple-hairline);
+  height: 36px;
+}
+
+.kgv-stage {
+  background: #FFFFFF;
+  border: 1px solid var(--apple-hairline);
+  border-radius: 18px;
+}
+
+.kgv-stat { background: #FFFFFF; }
+.kgv-stat-card.done { background: #E9F9EE; }
+.kgv-stat-card.doing { background: #FFF6E5; }
+.kgv-stat-card.todo { background: var(--apple-parchment); }
+
+.kg-panel { border-left: 1px solid var(--apple-hairline); }
+.kg-panel-actions {
+  background: #FFFFFF;
+  border-bottom: 1px solid var(--apple-hairline);
+}
+
+.kg-rel-btn { border-radius: 9999px; }
+
+/* ---------- 反馈提示：墨色毛玻璃 pill（v2.74 缩小尺寸，避免遮挡画面） ---------- */
+.feedback-toast {
+  background: rgba(29, 29, 31, 0.88);
+  border-radius: 9999px;
+  -webkit-backdrop-filter: saturate(180%) blur(20px);
+  backdrop-filter: saturate(180%) blur(20px);
+  font-size: 15px;
+  line-height: 1.4;
+  font-weight: 500;
+  padding: 9px 20px;
+  max-width: 68vw;
+  text-align: center;
+}
+
+/* ---------- 星星计数器：白 pill 发丝线 ---------- */
+.star-counter {
+  background: #FFFFFF;
+  border: 1px solid var(--apple-hairline);
+  box-shadow: none;
+  border-radius: 9999px;
+}
+
+/* ---------- 本页调用的 Apple token ----------
+   colors: primary #0066CC / ink #1D1D1F / ink-muted-48 #7A7A7A
+           canvas-parchment #F5F5F7 / surface-pearl #FAFAFC
+           hairline rgba(0,0,0,0.08)（divider-soft 环线手法）
+           focus #0071E3；语义反馈沿用 iOS 绿 #34C759 红 #FF3B30
+   rounded: lg 18px（卡片）/ pill 9999px（按钮·搜索·Tab）
+   typography: 正文 17px 400 / 标题 600 负字距 / 界面按钮 400
+   motion: 按压 scale(0.95)（全局 button:active 已有）
+   保留的内容色：模块图标渐变、科目彩色 km-tab、通关金色、数独黄 */
 </style>
 <!-- 知识图谱数据（1-6 年级四科，离线本地文件，不依赖网络） -->
 <script src="knowledge-graph.js"></script>
+<script src="echarts.min.js"></script>
 </head>
 <body data-page-node-id="KCvg73AMTL03H3RcfiGecP">
 
@@ -2079,8 +2254,7 @@ button:active {
   <div data-page-node-id="Ravk2R4fjiRDzbEku4mCRZ" class="nav-item" data-page="alphabet"><span data-page-node-id="CnKZAQm77Bub6dD8yQUljF" class="nav-icon"><svg data-page-node-id="t5fxb4U3Q2HMiNVehtXxuj" viewBox="0 0 24 24"><path data-page-node-id="PpUMTNEJpSvCfRCPN2pCBR" d="M5 4h2v16H5V4zm4 0h1.5l4.5 9.5V4H17v16h-1.5L11 10.5V20H9V4zm9 0h2l3 16h-2l-.5-3h-3l-.5 3h-2l3-16zm1 2.5L18.2 15h1.6L19 6.5z"/></svg></span><!--pnid:7GCcdKJve4SJk73PkCfdng-->英语岛</div>
   <div class="nav-item" data-page="chinese"><span class="nav-icon"><svg viewBox="0 0 24 24"><path d="M4 19h16v2H4v-2zm2.2-4h11.6l-1.1 3H7.3l-1.1-3zM12 4c2.6 0 4.8 1 5.9 2.7.8 1.2.9 2.6.4 3.9-.4-1.2-1.2-2.3-2.4-3.1C14.6 6.6 13.3 6.2 12 6.2S9.4 6.6 8.1 7.5C6.9 8.3 6.1 9.4 5.7 10.6c-.5-1.3-.4-2.7.4-3.9C7.2 5 9.4 4 12 4zm0 3.4c1.9 0 3.6.7 4.7 1.9-.9 1.5-2.7 2.5-4.7 2.5s-3.8-1-4.7-2.5c1.1-1.2 2.8-1.9 4.7-1.9z"/></svg></span>语文天地</div>
   <div data-page-node-id="L1k50oi99WBaHesz7W7YyA" class="nav-item" data-page="number"><span data-page-node-id="0tYSFBECFswLVsYZr7xfK4" class="nav-icon"><svg data-page-node-id="ak3NN3rdirlh9VYxmz47zK" viewBox="0 0 24 24"><path data-page-node-id="yYysCSJVySR7X4x9xS17qp" d="M4 4h4v4H4V4zm6 0h4v4h-4V4zm6 0h4v4h-4V4zM4 10h4v4H4v-4zm6 0h4v4h-4v-4zm6 0h4v4h-4v-4zM4 16h4v4H4v-4zm6 0h4v4h-4v-4zm6 0h4v4h-4v-4z"/><text data-page-node-id="QM4pq9i2KvkmcNqtYpjodz" fill="white" font-size="3.5" font-weight="bold" x="4.5" y="7.5"><!--pnid:sOk5YQdWownDoDT1Jxj7I8-->1</text><text data-page-node-id="nxyWnSJEoaKQc4qFw6bfkl" fill="white" font-size="3.5" font-weight="bold" x="10.5" y="7.5"><!--pnid:GMdlRSrBBDEyPCRdZqRki4-->2</text><text data-page-node-id="VPIkBKRDLP1V8hxJPowe5y" fill="white" font-size="3.5" font-weight="bold" x="16.5" y="7.5"><!--pnid:9fNoprAz6CvjwQyPBYJFHc-->3</text><text data-page-node-id="nN5hDAH1sOkFXBXMSsQsc5" fill="white" font-size="3.5" font-weight="bold" x="4.5" y="13.5"><!--pnid:ymrkxHWp2tY6VY1wTyLmw4-->4</text><text data-page-node-id="XBUYxDo01PwQJELuCO7zTn" fill="white" font-size="3.5" font-weight="bold" x="10.5" y="13.5"><!--pnid:EXY7QrxwiI0DjcaUkItr5g-->5</text><text data-page-node-id="Pi4NPcUNR6ZsU7Qs5XDat6" fill="white" font-size="3.5" font-weight="bold" x="16.5" y="13.5"><!--pnid:2z7iuIjQOKjHuEobgH7xrg-->6</text><text data-page-node-id="w2BHkf0F3gfCQZajOy5cHP" fill="white" font-size="3.5" font-weight="bold" x="4.5" y="19.5"><!--pnid:NtCf0pDs44EVkQPglgGEAO-->7</text><text data-page-node-id="viTybRDajNGzpggLDbGBpu" fill="white" font-size="3.5" font-weight="bold" x="10.5" y="19.5"><!--pnid:eVn2xMizzKv5jBd17hbC2V-->8</text><text data-page-node-id="FNG3VUYwBr8W90VibGSemy" fill="white" font-size="3.5" font-weight="bold" x="16.5" y="19.5"><!--pnid:WJDWyhQ1VXpIFMzOgEF31L-->9</text></svg></span><!--pnid:Xu3bKZJasXMhlZB7Jzv7Fq-->数学城</div>
-  <div data-page-node-id="sIbZaD13yFDQkAusQZJ1YG" class="nav-item" data-page="logic"><span data-page-node-id="AU9AYhZ5RpI1nYetJl82Hd" class="nav-icon"><svg data-page-node-id="U0ibyIGmyZhk07unykfOSE" viewBox="0 0 24 24"><path data-page-node-id="IK4soHfrdW4C5cwciOLJ6U" d="M4 4h7v7H4V4zm9 0h7v7h-7V4zM4 13h7v7H4v-7zm9 0h7v7h-7v-7z" opacity="0.3"/><path data-page-node-id="sp7FQvJcyDWwRjfewNz7ss" d="M5 5h5v5H5V5zm9 0h5v5h-5V5zM5 14h5v5H5v-5z"/><path data-page-node-id="NX8JEHwkobH1ck5CxDWDLX" d="M14 14h5v5h-5v-5z" fill="none" stroke="currentColor" stroke-dasharray="2 1" stroke-width="1.5"/></svg></span><!--pnid:Zjx9iMFW6ijRBIyEYVht2Y-->逻辑挑战</div>
-  <div data-page-node-id="GfXIEpo9SjwKCUsmcTtxmU" class="nav-item" data-page="graph"><span data-page-node-id="R6K1csUjFaES7HoidcGv4l" class="nav-icon"><svg viewBox="0 0 24 24"><path d="M12 2.5a2.6 2.6 0 100 5.2 2.6 2.6 0 000-5.2zM5 16.3a2.6 2.6 0 100 5.2 2.6 2.6 0 000-5.2zM19 16.3a2.6 2.6 0 100 5.2 2.6 2.6 0 000-5.2z"/><path d="M12 8.2v3.4M11.2 12.2l-4.9 4M12.8 12.2l4.9 4" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><!--pnid:vtTRhuCkRSvgNfp3dvtqdF-->知识图谱</div>
+  <div data-page-node-id="sIbZaD13yFDQkAusQZJ1YG" class="nav-item" data-page="logic"><span data-page-node-id="AU9AYhZ5RpI1nYetJl82Hd" class="nav-icon"><svg data-page-node-id="U0ibyIGmyZhk07unykfOSE" viewBox="0 0 24 24"><path data-page-node-id="IK4soHfrdW4C5cwciOLJ6U" d="M4 4h7v7H4V4zm9 0h7v7h-7V4zM4 13h7v7H4v-7zm9 0h7v7h-7v-7z" opacity="0.3"/><path data-page-node-id="sp7FQvJcyDWwRjfewNz7ss" d="M5 5h5v5H5V5zm9 0h5v5h-5V5zM5 14h5v5H5v-5z"/><path data-page-node-id="NX8JEHwkobH1ck5CxDWDLX" d="M14 14h5v5h-5v-5z" fill="none" stroke="currentColor" stroke-dasharray="2 1" stroke-width="1.5"/></svg></span><!--pnid:Zjx9iMFW6ijRBIyEYVht2Y-->科学</div>
 </nav>
 
 <!--pnid:D4LJyKmmoCxJfFdmXa35JZ--><!-- 移动端顶部标题栏（v2.1 取消显示） -->
@@ -2092,8 +2266,7 @@ button:active {
     <div data-page-node-id="rwjW4cgfvBIRB07trKGgmw" class="tab-item" data-page="alphabet"><span data-page-node-id="8ipE2Q0riTiTiAOOq0dlOu" class="tab-icon"><svg data-page-node-id="AqaJPG2FPvr6QAeKN0lJvW" viewBox="0 0 24 24"><path data-page-node-id="rAnKlLOvSHw2lJrV81Owu8" d="M5 4h2v16H5V4zm4 0h1.5l4.5 9.5V4H17v16h-1.5L11 10.5V20H9V4zm9 0h2l3 16h-2l-.5-3h-3l-.5 3h-2l3-16zm1 2.5L18.2 15h1.6L19 6.5z"/></svg></span><!--pnid:9xbH0bjJCD1oCjFuJl95qG-->英语</div>
     <div class="tab-item" data-page="chinese"><span class="tab-icon"><svg viewBox="0 0 24 24"><path d="M4 19h16v2H4v-2zm2.2-4h11.6l-1.1 3H7.3l-1.1-3zM12 4c2.6 0 4.8 1 5.9 2.7.8 1.2.9 2.6.4 3.9-.4-1.2-1.2-2.3-2.4-3.1C14.6 6.6 13.3 6.2 12 6.2S9.4 6.6 8.1 7.5C6.9 8.3 6.1 9.4 5.7 10.6c-.5-1.3-.4-2.7.4-3.9C7.2 5 9.4 4 12 4zm0 3.4c1.9 0 3.6.7 4.7 1.9-.9 1.5-2.7 2.5-4.7 2.5s-3.8-1-4.7-2.5c1.1-1.2 2.8-1.9 4.7-1.9z"/></svg></span>语文</div>
     <div data-page-node-id="LpUhlEkuElCbaes12c1GYR" class="tab-item" data-page="number"><span data-page-node-id="YkchqlYAdEqMTYjp3oRxgm" class="tab-icon"><svg data-page-node-id="KAqc4EkpwR9XrBE6e2HytQ" viewBox="0 0 24 24"><path data-page-node-id="m4gJWEsMsjps06Rut4s2u2" d="M4 4h4v4H4V4zm6 0h4v4h-4V4zm6 0h4v4h-4V4zM4 10h4v4H4v-4zm6 0h4v4h-4v-4zm6 0h4v4h-4v-4zM4 16h4v4H4v-4zm6 0h4v4h-4v-4zm6 0h4v4h-4v-4z"/></svg></span><!--pnid:Og16yzZlwqjiArVFi10gvP-->数字</div>
-    <div data-page-node-id="dHlovRZJxrF0yxG4R60wmG" class="tab-item" data-page="logic"><span data-page-node-id="AUEdNjxt51A7HF4It67Ndt" class="tab-icon"><svg data-page-node-id="zt51PRAHntM8LQgkTPc8qX" viewBox="0 0 24 24"><path data-page-node-id="J1MeYMlim11dNGiHckEm3F" d="M5 5h5v5H5V5zm9 0h5v5h-5V5zM5 14h5v5H5v-5z"/><path data-page-node-id="6yusgEE2n0WHf9olFeVSCw" d="M14 14h5v5h-5v-5z" fill="none" stroke="currentColor" stroke-dasharray="2 1" stroke-width="1.5"/></svg></span><!--pnid:S7wJiB5ulfyyVunk9NtbjH-->逻辑</div>
-    <div data-page-node-id="lQy72voxLSA9f28PGhgVsX" class="tab-item" data-page="graph"><span data-page-node-id="4n2EWDgBwaunWLUGK81WRR" class="tab-icon"><svg viewBox="0 0 24 24"><path d="M12 2.5a2.6 2.6 0 100 5.2 2.6 2.6 0 000-5.2zM5 16.3a2.6 2.6 0 100 5.2 2.6 2.6 0 000-5.2zM19 16.3a2.6 2.6 0 100 5.2 2.6 2.6 0 000-5.2z"/><path d="M12 8.2v3.4M11.2 12.2l-4.9 4M12.8 12.2l4.9 4" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg></span><!--pnid:Mo8SvccBqpx43Fk8s9sOXH-->图谱</div>
+    <div data-page-node-id="dHlovRZJxrF0yxG4R60wmG" class="tab-item" data-page="logic"><span data-page-node-id="AUEdNjxt51A7HF4It67Ndt" class="tab-icon"><svg data-page-node-id="zt51PRAHntM8LQgkTPc8qX" viewBox="0 0 24 24"><path data-page-node-id="J1MeYMlim11dNGiHckEm3F" d="M5 5h5v5H5V5zm9 0h5v5h-5V5zM5 14h5v5H5v-5z"/><path data-page-node-id="6yusgEE2n0WHf9olFeVSCw" d="M14 14h5v5h-5v-5z" fill="none" stroke="currentColor" stroke-dasharray="2 1" stroke-width="1.5"/></svg></span><!--pnid:S7wJiB5ulfyyVunk9NtbjH-->科学</div>
   </div>
 </div>
 
@@ -2105,10 +2278,8 @@ button:active {
 
   <!--pnid:1H6BBOI80lNoBgIgPDNOQ5--><!-- ===== 首页 ===== -->
   <div data-page-node-id="sWDCg8rapimkzKO8vu2Opx" class="page active" id="page-home">
-    <div data-page-node-id="OV3cPM5feceh6LAOp3pQmD" class="welcome-banner">
-      <h1 data-page-node-id="wwyxoBwoMz3IYt9aALiseR"><svg data-page-node-id="0qIvsvpAIMwF7xdq7uye5E" height="28" viewBox="0 0 24 24" width="28" style="vertical-align:middle"><path data-page-node-id="sIeVlAuCK4GsJR96W53bYu" d="M2 12c0 1.5.4 3.2 1.5 4.5C5 18.5 8 20 12 21c4-1 7-2.5 8.5-4.5C21.6 15.2 22 13.5 22 12c0-2-1-4-3-5s-4.5-.5-5.5 1c-.5.7-.8 1.5-1 2.2L12 10c-.2-.7-.5-1.5-1-2.2C10 6.5 8 6 6 7S2 10 2 12z" fill="#FF6B9D"/></svg><!--pnid:vhF2DAi5Z0Ek8DmxdO7G80--> 欢迎回来，小宝贝！</h1>
-      <p data-page-node-id="7o3XU6x5siQ9NbLmmYer3I"><!--pnid:AwLbSNUdYLfulMyDszSkTy-->宝贝今天也要加油哦！<svg data-page-node-id="uKUowJmaserL5ANKIDSpn2" fill="#FFD700" height="18" viewBox="0 0 24 24" width="18" style="vertical-align:middle"><path data-page-node-id="Y2MaclAnjONfa0Vuj9nfCS" d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></p>
-    </div>
+    <!--pnid:EfjgXULnwGWfwre4vJrvSs--><!-- 首页：知识图谱学习进度（由 kgv统计() 填充，v2.74 起置顶） -->
+    <div class="kgv-stat" id="kgvStat" style="border-radius:18px; margin-bottom:14px;"></div>
     <div data-page-node-id="pa1at0DlPLltPtbvZQYJKK" class="stats-grid">
       <div data-page-node-id="aIz1pUxeRu0Gob03bRnZAb" class="stat-card">
         <div data-page-node-id="KPf9Z1W8qHwF7YniLXIm61" class="stat-icon"><svg data-page-node-id="KepEjloMNqE9ByBJZN5roi" fill="#FFD700" height="32" viewBox="0 0 24 24" width="32"><path data-page-node-id="gXzrE3OCECyQbsIaILRUTE" d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg></div>
@@ -2145,37 +2316,62 @@ button:active {
 
 
   </div>
-  <!-- ===== 知识图谱（卡片地图：科目筛选 / 年级卡片 / 右侧操作+详情面板） ===== -->
+  <!-- ===== 知识图谱 v2.6（ECharts 关系图：科目/年级筛选 + 搜索 + 四科四象限 + 右侧进度与详情） ===== -->
   <div class="page" id="page-graph">
     <h2 class="km-page-title">知识图谱</h2>
     <div class="km-layout">
-      <div class="km-wrap">
-        <div class="km-toolbar">
-          <div class="km-subject-tabs" id="kmSubjectTabs">
-            <button type="button" class="km-tab active" data-科目="math" style="--tab色:#2F5FD0">数学</button>
-            <button type="button" class="km-tab" data-科目="chinese" style="--tab色:#D63C74">语文</button>
-            <button type="button" class="km-tab" data-科目="english" style="--tab色:#1F9C93">英语</button>
-            <button type="button" class="km-tab" data-科目="science" style="--tab色:#8E3FD6">科学</button>
+      <div class="km-wrap kgv-wrap">
+        <div class="kgv-toolbar">
+          <div class="km-subject-tabs" id="kgvSubjectTabs">
+            <button type="button" class="km-tab active" data-kgv科目="math" style="--tab色:#2F5FD0">数学</button>
+            <button type="button" class="km-tab" data-kgv科目="chinese" style="--tab色:#D63C74">语文</button>
+            <button type="button" class="km-tab" data-kgv科目="english" style="--tab色:#1F9C93">英语</button>
+            <button type="button" class="km-tab" data-kgv科目="science" style="--tab色:#8E3FD6">科学</button>
+          </div>
+          <div class="km-subject-tabs" id="kgvGradeTabs">
+            <button type="button" class="kg-btn active" data-kgv年级="1">一年级</button>
+            <button type="button" class="kg-btn" data-kgv年级="2">二年级</button>
+            <button type="button" class="kg-btn" data-kgv年级="3">三年级</button>
+            <button type="button" class="kg-btn" data-kgv年级="4">四年级</button>
+            <button type="button" class="kg-btn" data-kgv年级="5">五年级</button>
+            <button type="button" class="kg-btn" data-kgv年级="6">六年级</button>
+            <button type="button" class="kg-btn" data-kgv年级="all">全部</button>
           </div>
         </div>
-        <div class="km-total" id="kmTotal" style="margin-bottom:12px"></div>
-        <div id="kmBody"></div>
+        <div class="km-total" id="kmTotal" style="margin-bottom:10px"></div>
+        <div class="kgv-stage" id="kgvStage">
+          <div class="kgv-zones" id="kgvZones">
+            <div class="kgv-zone kgv-zone-math"><span>数学</span></div>
+            <div class="kgv-zone kgv-zone-chinese"><span>语文</span></div>
+            <div class="kgv-zone kgv-zone-english"><span>英语</span></div>
+            <div class="kgv-zone kgv-zone-science"><span>科学</span></div>
+          </div>
+          <div class="kgv-chart" id="kgvChart"></div>
+        </div>
+        <div class="kgv-legend">
+          <span class="kg-legend-item"><span class="kg-dot" style="background:#22C55E"></span>已掌握</span>
+          <span class="kg-legend-item"><span class="kg-dot" style="background:#F59E0B"></span>学习中</span>
+          <span class="kg-legend-item"><span class="kg-dot" style="background:#94A3B8"></span>未开始</span>
+          <span class="kg-legend-item"><span class="kg-dot" style="background:#CBD5E1;border:1px dashed #94A3B8"></span>前置关系</span>
+        </div>
       </div>
       <aside class="kg-panel" id="kgPanelWrap">
         <div class="kg-panel-actions">
-          <button type="button" class="km-act" onclick="km标记('done')">已学会</button>
-          <button type="button" class="km-act" onclick="km标记('todo')">待学习</button>
+          <button type="button" class="km-act" id="kgvBtnTodo" onclick="kgv标记('todo')">未开始</button>
+          <button type="button" class="km-act" id="kgvBtnDoing" onclick="kgv标记('doing')">学习中</button>
+          <button type="button" class="km-act" id="kgvBtnDone" onclick="kgv标记('done')">已掌握</button>
         </div>
         <div class="kg-panel-body" id="kgPanel"></div>
       </aside>
     </div>
   </div>
+
   <div data-page-node-id="5jh2ge4MS1OqGvFGMjUlmQ" class="page" id="page-alphabet">
     <h2 data-page-node-id="XG0aXkUWvE4eXZgLC7KMi9" class="section-title"><svg data-page-node-id="MD7zGRowtwDgIlBtosMiYX" fill="#FF6B9D" height="24" viewBox="0 0 24 24" width="24" style="vertical-align:middle"><path data-page-node-id="4zw5c9TFMSfIkX4ojwpcH9" d="M5 4h2v16H5V4zm4 0h1.5l4.5 9.5V4H17v16h-1.5L11 10.5V20H9V4zm9 0h2l3 16h-2l-.5-3h-3l-.5 3h-2l3-16zm1 2.5L18.2 15h1.6L19 6.5z"/></svg><!--pnid:4w5w5j8AhWjlTZQVj9B6MY--> 英语岛</h2>
     <div data-page-node-id="BIAUxaLGRzdSUYmEJLnOAi" class="sub-tabs">
       <button data-page-node-id="Fwz8ULVjjU8gXv7GJgdqXB" class="sub-tab active" data-subtab="alpha-match"><!--pnid:Tem4Q2nbCRAs9bsHR2ADW8-->配对游戏</button>
       <button data-page-node-id="IeyR64gu1xGkhPVgaeoX6U" class="sub-tab" data-subtab="alpha-phonics"><!--pnid:Q6nzkB0eUo7zj0lGrs5XRH-->自然拼读</button>
-      <button data-page-node-id="P9YnoamvFN7fkWou8AtBuP" class="sub-tab" data-subtab="alpha-listen"><!--pnid:KkQQLMbcOGq7pHqcVSFLFH-->看词选图</button>
+      <button data-page-node-id="P9YnoamvFN7fkWou8AtBuP" class="sub-tab" data-subtab="alpha-listen"><!--pnid:KkQQLMbcOGq7pHqcVSFLFH-->英译中</button>
       <button class="sub-tab" data-subtab="alpha-word">听音选词</button>
     </div>
     <!--pnid:TcIRydqXQkMxciMBYo5a9R--><!-- 配对游戏 -->
@@ -2187,7 +2383,7 @@ button:active {
         </div>
         <div data-page-node-id="6j6f9SYzw88IBq2r0ukasT" class="match-options" id="matchOptions"></div>
         <div style="display:flex; gap:12px; justify-content:center; margin-top:20px;">
-          <button data-page-node-id="YhYu3lDLl8zQSPijTZ0Md2" class="next-btn" onclick="prevMatchQuestion()" style="background:var(--blue); flex:1; max-width:170px;"><!--pnid:VnZiStPTYpcmRsYvuyhn8x--> 上一题</button>
+          <button data-page-node-id="YhYu3lDLl8zQSPijTZ0Md2" class="next-btn prev-btn" onclick="prevMatchQuestion()" style="background:var(--blue); flex:1; max-width:170px;"><!--pnid:VnZiStPTYpcmRsYvuyhn8x--> 上一题</button>
           <button class="next-btn" onclick="generateMatchQuestion()" style="flex:1; max-width:170px;">下一题</button>
         </div>
       </div>
@@ -2197,14 +2393,15 @@ button:active {
       <p data-page-node-id="zlNLs65nrEi5XmJOpYj4z2" style="color:#666; margin-bottom:16px"><!--pnid:krkpq3T7a0U9kxKvEgWFLU-->点击卡片，听一听字母的常见发音和例词 🗣️</p>
       <div data-page-node-id="7TLfS1Ro6cGREA6ut2QAQV" class="phonics-grid" id="phonicsGrid"></div>
     </div>
-    <!--pnid:SjsPw3G504JMnRtmIlA1YR--><!-- 看词选图 -->
+    <!--pnid:SjsPw3G504JMnRtmIlA1YR--><!-- 英译中（原看词选图：题面英文单词，选项为中文） -->
     <div data-page-node-id="Zl9wE46sYITOkhBGniMMd6" id="alpha-listen" class="sub-page" style="display:none">
       <div data-page-node-id="z1DAjdFtitTJZZZ19c8NFD" class="calc-area">
-        <button data-page-node-id="LmS8gmK66S1fxSrkjC5jZD" id="listenWordBtn" class="next-btn" onclick="replayListenWord()" style="background:var(--blue); margin-bottom:20px"><!--pnid:rK7GAGyCUXfq3V0woulyEr--> 单词</button>
-        <div data-page-node-id="wk1mfJGaCFzjOzw21LVIYj" class="listen-options" id="listenOptions"></div>
+        <p style="color:#666; margin-bottom:14px">选出下面单词的中文意思</p>
+        <button data-page-node-id="LmS8gmK66S1fxSrkjC5jZD" id="listenWordBtn" class="next-btn" onclick="replayListenWord()" style="background:var(--blue); margin-bottom:20px; font-size:30px; padding:14px 44px"><!--pnid:rK7GAGyCUXfq3V0woulyEr--> 单词</button>
+        <div data-page-node-id="wk1mfJGaCFzjOzw21LVIYj" class="word-options" id="listenOptions"></div>
         <div data-page-node-id="OgjdqFALq1V9tJUpkvQjiG" id="listenAnswer" style="margin-top:16px; min-height:34px; font-size:22px; color:var(--purple)"></div>
         <div style="display:flex; gap:12px; justify-content:center;">
-          <button class="next-btn" onclick="prevListenQuestion()" style="background:var(--blue); flex:1; max-width:170px;">上一题</button>
+          <button class="next-btn prev-btn" onclick="prevListenQuestion()" style="background:var(--blue); flex:1; max-width:170px;">上一题</button>
           <button data-page-node-id="bHz7DM2DfzWUHceGCUAsLQ" class="next-btn" onclick="generateListenQuestion()" style="flex:1; max-width:170px;"><!--pnid:slc66t3bjR5xMPaN1emCGJ-->下一题</button>
         </div>
       </div>
@@ -2216,7 +2413,7 @@ button:active {
         <div class="word-options" id="pickOptions"></div>
         <div id="pickAnswer" style="margin-top:16px; min-height:34px; font-size:22px; color:var(--purple)"></div>
         <div style="display:flex; gap:12px; justify-content:center;">
-          <button class="next-btn" onclick="prevPickQuestion()" style="background:var(--blue); flex:1; max-width:170px;">上一题</button>
+          <button class="next-btn prev-btn" onclick="prevPickQuestion()" style="background:var(--blue); flex:1; max-width:170px;">上一题</button>
           <button class="next-btn" onclick="generatePickQuestion()" style="flex:1; max-width:170px;">下一题</button>
         </div>
       </div>
@@ -2257,6 +2454,8 @@ button:active {
       <button data-page-node-id="ne5K5a3KeMl53mEKECdTDL" class="sub-tab active" data-subtab="num-calc"><!--pnid:wN3cXy8wtvA729kGNmghAa-->口算练习</button>
       <button data-page-node-id="BPmSmKg0DBBTMe084UcFtT" class="sub-tab" data-subtab="num-mul"><!--pnid:lgemApUeHOp9h5Y5qEg46x-->乘除口诀</button>
       <button data-page-node-id="knsvz2hNOCAkh53QZVZ6YL" class="sub-tab" data-subtab="num-sudoku"><!--pnid:k2AECBR5ETIH7Htm0ilZeR-->数独训练</button>
+      <button data-page-node-id="gjULcpSbj6phRA0cWt42oA" class="sub-tab" data-subtab="num-pattern"><!--pnid:uxY8Nu4LHwxFm7nYhfq3fG-->找规律</button>
+      <button data-page-node-id="7UUV8VIEpNwFqU9ZbqWfeF" class="sub-tab" data-subtab="num-sort"><!--pnid:yod0rBiCAVtBbmEDNwgKpA-->排序题</button>
     </div>
     <!--pnid:KIPKZcI2BL4bp3PAgGYjM7--><!-- 数独训练 -->
     <div data-page-node-id="3RPFupWqTWVak8SV1aquvr" id="num-sudoku" class="sub-page" style="display:none">
@@ -2284,7 +2483,7 @@ button:active {
         <div data-page-node-id="JegBpLwLwSS2GyJqaVzhxB" class="calc-question" id="mulQuestion"><!--pnid:pBAdgFLbgR9Yj2n1MOmOBf-->6 × 7 = ?</div>
         <div data-page-node-id="nhYMrrj6p2IaN9qSQq18Pq" class="calc-options" id="mulOptions"></div>
         <div style="display:flex; gap:12px; justify-content:center; margin-top:16px;">
-          <button class="next-btn" onclick="prevMulQuestion()" style="background:var(--blue); flex:1; max-width:170px;">上一题</button>
+          <button class="next-btn prev-btn" onclick="prevMulQuestion()" style="background:var(--blue); flex:1; max-width:170px;">上一题</button>
           <button data-page-node-id="Si1vbI3u9GgmhSvwruC3Hp" class="next-btn" onclick="generateMulQuestion()" style="flex:1; max-width:170px;"><!--pnid:qQqb5XOb3HjMt9fiGttx2u-->下一题</button>
         </div>
       </div>
@@ -2299,29 +2498,45 @@ button:active {
           </div>
         </div>
         <div style="display:flex; gap:12px; justify-content:center; margin-top:16px;">
-          <button class="next-btn" onclick="prevCalcQuestion()" style="background:var(--blue); flex:1; max-width:170px;">上一题</button>
+          <button class="next-btn prev-btn" onclick="prevCalcQuestion()" style="background:var(--blue); flex:1; max-width:170px;">上一题</button>
           <button data-page-node-id="vmmF0uICODBMkVCI3PQAxP" class="next-btn" onclick="generateCalcQuestion()" style="flex:1; max-width:170px;"><!--pnid:G4zZ052Ct8qlOfKIhmnCSq-->下一题</button>
         </div>
       </div>
     </div>
-  </div>
-
-  <!--pnid:LbgOYfcQ4p8crKJEYKZqSq--><!-- ===== 逻辑挑战 ===== -->
-  <div data-page-node-id="099LgtrTyDM3i1T2wYARWq" class="page" id="page-logic">
-    <h2 data-page-node-id="y0xWko0mVGX5HmZrYddRpw" class="section-title"><svg data-page-node-id="FHAU3nZUvjyMEvd4IjNCxx" fill="#95E67E" height="24" viewBox="0 0 24 24" width="24" style="vertical-align:middle"><path data-page-node-id="0Rj7cHo52WwseWcHGjKPjC" d="M5 5h5v5H5V5zm9 0h5v5h-5V5zM5 14h5v5H5v-5z"/><path data-page-node-id="1RMZ5ghOEwpLxcWqKAMFBh" d="M14 14h5v5h-5v-5z" fill="none" stroke="#95E67E" stroke-dasharray="2 1" stroke-width="1.5"/></svg><!--pnid:Rpl2HrKrj5sWZFOD8EbvJh--> 逻辑挑战</h2>
-    <div data-page-node-id="HUVW5bLG7ldI2trbViFfsy" class="sub-tabs">
-      <button data-page-node-id="gjULcpSbj6phRA0cWt42oA" class="sub-tab active" data-subtab="logic-pattern"><!--pnid:uxY8Nu4LHwxFm7nYhfq3fG-->找规律</button>
-      <button data-page-node-id="HZyAS7g762p8s2HxKQCBZ9" class="sub-tab" data-subtab="logic-pair"><!--pnid:fM0y7hwO4HMIZTMuXlgOjy-->图形配对</button>
-      <button data-page-node-id="7UUV8VIEpNwFqU9ZbqWfeF" class="sub-tab" data-subtab="logic-sort"><!--pnid:yod0rBiCAVtBbmEDNwgKpA-->排序题</button>
-    </div>
-    <div data-page-node-id="a4KOaeiOVeqtnweWq62g91" id="logic-pattern" class="sub-page">
+    <!-- 找规律（v2.75 从逻辑挑战迁入数学城） -->
+    <div data-page-node-id="a4KOaeiOVeqtnweWq62g91" id="num-pattern" class="sub-page" style="display:none">
       <div data-page-node-id="KQwjysR61vk6CHx72E9g77" class="logic-card" id="patternCard"></div>
     </div>
+    <!-- 排序题（v2.75 从逻辑挑战迁入数学城） -->
+    <div data-page-node-id="F126dOjzpd6cF6nZbgrdFn" id="num-sort" class="sub-page" style="display:none">
+      <div data-page-node-id="sukk1fqBg178g2oawPzcud" class="logic-card" id="sortCard"></div>
+    </div>
+  </div>
+
+  <!--pnid:LbgOYfcQ4p8crKJEYKZqSq--><!-- ===== 科学（v2.75：原逻辑挑战，改为科学科目；找规律与排序题已迁入数学城） ===== -->
+  <div data-page-node-id="099LgtrTyDM3i1T2wYARWq" class="page" id="page-logic">
+    <h2 data-page-node-id="y0xWko0mVGX5HmZrYddRpw" class="section-title"><svg fill="#3FA9F5" height="24" viewBox="0 0 24 24" width="24" style="vertical-align:middle"><circle cx="12" cy="12" r="2.2"/><ellipse cx="12" cy="12" rx="10" ry="4.4" fill="none" stroke="#3FA9F5" stroke-width="1.6"/><ellipse cx="12" cy="12" rx="10" ry="4.4" fill="none" stroke="#3FA9F5" stroke-width="1.6" transform="rotate(60 12 12)"/><ellipse cx="12" cy="12" rx="10" ry="4.4" fill="none" stroke="#3FA9F5" stroke-width="1.6" transform="rotate(120 12 12)"/></svg><!--pnid:Rpl2HrKrj5sWZFOD8EbvJh--> 科学</h2>
+    <div data-page-node-id="HUVW5bLG7ldI2trbViFfsy" class="sub-tabs">
+      <button data-page-node-id="gjULcpSbj6phRA0cWt42oA" class="sub-tab active" data-subtab="science-quiz"><!--pnid:uxY8Nu4LHwxFm7nYhfq3fG-->科学问答</button>
+      <button data-page-node-id="HZyAS7g762p8s2HxKQCBZ9" class="sub-tab" data-subtab="logic-pair"><!--pnid:fM0y7hwO4HMIZTMuXlgOjy-->识别分类</button>
+      <button data-page-node-id="7UUV8VIEpNwFqU9ZbqWfeF" class="sub-tab" data-subtab="science-judge"><!--pnid:yod0rBiCAVtBbmEDNwgKpA-->真假判断</button>
+      <button class="sub-tab" data-subtab="science-match">科学配对</button>
+    </div>
+    <!-- 科学问答（10 关，题库见 science-bank.js） -->
+    <div id="science-quiz" class="sub-page">
+      <div class="logic-card" id="scienceCard"></div>
+    </div>
+    <!-- 识别分类（原图形配对，v2.75 内容改为科学分类） -->
     <div data-page-node-id="fF4nXxStjcN9hMYtLMkh2K" id="logic-pair" class="sub-page" style="display:none">
       <div data-page-node-id="qT4FQjxSlnjJBlhm32puhS" class="logic-card" id="pairCard"></div>
     </div>
-    <div data-page-node-id="F126dOjzpd6cF6nZbgrdFn" id="logic-sort" class="sub-page" style="display:none">
-      <div data-page-node-id="sukk1fqBg178g2oawPzcud" class="logic-card" id="sortCard"></div>
+    <!-- 真假判断（对 / 错，题库见 science-bank.js） -->
+    <div id="science-judge" class="sub-page" style="display:none">
+      <div class="logic-card" id="judgeCard"></div>
+    </div>
+    <!-- 科学配对（左列物品、右列属性，点选配对） -->
+    <div id="science-match" class="sub-page" style="display:none">
+      <div class="logic-card" id="sciMatchCard"></div>
     </div>
   </div>
 
@@ -2329,7 +2544,12 @@ button:active {
   <div data-page-node-id="JAKLcxaCP8tgndp1NLmz5k" class="page" id="page-adventure">
     <h2 data-page-node-id="LyRtQp6vHPQLg9UW3XTAHV" class="section-title"><svg data-page-node-id="urHILYTuJ9hpfm1eGdeahB" fill="#C47AFF" height="24" viewBox="0 0 24 24" width="24" style="vertical-align:middle"><path data-page-node-id="U3xCp3YfpYa5OZ34woLDsa" d="M3 6l3-3h12l3 3v12l-3 3H6l-3-3V6z"/><circle data-page-node-id="hXcgzfyXAUt7fqWoPkceY4" cx="9" cy="10" fill="white" r="1.5"/><circle data-page-node-id="GQRET6rkW6zZk1Xd9XJ6ZE" cx="15" cy="10" fill="white" r="1.5"/><path data-page-node-id="ypL4v0yYfdhcxxmeuVnznd" d="M8 15h8" stroke="white" stroke-linecap="round" stroke-width="1.5"/></svg><!--pnid:n6GIEg2OuZSekVD0I3mkak--> 闯关冒险</h2>
     <div data-page-node-id="MZJnylRsWAkWvRIGXcznVx" class="adventure-header">
+      <div class="adv-head-row">
+        <div class="level-info" id="advLevelInfo">第 1 关</div>
+        <div class="adv-head-right" id="advHeadRight">已答 0/5 · 答对 0（过关需 3）</div>
+      </div>
       <div data-page-node-id="qW0Tqk5nSkQKtPDzRE1O77" class="progress-bar"><div data-page-node-id="19JXD1UO5LFbIBrqk30Yoi" class="progress-fill" id="advProgressBar" style="width:0%"></div></div>
+      <div class="adv-head-tip" id="advHeadTip">每关 5 题，答对 3 题即可过关</div>
     </div>
     <div data-page-node-id="6Miv8y3qEXBGGkcGIIUb1R" class="adventure-question" id="advQuestion">
       <div data-page-node-id="EdcLP6cZKRU6iGpqQarNBu" class="q-text" id="advQText"><!--pnid:n3VtzikavhPLDTzW7XSVSc-->准备好了吗？点击开始闯关！</div>
@@ -2348,6 +2568,7 @@ button:active {
 <script src="poems100.js"></script>
 <script src="poems100_pinyin.js"></script>
 <script src="chinese-bank.js"></script>
+<script src="science-bank.js"></script>
 <script data-page-node-id="FcbDPAeOEVgQ53pijhV1xk" data-pnid-children="Z5dBS0bvrkbvbot6FHtW96">
 /* ========================================
    宝贝学习乐园 - 核心逻辑
@@ -2427,14 +2648,20 @@ function showToast(msg, duration) {
   setTimeout(() => toast.classList.remove('show'), duration || 1500);
 }
 
-// ========== 答对后自动进入下一题 ==========
-// box：本题选项所在容器；nextFn：下一题生成函数
-// 先锁住本题选项，避免自动切题前重复作答，再延时（1.2 秒）生成下一题
-function autoNext(box, nextFn) {
+// ========== 答对后锁定选项（不自动切题） / 自动进入下一题 ==========
+// box：本题选项所在容器
+// v2.75：语文综合改为「答对只锁选项、点下一题才切题」，故把「锁选项」拆成独立函数
+function lockOptions(box) {
   const area = (box && box.querySelector('.logic-options')) || box;
   if (area) {
     area.querySelectorAll('button').forEach(b => { b.style.pointerEvents = 'none'; });
   }
+}
+
+// box：本题选项所在容器；nextFn：下一题生成函数
+// 先锁住本题选项，避免自动切题前重复作答，再延时（1.2 秒）生成下一题
+function autoNext(box, nextFn) {
+  lockOptions(box);
   setTimeout(nextFn, 1200);
 }
 
@@ -2671,6 +2898,8 @@ function switchPage(pageName) {
   });
   // 进入页面时刷新首页数据
   if (pageName === 'home') updateStarDisplay();
+  // 进入知识图谱页时初始化 / 刷新 ECharts（页面隐藏时容器无尺寸，不能提前建图）
+  if (pageName === 'graph') kgv进入页面();
 }
 
 // 绑定导航事件
@@ -2747,6 +2976,7 @@ function generateMatchQuestion(data) {
         addStars(1);
         addCorrect();
         showStarAnimation(btn.getBoundingClientRect().x, btn.getBoundingClientRect().y);
+        记知识点通过(KG英语知识点('配对游戏', 1), 'match-letter:' + idx);
         autoNext(container, generateMatchQuestion);
       } else {
         btn.classList.add('wrong');
@@ -2981,13 +3211,45 @@ function updateEngLevelTag() {
   if (标2) 标2.textContent = '第 ' + engLevel['听音选词'] + ' 关' + (engLevel['听音选词'] >= ENG_LEVEL_MAX ? ' · 已通关' : ' · 本关 ' + (engDone['听音选词'] || 0) + '/' + LEVEL_NEED + ' 题');
 }
 
+// v2.75：听音选词 / 英译中 前三关使用固定主题池，第 4 关起回落到原有「难度递增」逻辑
+// 第一关：26 个英文字母；第二关：10 个基础颜色；第三关：17 个数字
+const ENG_颜色词 = ['red', 'blue', 'yellow', 'green', 'black', 'white', 'pink', 'purple', 'orange', 'brown'];
+const ENG_数字词 = ['one', 'two', 'three', 'four', 'five', 'six', 'seven', 'eight', 'nine', 'ten',
+  'eleven', 'twelve', 'twenty', 'hundred', 'first', 'second', 'third'];
+
+// 返回该关卡的固定主题词池；第 4 关及以后返回 null（表示沿用原难度池）
+// 模块差异（v2.75）：听音选词 1 关字母 / 2 关颜色 / 3 关数字；
+//                    英译中 1、2 关都用颜色（看字母选中文没有意义），3 关数字
+function 取英语主题池(关卡, 模块) {
+  if (模块 === '看词选图') {
+    if (关卡 <= 2) return EN_WORDS.filter(function(t) { return ENG_颜色词.indexOf(t.w) >= 0; });
+    if (关卡 === 3) return EN_WORDS.filter(function(t) { return ENG_数字词.indexOf(t.w) >= 0; });
+    return null;
+  }
+  if (关卡 === 1) return EN_WORDS.filter(function(t) { return !!t.L; });                            // 26 个英文字母
+  if (关卡 === 2) return EN_WORDS.filter(function(t) { return ENG_颜色词.indexOf(t.w) >= 0; });     // 10 个基础颜色
+  if (关卡 === 3) return EN_WORDS.filter(function(t) { return ENG_数字词.indexOf(t.w) >= 0; });     // 17 个数字
+  return null;
+}
+
 // 按关卡取词池：第 k 关可抽难度 <= k+1 的词（低关简单词，难度递增）；需要有图参数用于看词选图
-function 抽词池(关卡, 需要有图) {
+// 前三关优先走固定主题池（此时忽略难度递增口径）
+function 抽词池(关卡, 需要有图, 模块) {
+  const 主题 = 取英语主题池(关卡, 模块);
+  if (主题) return 主题.filter(function(t) { return !(需要有图 && (!t.e || t.L)); });
   return EN_WORDS.filter(function(t) {
     if (t.lv > 关卡 + 1) return false;
     if (需要有图 && (!t.e || t.L)) return false;
     return true;
   });
+}
+
+// 干扰项来源池：主题关（前三关）与主池同范围，避免出现跨主题的干扰项；
+// 第 4 关起沿用原口径（等价于原抽词池(关卡+2) 的 lv<=关卡+3，保证有足够干扰词）
+function 抽干扰池(关卡, 模块) {
+  const 主题 = 取英语主题池(关卡, 模块);
+  if (主题) return 主题;
+  return EN_WORDS.filter(function(t) { return t.lv <= 关卡 + 3; });
 }
 
 // 播放一个词条的发音（进入页面后才播；字母用 letter 音频，单词用预生成 mp3，缺文件自动回退）
@@ -3006,7 +3268,8 @@ function 抽新词(池, 最近表) {
   return t;
 }
 
-// ---------- 看词选图 ----------
+// ---------- 英译中（原看词选图：题面英文单词，选项为中文汉字） ----------
+// 内部关卡键仍用 '看词选图'，兼容旧 localStorage 进度与错题本
 let listenAnswerWord = '';
 let listenAnswerIdx = -1;
 let listenCurTarget = null;    // 当前题的词条对象
@@ -3026,7 +3289,7 @@ function generateListenQuestion(data) {
       listenIsReview = true;
       listenReviewKey = 错.数据;
     } else {
-      target = 抽新词(抽词池(engLevel['看词选图'], true), listenRecent);
+      target = 抽新词(抽词池(engLevel['看词选图'], false, '看词选图'), listenRecent);
     }
     listenHistory.push(EN_WORDS.indexOf(target));
   } else {
@@ -3037,18 +3300,17 @@ function generateListenQuestion(data) {
   listenAnswerWord = target.w;
   listenAnswerIdx = EN_WORDS.indexOf(target);
   document.getElementById('listenAnswer').textContent = '';
-  // 「单词」按钮显示当前词（点按钮 = 再听一遍这个词的发音）
+  // 题面按钮显示英文单词（点按钮 = 再听一遍这个词的发音）
   const 词钮 = document.getElementById('listenWordBtn');
   if (词钮) 词钮.textContent = target.w;
 
-  // 4 个选项：排除与答案同表情的词，避免歧义
-  const 池 = 抽词池(engLevel['看词选图'] + 2, true);
+  // 4 个中文选项：排除与答案同中文的词，避免多义歧义（前三关干扰项取自同一主题池）
+  const 池 = 抽干扰池(engLevel['看词选图'], '看词选图');
   const options = [target];
   let guard = 0;
   while (options.length < 4 && guard++ < 600) {
     const cand = 池[Math.floor(Math.random() * 池.length)];
-    // 干扰项：排除同名词、与答案同表情的词、以及与已有选项同表情的词（避免按钮歧义）
-    if (cand.w !== target.w && cand.e !== target.e && !options.some(o => o.w === cand.w || o.e === cand.e)) options.push(cand);
+    if (cand.c !== target.c && !options.some(o => o.c === cand.c)) options.push(cand);
   }
   const arr = options.sort(() => Math.random() - 0.5);
 
@@ -3056,11 +3318,11 @@ function generateListenQuestion(data) {
   container.innerHTML = '';
   arr.forEach(o => {
     const btn = document.createElement('button');
-    btn.className = 'listen-btn';
-    btn.textContent = o.e;
+    btn.className = 'word-btn cn-only';
+    btn.textContent = o.c;
     btn.addEventListener('click', () => {
       if (btn.classList.contains('correct') || btn.classList.contains('wrong')) return;
-      if (o.w === listenAnswerWord) {
+      if (o.c === target.c) {
         btn.classList.add('correct');
         document.getElementById('listenAnswer').textContent = '✅ ' + target.w + ' ' + target.c;
         播词条(target, 2);
@@ -3069,12 +3331,13 @@ function generateListenQuestion(data) {
         addCorrect();
         engLevelUp('看词选图');
         if (listenIsReview) 错题过关('看词选图', listenReviewKey);
+        记生成题通过('eng-cn', KG英语知识点('英译中', engLevel['看词选图']), engLevel['看词选图']);
         autoNext(container, generateListenQuestion);
       } else {
         btn.classList.add('wrong');
         playWrongSound();
-        showToast('再听一遍试试 💪');
-        记错题('看词选图', { i: listenAnswerIdx }, { q: '听「' + listenAnswerWord + '」的发音，选出对应的图', opts: arr.map(x => x.e), ans: target.e });
+        showToast('再想想 💪');
+        记错题('看词选图', { i: listenAnswerIdx }, { q: '选出「' + listenAnswerWord + '」的中文意思', opts: arr.map(x => x.c), ans: target.c });
       }
     });
     container.appendChild(btn);
@@ -3114,7 +3377,7 @@ function generatePickQuestion(data) {
       pickIsReview = true;
       pickReviewKey = 错.数据;
     } else {
-      target = 抽新词(抽词池(engLevel['听音选词'], false), pickRecent);
+      target = 抽新词(抽词池(engLevel['听音选词'], false, '听音选词'), pickRecent);
     }
     pickHistory.push(EN_WORDS.indexOf(target));
   } else {
@@ -3123,8 +3386,8 @@ function generatePickQuestion(data) {
   pickCurTarget = target;
   document.getElementById('pickAnswer').textContent = '';
 
-  // 4 个文本选项（干扰项从同范围词池抽，排除同名词）
-  const 池 = 抽词池(engLevel['听音选词'] + 2, false);
+  // 4 个文本选项（干扰项从同范围词池抽，排除同名词；前三关取自同一主题池）
+  const 池 = 抽干扰池(engLevel['听音选词'], '听音选词');
   const options = [target];
   let guard = 0;
   while (options.length < 4 && guard++ < 600) {
@@ -3150,6 +3413,7 @@ function generatePickQuestion(data) {
         addCorrect();
         engLevelUp('听音选词');
         if (pickIsReview) 错题过关('听音选词', pickReviewKey);
+        记生成题通过('eng-pick', KG英语知识点('听音选词', engLevel['听音选词']), engLevel['听音选词']);
         autoNext(container, generatePickQuestion);
       } else {
         btn.classList.add('wrong');
@@ -3284,6 +3548,18 @@ function generatePoemQuiz(data) {
 
   const shuffled = options.sort(() => Math.random() - 0.5);
 
+  // v2.75：错题快照题面要带上诗歌正文（挖空处写 ____），
+  // 否则在「闯关冒险」里复现时只剩一句「空缺处的诗句是哪一句？」，孩子看不到上下文无法作答
+  let 快照题面;
+  if (d.askAuthor) {
+    const 首句 = sents.slice(0, 2).join('，');
+    快照题面 = '《' + p.t + '》' + p.d + (首句 ? '：' + 首句 : '') + '\n这首诗的作者是谁？';
+  } else {
+    const 空句 = sents[d.si + 1] || '';
+    const 带空正文 = p.lines.map(function (行) { return 空句 ? 行.split(空句).join('____') : 行; }).join('');
+    快照题面 = '《' + p.t + '》' + p.d + '\n' + 带空正文 + '\n空缺处的诗句是哪一句？';
+  }
+
   // 左栏完整题面：标题、朝代、（非作者题时含作者）、诗句；仅把要回答的部分留空
   // v2.0：空缺处不再显示三个短横，只留一条下划线；考作者时下划线设在朝代旁
   let leftHTML;
@@ -3318,7 +3594,7 @@ function generatePoemQuiz(data) {
           `<button class="logic-btn" style="width:100%; max-width:none; height:auto; min-height:52px; font-size:18px; padding:10px 14px;" data-val="${o}">${o}</button>`
         ).join('')}</div>
         <div style="display:flex; gap:10px; margin-top:14px;">
-          <button class="next-btn" style="flex:1; background:var(--blue);" onclick="prevPoemQuiz()">上一题</button>
+          <button class="next-btn prev-btn" style="flex:1; background:var(--blue);" onclick="prevPoemQuiz()">上一题</button>
           <button class="next-btn" style="flex:1;" onclick="generatePoemQuiz()">下一题</button>
         </div>
       </div>
@@ -3338,12 +3614,13 @@ function generatePoemQuiz(data) {
         addCorrect();
         showStarAnimation(btn.getBoundingClientRect().x, btn.getBoundingClientRect().y);
         if (是复现) 错题过关('古诗问答', 键);
+        记知识点通过('c1_4', 'poem:' + d.pi + ':' + (d.askAuthor ? 'a' : d.si));   // 古诗统一归到「朗读与背诵」
         autoNext(card, generatePoemQuiz);
       } else {
         btn.classList.add('wrong');
         playWrongSound();
         showToast('再想想哦 💪');
-        if (!是复现) 记错题('古诗问答', d, { q: qText + '（《' + p.t + '》' + p.d + '）', opts: shuffled.slice(), ans: answer });
+        if (!是复现) 记错题('古诗问答', d, { q: 快照题面, opts: shuffled.slice(), ans: answer });
       }
     });
   });
@@ -3359,6 +3636,8 @@ generatePoemQuiz();
 // ========== 语文天地：语文综合（10 关 × 3 题，难度递增，题库见 chinese-bank.js） ==========
 // 题库涵盖：成语典故、歇后语、脑筋急转弯、反义词、偏旁部首、笔画顺序、间架结构、拼读、量词
 const CHIN_LEVEL_MAX = 10;
+// v2.75：前三关不出「偏旁部首 / 笔画顺序 / 间架结构 / 拼读」四类题（第 4 关起恢复正常）
+const CHIN_前三关排除 = ['偏旁部首', '笔画顺序', '间架结构', '拼读'];
 let chinLevel = getData('chinLevel', 1);
 let chinDone = getData('chinDone', 0);
 const chinHistory = createHistory();
@@ -3378,9 +3657,16 @@ function generateChinQuiz(data) {
       题索引 = 错.数据.i; 是复现 = true; 键 = 错.数据;
     } else {
       // 第 k 关从难度 <= k+1 的题里抽，难度依次增加
+      // v2.75：前三关过滤掉「偏旁部首 / 笔画顺序 / 间架结构 / 拼读」四类题
       const 池 = [];
-      CHINESE_BANK.forEach(function(t, i) { if (t.lv <= chinLevel + 1) 池.push(i); });
-      const 全范围 = 池.length ? 池 : CHINESE_BANK.map(function(t, i) { return i; });
+      CHINESE_BANK.forEach(function(t, i) {
+        if (t.lv > chinLevel + 1) return;
+        if (chinLevel <= 3 && CHIN_前三关排除.indexOf(t.t) >= 0) return;
+        池.push(i);
+      });
+      // 兜底：万一前三关池子被清空，也不放回被排除的四类题
+      const 全范围 = 池.length ? 池 : CHINESE_BANK.map(function(t, i) { return i; })
+        .filter(function(i) { return !(chinLevel <= 3 && CHIN_前三关排除.indexOf(CHINESE_BANK[i].t) >= 0); });
       // 优先抽最近没出过的题，全部出过一轮后再放开
       let 备选 = 全范围.filter(function(i) { return chinRecent.indexOf(i) < 0; });
       if (!备选.length) { chinRecent.length = 0; 备选 = 全范围; }
@@ -3407,7 +3693,7 @@ function generateChinQuiz(data) {
     ).join('')}</div>
     <div id="chinAnswer" style="margin-top:14px; min-height:30px; font-size:17px; color:var(--purple)"></div>
     <div style="display:flex; gap:14px; justify-content:center; margin-top:14px;">
-      <button class="next-btn" style="flex:none; width:170px; background:var(--blue);" onclick="prevChinQuiz()">上一题</button>
+      <button class="next-btn prev-btn" style="flex:none; width:170px; background:var(--blue);" onclick="prevChinQuiz()">上一题</button>
       <button class="next-btn" style="flex:none; width:170px;" onclick="generateChinQuiz()">下一题</button>
     </div>
   `;
@@ -3436,7 +3722,9 @@ function generateChinQuiz(data) {
         updateTabBadges();
         updateLevelTag();
         if (是复现) 错题过关('语文综合', 键);
-        autoNext(card, generateChinQuiz);
+        记知识点通过(KG语文题型[t.t], 'chin:' + 题索引);
+        // v2.75：答对后不再自动切题，只锁住选项，由用户点「下一题」再切
+        lockOptions(card);
       } else {
         btn.classList.add('wrong');
         playWrongSound();
@@ -3454,6 +3742,307 @@ function prevChinQuiz() {
 }
 
 generateChinQuiz();
+
+// ========== 科学天地：科学问答 + 真假判断（各 10 关，题库见 science-bank.js） ==========
+// v2.75：原「逻辑挑战」页改为科学科目（找规律 / 排序题已迁入数学城）
+// 科学问答：每关答对 3 题升级；答对后不自动切题（与语文综合一致，点「下一题」再切）
+var SCIENCE_LEVEL_MAX = 10;
+var scienceLevel = getData('scienceLevel', 1);
+var scienceDone = getData('scienceDone', 0);
+const scienceHistory = createHistory();
+const scienceRecent = [];
+let scienceCur = null;
+
+function generateScienceQuiz(data) {
+  const card = document.getElementById('scienceCard');
+  if (!card || typeof SCIENCE_BANK === 'undefined' || !SCIENCE_BANK.length) return;
+  let 题索引, 是复现 = false, 键 = null;
+  if (data === undefined) {
+    // 第 4 关起有概率复现答错的题
+    const 错 = scienceLevel >= 4 && Math.random() < 0.3 ? 抽错题('科学问答') : null;
+    if (错 && 错.数据 && typeof 错.数据.i === 'number' && SCIENCE_BANK[错.数据.i]) {
+      题索引 = 错.数据.i; 是复现 = true; 键 = 错.数据;
+    } else {
+      // 第 k 关从难度 <= k+1 的题里抽，难度依次增加
+      const 池 = [];
+      SCIENCE_BANK.forEach(function(t, i) { if (t.lv <= scienceLevel + 1) 池.push(i); });
+      const 全范围 = 池.length ? 池 : SCIENCE_BANK.map(function(t, i) { return i; });
+      let 备选 = 全范围.filter(function(i) { return scienceRecent.indexOf(i) < 0; });
+      if (!备选.length) { scienceRecent.length = 0; 备选 = 全范围; }
+      题索引 = 备选[randInt(0, 备选.length - 1)];
+      scienceRecent.push(题索引);
+      if (scienceRecent.length > 25) scienceRecent.shift();
+      scienceHistory.push(题索引);
+    }
+  } else {
+    题索引 = data;
+  }
+  scienceCur = 题索引;
+  const t = SCIENCE_BANK[题索引];
+  const 答案文本 = t.opts[t.ans];
+  const arr = t.opts.slice().sort(() => Math.random() - 0.5);
+
+  card.innerHTML = `
+    <div style="margin-bottom:12px; text-align:center"><span class="math-level" style="background:#3FA9F5; margin-bottom:0">${t.t}</span></div>
+    <div class="logic-title" style="font-size:20px; color:#333; margin-bottom:16px">${t.q}</div>
+    <div class="logic-options" style="display:grid; grid-template-columns:repeat(2, minmax(0, 1fr)); gap:12px; max-width:640px; margin:0 auto;">${arr.map(o =>
+      `<button class="logic-btn" style="width:100%; max-width:none; height:auto; min-height:56px; font-size:18px; padding:12px 16px;" data-val="${o}">${o}</button>`
+    ).join('')}</div>
+    <div id="scienceAnswer" style="margin-top:14px; min-height:30px; font-size:17px; color:#0B63A8; text-align:center"></div>
+    <div style="display:flex; gap:14px; justify-content:center; margin-top:14px;">
+      <button class="next-btn prev-btn" style="flex:none; width:170px; background:var(--blue);" onclick="prevScienceQuiz()">上一题</button>
+      <button class="next-btn" style="flex:none; width:170px;" onclick="generateScienceQuiz()">下一题</button>
+    </div>
+  `;
+
+  card.querySelectorAll('.logic-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      if (btn.classList.contains('correct') || btn.classList.contains('wrong')) return;
+      if (btn.dataset.val === 答案文本) {
+        btn.classList.add('correct');
+        if (t.exp) document.getElementById('scienceAnswer').textContent = '✅ ' + t.exp;
+        showToast('答对啦！🎉');
+        addStars(1);
+        addCorrect();
+        showStarAnimation(btn.getBoundingClientRect().x, btn.getBoundingClientRect().y);
+        if (scienceLevel < SCIENCE_LEVEL_MAX) {
+          scienceDone++;
+          if (scienceDone >= LEVEL_NEED) {
+            scienceLevel++;
+            scienceDone = 0;
+            setTimeout(function() { showToast('升级啦！科学问答 第 ' + scienceLevel + ' 关', 2200); }, 1300);
+          }
+        }
+        setData('scienceLevel', scienceLevel);
+        setData('scienceDone', scienceDone);
+        updateTabBadges();
+        updateLevelTag();
+        if (是复现) 错题过关('科学问答', 键);
+        记知识点通过(KG科学领域[t.t], 'sci:' + 题索引);
+        lockOptions(card);
+      } else {
+        btn.classList.add('wrong');
+        playWrongSound();
+        showToast('再想想哦 💪');
+        if (!是复现) 记错题('科学问答', { i: 题索引 }, { q: t.q, opts: arr.slice(), ans: 答案文本 });
+      }
+    });
+  });
+}
+
+function prevScienceQuiz() {
+  const d = scienceHistory.prev();
+  if (d !== null) generateScienceQuiz(d);
+}
+
+generateScienceQuiz();
+
+// ---------- 科学天地：真假判断（对 / 错两个按钮，10 关） ----------
+var JUDGE_LEVEL_MAX = 10;
+var judgeLevel = getData('judgeLevel', 1);
+var judgeDone = getData('judgeDone', 0);
+const judgeHistory = createHistory();
+const judgeRecent = [];
+
+function generateJudgeQuiz(data) {
+  const card = document.getElementById('judgeCard');
+  if (!card || typeof SCIENCE_JUDGE === 'undefined' || !SCIENCE_JUDGE.length) return;
+  let 题索引, 是复现 = false, 键 = null;
+  if (data === undefined) {
+    const 错 = judgeLevel >= 4 && Math.random() < 0.3 ? 抽错题('真假判断') : null;
+    if (错 && 错.数据 && typeof 错.数据.i === 'number' && SCIENCE_JUDGE[错.数据.i]) {
+      题索引 = 错.数据.i; 是复现 = true; 键 = 错.数据;
+    } else {
+      const 池 = [];
+      SCIENCE_JUDGE.forEach(function(t, i) { if (t.lv <= judgeLevel + 1) 池.push(i); });
+      const 全范围 = 池.length ? 池 : SCIENCE_JUDGE.map(function(t, i) { return i; });
+      let 备选 = 全范围.filter(function(i) { return judgeRecent.indexOf(i) < 0; });
+      if (!备选.length) { judgeRecent.length = 0; 备选 = 全范围; }
+      题索引 = 备选[randInt(0, 备选.length - 1)];
+      judgeRecent.push(题索引);
+      if (judgeRecent.length > 25) judgeRecent.shift();
+      judgeHistory.push(题索引);
+    }
+  } else {
+    题索引 = data;
+  }
+  const t = SCIENCE_JUDGE[题索引];
+  const 答案文本 = t.ans === 1 ? '对' : '错';
+
+  card.innerHTML = `
+    <div style="margin-bottom:12px; text-align:center"><span class="math-level" style="background:#3FA9F5; margin-bottom:0">${t.t}</span></div>
+    <div class="logic-title" style="font-size:21px; color:#333; margin-bottom:18px; line-height:1.5">${t.q}</div>
+    <div class="logic-options" style="display:flex; gap:16px; justify-content:center; max-width:560px; margin:0 auto;">
+      <button class="logic-btn" style="flex:1; max-width:180px; font-size:22px;" data-val="对">对</button>
+      <button class="logic-btn" style="flex:1; max-width:180px; font-size:22px;" data-val="错">错</button>
+    </div>
+    <div id="judgeAnswer" style="margin-top:14px; min-height:30px; font-size:17px; color:#0B63A8; text-align:center"></div>
+    <div style="display:flex; gap:14px; justify-content:center; margin-top:14px;">
+      <button class="next-btn prev-btn" style="flex:none; width:170px; background:var(--blue);" onclick="prevJudgeQuiz()">上一题</button>
+      <button class="next-btn" style="flex:none; width:170px;" onclick="generateJudgeQuiz()">下一题</button>
+    </div>
+  `;
+
+  card.querySelectorAll('.logic-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      if (btn.classList.contains('correct') || btn.classList.contains('wrong')) return;
+      if (btn.dataset.val === 答案文本) {
+        btn.classList.add('correct');
+        if (t.exp) document.getElementById('judgeAnswer').textContent = '✅ ' + t.exp;
+        showToast('判断正确！🎉');
+        addStars(1);
+        addCorrect();
+        showStarAnimation(btn.getBoundingClientRect().x, btn.getBoundingClientRect().y);
+        if (judgeLevel < JUDGE_LEVEL_MAX) {
+          judgeDone++;
+          if (judgeDone >= LEVEL_NEED) {
+            judgeLevel++;
+            judgeDone = 0;
+            setTimeout(function() { showToast('升级啦！真假判断 第 ' + judgeLevel + ' 关', 2200); }, 1300);
+          }
+        }
+        setData('judgeLevel', judgeLevel);
+        setData('judgeDone', judgeDone);
+        updateTabBadges();
+        updateLevelTag();
+        if (是复现) 错题过关('真假判断', 键);
+        记知识点通过(KG科学领域[t.t], 'jud:' + 题索引);
+        lockOptions(card);
+      } else {
+        btn.classList.add('wrong');
+        playWrongSound();
+        showToast('再想想哦 💪');
+        if (!是复现) 记错题('真假判断', { i: 题索引 }, { q: t.q, opts: ['对', '错'], ans: 答案文本 });
+      }
+    });
+  });
+}
+
+function prevJudgeQuiz() {
+  const d = judgeHistory.prev();
+  if (d !== null) generateJudgeQuiz(d);
+}
+
+generateJudgeQuiz();
+
+// ---------- 科学天地：科学配对（左列物品、右列属性，连满 4 对算答对 1 题） ----------
+var MATCH_LEVEL_MAX = 10;
+var sciMatchLevel = getData('sciMatchLevel', 1);
+var sciMatchDone = getData('sciMatchDone', 0);
+const sciMatchHistory = createHistory();
+const sciMatchRecent = [];
+
+function generateSciMatch(data) {
+  const card = document.getElementById('sciMatchCard');
+  if (!card || typeof SCIENCE_MATCH === 'undefined' || !SCIENCE_MATCH.length) return;
+  let 题索引;
+  if (data === undefined) {
+    const 池 = [];
+    SCIENCE_MATCH.forEach(function (t, i) { if (t.lv <= sciMatchLevel + 1) 池.push(i); });
+    const 全范围 = 池.length ? 池 : SCIENCE_MATCH.map(function (t, i) { return i; });
+    let 备选 = 全范围.filter(function (i) { return sciMatchRecent.indexOf(i) < 0; });
+    if (!备选.length) { sciMatchRecent.length = 0; 备选 = 全范围; }
+    题索引 = 备选[randInt(0, 备选.length - 1)];
+    sciMatchRecent.push(题索引);
+    if (sciMatchRecent.length > 20) sciMatchRecent.shift();
+    sciMatchHistory.push(题索引);
+  } else {
+    题索引 = data;
+  }
+  const 题 = SCIENCE_MATCH[题索引];
+  const 右列原始 = 题.组.map(function (p) { return p.右; });
+  const 右列顺序 = 题.组.map(function (p, i) { return i; }).sort(function () { return Math.random() - 0.5; });
+  let 已配对 = 0;
+  let 选中左 = null;
+
+  card.innerHTML = `
+    <div class="logic-title" style="font-size:20px; color:#333; margin-bottom:6px">把左右两边配对起来 🧩</div>
+    <p class="match-tip" style="margin-top:0">先点左边一个，再点右边对应的一个</p>
+    <div class="match-board">
+      <div class="match-col" id="sciMatchLeft"></div>
+      <div class="match-col" id="sciMatchRight"></div>
+    </div>
+    <div id="sciMatchMsg" style="margin-top:14px; min-height:30px; font-size:17px; color:#0B63A8; text-align:center"></div>
+    <div style="display:flex; gap:14px; justify-content:center; margin-top:6px;">
+      <button class="next-btn" style="flex:none; width:200px;" onclick="generateSciMatch()">换一组</button>
+    </div>
+  `;
+
+  const 左区 = card.querySelector('#sciMatchLeft');
+  const 右区 = card.querySelector('#sciMatchRight');
+  const 提示区 = card.querySelector('#sciMatchMsg');
+
+  // 4 对全部连对 → 记一次答对、累计关卡进度、自动换新题
+  const 检查完成 = function () {
+    if (已配对 < 题.组.length) return;
+    提示区.textContent = '✅ 四对全部连对，真棒！';
+    showToast('全部配对成功！🎉');
+    addStars(1);
+    addCorrect();
+    if (sciMatchLevel < MATCH_LEVEL_MAX) {
+      sciMatchDone++;
+      if (sciMatchDone >= LEVEL_NEED) {
+        sciMatchLevel++;
+        sciMatchDone = 0;
+        setTimeout(function () { showToast('升级啦！科学配对 第 ' + sciMatchLevel + ' 关', 2200); }, 1300);
+      }
+    }
+    setData('sciMatchLevel', sciMatchLevel);
+    setData('sciMatchDone', sciMatchDone);
+    updateTabBadges();
+    updateLevelTag();
+    记知识点通过(KG配对类型[题.t], 'match:' + 题索引);
+    setTimeout(function () { generateSciMatch(); }, 1600);
+  };
+
+  题.组.forEach(function (对, i) {
+    const 左钮 = document.createElement('button');
+    左钮.className = 'match-item';
+    左钮.textContent = 对.左;
+    左钮.dataset.key = i;
+    左钮.addEventListener('click', function () {
+      if (左钮.classList.contains('matched')) return;
+      左区.querySelectorAll('.match-item').forEach(function (x) { x.classList.remove('sel'); });
+      左钮.classList.add('sel');
+      选中左 = i;
+      提示区.textContent = '已选中「' + 对.左 + '」，请点右边对应的属性';
+    });
+    左区.appendChild(左钮);
+  });
+
+  右列顺序.forEach(function (i) {
+    const 右钮 = document.createElement('button');
+    右钮.className = 'match-item';
+    右钮.textContent = 右列原始[i];
+    右钮.dataset.key = i;
+    右钮.addEventListener('click', function () {
+      if (右钮.classList.contains('matched')) return;
+      if (选中左 === null) { showToast('先点左边的一个哦'); return; }
+      if (Number(右钮.dataset.key) === 选中左) {
+        const 左钮 = 左区.querySelector('.match-item[data-key="' + 选中左 + '"]');
+        if (左钮) { 左钮.classList.remove('sel'); 左钮.classList.add('matched'); }
+        右钮.classList.add('matched');
+        已配对++;
+        选中左 = null;
+        提示区.textContent = '配对成功，已完成 ' + 已配对 + '/' + 题.组.length + ' 对';
+        检查完成();
+      } else {
+        右钮.classList.add('wrong');
+        playWrongSound();
+        showToast('再想想哦 💪');
+        setTimeout(function () { 右钮.classList.remove('wrong'); }, 600);
+      }
+    });
+    右区.appendChild(右钮);
+  });
+}
+
+function prevSciMatch() {
+  const d = sciMatchHistory.prev();
+  if (d !== null) generateSciMatch(d);
+}
+
+generateSciMatch();
 
 // ========== 模块3: 数学城 ==========
 
@@ -3488,9 +4077,11 @@ function updateTabBadges() {
     { 键: 'num-calc', 取关: function() { return mathLevel['口算']; } },
     { 键: 'num-mul', 取关: function() { return mathLevel['乘除']; } },
     { 键: 'num-sudoku', 取关: function() { return mathLevel['数独']; } },
-    { 键: 'logic-pattern', 取关: function() { return logicLevel['pattern']; } },
+    { 键: 'num-pattern', 取关: function() { return logicLevel['pattern']; } },
+    { 键: 'num-sort', 取关: function() { return logicLevel['sort']; } },
     { 键: 'logic-pair', 取关: function() { return logicLevel['pair']; } },
-    { 键: 'logic-sort', 取关: function() { return logicLevel['sort']; } },
+    { 键: 'science-quiz', 取关: function() { return scienceLevel || 1; } },
+    { 键: 'science-judge', 取关: function() { return judgeLevel || 1; } },
     { 键: 'alpha-listen', 取关: function() { return engLevel['看词选图']; } },
     { 键: 'alpha-word', 取关: function() { return engLevel['听音选词']; } },
     { 键: 'chin-quiz', 取关: function() { return chinLevel; } }
@@ -3509,14 +4100,17 @@ function updateLevelTag() {
     const maxed = mathLevel[k] >= MATH_LEVEL_MAX[k];
     el.textContent = '第 ' + mathLevel[k] + ' 级' + (maxed ? ' · 已满级' : ' · 本级 ' + (levelDone[k] || 0) + '/' + LEVEL_NEED + ' 题');
   });
-  // 逻辑挑战的关卡标签：跟随当前子题型
+  // 科学页的关卡标签：跟随当前子题型（找规律 / 排序题已迁入数学城，仍用 logicLevel 的旧键，旧进度完全兼容）
   const 逻辑标 = document.getElementById('logicLevelTag');
   if (逻辑标) {
     const 激活 = document.querySelector('#page-logic .sub-tab.active');
-    const 键 = 激活 ? 激活.getAttribute('data-subtab').replace('logic-', '') : 'pattern';
-    const L = logicLevel[键] || 1;
-    const 通关 = L >= LOGIC_LEVEL_MAX;
-    逻辑标.textContent = '第 ' + L + ' 关' + (通关 ? ' · 已通关' : ' · 本关 ' + (logicDone[键] || 0) + '/' + LEVEL_NEED + ' 题');
+    const 子键 = 激活 ? 激活.getAttribute('data-subtab') : 'logic-pair';
+    let L = 1, 已答 = 0;
+    if (子键 === 'science-quiz') { L = scienceLevel || 1; 已答 = scienceDone || 0; }
+    else if (子键 === 'science-judge') { L = judgeLevel || 1; 已答 = judgeDone || 0; }
+    else { L = logicLevel['pair'] || 1; 已答 = logicDone['pair'] || 0; }
+    const 通关 = L >= SCIENCE_LEVEL_MAX;
+    逻辑标.textContent = '第 ' + L + ' 关' + (通关 ? ' · 已通关' : ' · 本关 ' + 已答 + '/' + LEVEL_NEED + ' 题');
   }
   // 英语岛两个模块 + 语文综合的关卡标签
   updateEngLevelTag();
@@ -3531,7 +4125,7 @@ function updateLevelTag() {
 const LOGIC_LEVEL_MAX = 10;
 let logicLevel = getData('logicLevel', { 'pattern': 1, 'pair': 1, 'sort': 1 });
 let logicDone = getData('logicDone', { 'pattern': 0, 'pair': 0, 'sort': 0 });
-const LOGIC_NAME = { 'pattern': '找规律', 'pair': '图形配对', 'sort': '排序题' };
+const LOGIC_NAME = { 'pattern': '找规律', 'pair': '识别分类', 'sort': '排序题' };
 
 function logicLevelUp(类型) {
   if ((logicLevel[类型] || 1) >= LOGIC_LEVEL_MAX) return;
@@ -3777,6 +4371,7 @@ function generateCalcQuestion(data) {
         mathRoundTick(true);
         mathLevelUp('口算');
         if (是复现) 错题过关('口算', 键);
+        记生成题通过('calc', KG数学知识点('口算', mathLevel['口算']), mathLevel['口算']);
         autoNext(container, generateCalcQuestion);
       } else {
         btn.style.background = '#FF6B6B';
@@ -3868,6 +4463,7 @@ function generateMulQuestion(data) {
         mathRoundTick(true);
         mathLevelUp('乘除');
         if (是复现) 错题过关('乘除', 键);
+        记生成题通过('mul', KG数学知识点('乘除', mathLevel['乘除']), mathLevel['乘除']);
         autoNext(container, generateMulQuestion);
       } else {
         btn.style.background = '#FF6B6B';
@@ -4132,18 +4728,45 @@ function tapSudokuCell(i, j) {
   checkSudoku();
 }
 
+// 判定改为规则校验：填满后每行每列（4×4 还含每个 2×2 宫）不重复即算对。
+// 原先与程序生成的唯一解逐格比对，但谜面可能存在多解，
+// 孩子填出另一个合法解会被误判为错（实测踩坑：4×4 挖 6 格时出现过）
+function sudoku盘面合法() {
+  for (let i = 0; i < sudokuN; i++) {
+    const 行 = new Set(), 列 = new Set();
+    for (let j = 0; j < sudokuN; j++) {
+      if (行.has(sudokuBoard[i][j])) return false;
+      行.add(sudokuBoard[i][j]);
+      if (列.has(sudokuBoard[j][i])) return false;
+      列.add(sudokuBoard[j][i]);
+    }
+  }
+  if (sudokuN === 4) {
+    for (let bi = 0; bi < 4; bi += 2) {
+      for (let bj = 0; bj < 4; bj += 2) {
+        const 宫 = new Set();
+        for (let i = bi; i < bi + 2; i++) {
+          for (let j = bj; j < bj + 2; j++) {
+            if (宫.has(sudokuBoard[i][j])) return false;
+            宫.add(sudokuBoard[i][j]);
+          }
+        }
+      }
+    }
+  }
+  return true;
+}
+
 function checkSudoku() {
   const total = sudokuN * sudokuN;
   let filled = 0;
-  let correct = 0;
   for (let i = 0; i < sudokuN; i++) {
     for (let j = 0; j < sudokuN; j++) {
       if (sudokuBoard[i][j]) filled++;
-      if (sudokuBoard[i][j] === sudokuSolution[i][j]) correct++;
     }
   }
   const msg = document.getElementById('sudokuMsg');
-  if (correct === total) {
+  if (filled === total && sudoku盘面合法()) {
     if (msg) msg.textContent = '🎉 全部填对，太厉害了！';
     showToast('数独完成！🎉');
     addStars(3);
@@ -4151,6 +4774,7 @@ function checkSudoku() {
     showStarAnimation();
     mathRoundTick(true);
     mathLevelUp('数独');
+    记生成题通过('sudoku', KG数学知识点('数独', mathLevel['数独']), mathLevel['数独']);
     setTimeout(generateSudoku, 1600);
   } else if (filled === total) {
     if (msg) msg.textContent = '还有数字放错位置，再检查一下 🤔';
@@ -4261,7 +4885,7 @@ function generatePattern(data) {
       `<button class="logic-btn" data-val="${o}">${o}</button>`
     ).join('')}</div>
     <div style="display:flex; gap:10px; justify-content:center; margin-top:6px;">
-      <button class="next-btn" style="background:var(--blue); flex:1; max-width:170px;" onclick="prevPattern()">上一题</button>
+      <button class="next-btn prev-btn" style="background:var(--blue); flex:1; max-width:170px;" onclick="prevPattern()">上一题</button>
       <button class="next-btn" style="flex:1; max-width:170px;" onclick="generatePattern()">下一题</button>
     </div>
   `;
@@ -4272,6 +4896,7 @@ function generatePattern(data) {
       if (btn.dataset.val === q.answer) {
         btn.classList.add('correct');
         showToast('太聪明了！🎉'); logicLevelUp('pattern');
+        记生成题通过('pattern', 'm1_1', logicLevel['pattern']);
         addStars(1);
         addCorrect();
         showStarAnimation(btn.getBoundingClientRect().x, btn.getBoundingClientRect().y);
@@ -4292,57 +4917,31 @@ function prevPattern() {
 
 generatePattern();
 
-// 图形辨析（找异类 / 找完全相同的相似图形）
-// 图形辨析用的类别（同类内更像，异类更隐蔽）与高相似图形组
-// v2.5：类别 8→22 组、相似组 8→22 组，大幅降低重复感
+// 识别分类：从五个同类图案中找出那个不同类的（原逻辑挑战第二子模块）
+// 类别组（同类内更像，异类更隐蔽）
+// v2.5：类别 8→22 组；v2.75：移除「找出完全一样的图案」题型与相似图形组
 const pairCategories = {
-  '水果': ['🍎','🍌','🍇','🍉','🍓'],
+  '哺乳动物': ['🐶','🐱','🐰','🐻','🐼'],
+  '鸟类': ['🐦','🦆','🦉','🐤','🐧'],
+  '昆虫': ['🐝','🐞','🦋','🐜','🦗'],
+  '水生动物': ['🐟','🐙','🦀','🐬','🦈'],
+  '家畜家禽': ['🐔','🐮','🐑','🐷','🐴'],
+  '野生动物': ['🦁','🐯','🐺','🦊','🐆'],
+  '树木': ['🌳','🌲','🌴','🎄','🎋'],
+  '花卉': ['🌸','🌹','🌻','🌷','🌼'],
   '蔬菜': ['🥕','🥦','🌽','🍅','🥒'],
-  '陆地动物': ['🐱','🐶','🐰','🐻','🐼'],
-  '海洋动物': ['🐟','🐙','🦀','🐬','🦈'],
-  '交通工具': ['🚗','🚌','🚲','✈️','🚂'],
-  '文具': ['✏️','📕','📐','🖍️','📎'],
-  '甜点': ['🍰','🍩','🍪','🧁','🍫'],
-  '花草': ['🌸','🌻','🌹','🌷','🌼'],
+  '水果': ['🍎','🍌','🍇','🍉','🍓'],
+  '天体': ['🌞','🌕','⭐','🪐','☄️'],
+  '天气': ['🌧️','⛈️','❄️','🌪️','🌈'],
+  '金属制品': ['🔨','🗝️','🔩','⛓️','🔧'],
+  '木制品': ['🪵','🪑','🥢','🚪','🧺'],
+  '玻璃陶瓷': ['🪟','🔍','🥃','🏺','🍶'],
+  '衣物服饰': ['👕','👖','🧦','🧣','🧤'],
+  '电器用电': ['💡','🔋','🔌','🔦','📺'],
+  '文具': ['📏','✏️','📐','📎','🖍️'],
   '乐器': ['🎹','🎸','🥁','🎺','🎻'],
-  '运动': ['⚽','🏀','🏈','🎾','🏐'],
-  '天气': ['☀️','🌧️','⛈️','❄️','🌪️'],
-  '鸟类': ['🐦','🦜','🦉','🐤','🦆'],
-  '昆虫': ['🦋','🐝','🐞','🐜','🦗'],
-  '家具': ['🛏️','🛋️','🪑','🚪','🪟'],
-  '电器': ['📱','💻','📺','📻','⏰'],
-  '饮品': ['🥤','☕','🍵','🧃','🥛'],
-  '表情': ['😍','🤩','😎','🥳','😴'],
-  '玩具': ['🧸','🪀','🪁','🎮','🎲'],
-  '身体': ['✋','🦶','👂','👃','👄'],
-  '建筑': ['🏠','🏫','🏥','🏰','🏢'],
-  '服装': ['👕','👖','👗','🎩','👟'],
-  '主食': ['🍚','🍜','🍞','🥟','🍳']
+  '交通工具': ['🚗','✈️','🚲','🚂','🚢']
 };
-const pairSimilarGroups = [
-  ['😀','😃','😄','😁','😆','🙂'],
-  ['⭐','🌟','✨','💫','🌠','☄️'],
-  ['△','▽','◇','○','□','☆'],
-  ['❤️','🧡','💛','💚','💙','💜'],
-  ['🌸','🌺','🌻','🌼','🌷','💐'],
-  ['🍎','🍏','🍐','🍊','🍋','🍈'],
-  ['🚗','🚕','🚙','🚌','🚓','🚐'],
-  ['🐱','🐈','🐯','🦁','🐅','🐆'],
-  ['🔴','🟠','🟡','🟢','🔵','🟣'],
-  ['🌒','🌓','🌔','🌕','🌖','🌗'],
-  ['🕐','🕑','🕒','🕓','🕔','🕕'],
-  ['1️⃣','2️⃣','3️⃣','4️⃣','5️⃣','6️⃣'],
-  ['🌳','🌲','🌴','🌵','🌱','🎋'],
-  ['🍏','🍐','🍈','🍋','🍌','🍉'],
-  ['🥕','🌽','🌶️','🥒','🥬','🥦'],
-  ['🙃','😉','😊','😇','🥰','😍'],
-  ['🐶','🐺','🦊','🦝','🐕','🐩'],
-  ['☀️','🌤️','⛅','🌥️','☁️','🌦️'],
-  ['🔹','🔶','🔸','🔷','💠','⚙️'],
-  ['▶️','⏸️','⏹️','⏺️','⏭️','⏮️'],
-  ['🐈','🐕','🐇','🐹','🦜','🐠'],
-  ['⬛','⬜','◼️','◻️','▪️','▫️']
-];
 
 const pairHistory = createHistory();
 
@@ -4351,36 +4950,30 @@ const pairHistory = createHistory();
 // v2.5：题目特征去重（pairRecent），连续出题不重复
 const pairRecent = [];
 
-function makePairQuestion(level) {
-  const L = Math.min(Math.max(level || 1, 1), 10);
+// v2.75：移除「找出完全一样的图案」题型，只保留「找异类」一种问法（模块更名为「识别分类」）
+// v2.75b：异类所在类别必须与主类没有任何相同图案，否则去重后只剩 5 个按钮
+function makePairQuestion() {
   const pick = arr => arr[randInt(0, arr.length - 1)];
-  let title, targetHtml, answer, options, 特征;
-
-  if (Math.random() < 0.75 - 0.5 * (L - 1) / 9) {
-    // A. 找不同类：五个同类 + 一个异类
-    const cats = Object.keys(pairCategories);
-    const mainCat = pick(cats);
-    let otherCat = pick(cats);
-    while (otherCat === mainCat) otherCat = pick(cats);
-    const mains = pairCategories[mainCat].slice().sort(() => Math.random() - 0.5).slice(0, 5);
-    const odd = pick(pairCategories[otherCat]);
-    answer = odd;
-    options = mains.concat([odd]);
-    title = '哪一个和其他五个不是同一类？🤔';
-    targetHtml = '';
-    特征 = 'A:' + mainCat + ':' + otherCat + ':' + odd;
-  } else {
-    // B. 找出和上面完全一样的（干扰项高度相似）
-    const 组序 = randInt(0, pairSimilarGroups.length - 1);
-    const group = pairSimilarGroups[组序];
-    answer = pick(group);
-    const others = group.filter(g => g !== answer).sort(() => Math.random() - 0.5).slice(0, 5);
-    options = others.concat([answer]);
-    title = '找出和上面完全一样的图案 👀';
-    targetHtml = `<div class="logic-sequence" style="font-size:60px;">${answer}</div>`;
-    特征 = 'B:' + 组序 + ':' + answer;
-  }
-  return { title: title, targetHtml: targetHtml, answer: answer, options: options, 特征: 特征 };
+  const 类名表 = Object.keys(pairCategories);
+  const mainCat = pick(类名表);
+  const 主集 = pairCategories[mainCat];
+  const 可作异类 = 类名表.filter(function (名) {
+    if (名 === mainCat) return false;
+    return pairCategories[名].every(function (x) { return 主集.indexOf(x) < 0; });
+  });
+  const otherCat = pick(可作异类.length ? 可作异类 : 类名表.filter(function (名) { return 名 !== mainCat; }));
+  const mains = 主集.slice().sort(() => Math.random() - 0.5).slice(0, 5);
+  let odd = pick(pairCategories[otherCat]);
+  let guard = 0;
+  while (mains.indexOf(odd) >= 0 && guard++ < 40) odd = pick(pairCategories[otherCat]);
+  return {
+    title: '哪一个和其他五个不是同一类？🤔',
+    targetHtml: '',
+    answer: odd,
+    options: mains.concat([odd]),
+    主类: mainCat,
+    特征: 'A:' + mainCat + ':' + otherCat + ':' + odd
+  };
 }
 
 function generatePair(data) {
@@ -4390,7 +4983,7 @@ function generatePair(data) {
     // 连续出题去重：同一特征最多间隔 12 题才会再出现
     let 尝试 = 0;
     do {
-      q = makePairQuestion(logicLevel['pair']);
+      q = makePairQuestion();
       尝试++;
     } while (pairRecent.indexOf(q.特征) >= 0 && 尝试 < 25);
     pairRecent.push(q.特征);
@@ -4409,7 +5002,7 @@ function generatePair(data) {
       `<button class="logic-btn" data-val="${o}">${o}</button>`
     ).join('')}</div>
     <div style="display:flex; gap:10px; justify-content:center; margin-top:6px;">
-      <button class="next-btn" style="background:var(--blue); flex:1; max-width:170px;" onclick="prevPair()">上一题</button>
+      <button class="next-btn prev-btn" style="background:var(--blue); flex:1; max-width:170px;" onclick="prevPair()">上一题</button>
       <button class="next-btn" style="flex:1; max-width:170px;" onclick="generatePair()">下一题</button>
     </div>
   `;
@@ -4420,6 +5013,7 @@ function generatePair(data) {
       if (btn.dataset.val === q.answer) {
         btn.classList.add('correct');
         showToast('好眼力！🎉'); logicLevelUp('pair');
+        记知识点通过(KG分类类别[q.主类], 'pair:' + q.特征);
         addStars(1);
         addCorrect();
         showStarAnimation(btn.getBoundingClientRect().x, btn.getBoundingClientRect().y);
@@ -4524,7 +5118,7 @@ function generateSort(data) {
       `<button class="logic-btn sort-pick" data-val="${it.label}">${it.label}</button>`
     ).join('')}</div>
     <div style="display:flex; gap:10px; justify-content:center; margin-top:6px; flex-wrap:wrap;">
-      <button class="next-btn" style="background:var(--blue);" onclick="prevSort()">上一题</button>
+      <button class="next-btn prev-btn" style="background:var(--blue);" onclick="prevSort()">上一题</button>
       <button class="next-btn" onclick="generateSort()">下一题</button>
       <button class="next-btn" style="background:var(--yellow);color:#333;" onclick="resetSort()">重选</button>
     </div>
@@ -4542,6 +5136,7 @@ function generateSort(data) {
       if (picked.length === len) {
         if (picked.join('|') === answerStr) {
           showToast('排对了！🎉'); logicLevelUp('sort');
+          记生成题通过('sort', 'm1_1', logicLevel['sort']);
           addStars(2);
           addCorrect();
           showStarAnimation();
@@ -4615,7 +5210,7 @@ function generateAdventureQuestion() {
 
 // 题库生成器 - 从各模块随机抽题
 function generateAdventureQuestionRaw() {
-  const types = ['letter', 'number', 'poem', 'logic'];
+  const types = ['letter', 'number', 'poem', 'science'];
   const type = types[Math.floor(Math.random() * types.length)];
   let question = { text: '', options: [], answer: 0 };
 
@@ -4624,7 +5219,7 @@ function generateAdventureQuestionRaw() {
       const idx = Math.floor(Math.random() * 26);
       const upper = String.fromCharCode(65 + idx);
       const lower = String.fromCharCode(97 + idx);
-      question.text = `大写字母 "${upper}" 的小写是？`;
+      question.text = `大写字母「${upper}」的小写是？`;
       const opts = [lower];
       while (opts.length < 4) {
         const r = String.fromCharCode(97 + Math.floor(Math.random() * 26));
@@ -4664,12 +5259,12 @@ function generateAdventureQuestionRaw() {
       const poemQuiz = [
         { q: '《咏鹅》的作者是谁？', opts: ['骆宾王','李白','杜甫','白居易'], ans: 0 },
         { q: '《静夜思》是谁写的？', opts: ['王维','孟浩然','李白','杜甫'], ans: 2 },
-        { q: '"锄禾日当午"出自哪首诗？', opts: ['春晓','悯农','画','小池'], ans: 1 },
-        { q: '"白毛浮绿水"写的是什么动物？', opts: ['鹅','鸭','鹤','天鹅'], ans: 0 },
-        { q: '"床前明月光"下一句是？', opts: ['疑是地上霜','举头望明月','低头思故乡','处处闻啼鸟'], ans: 0 },
+        { q: '「锄禾日当午」出自哪首诗？', opts: ['春晓','悯农','画','小池'], ans: 1 },
+        { q: '「白毛浮绿水」写的是什么动物？', opts: ['鹅','鸭','鹤','天鹅'], ans: 0 },
+        { q: '「床前明月光」下一句是？', opts: ['疑是地上霜','举头望明月','低头思故乡','处处闻啼鸟'], ans: 0 },
         { q: '《春晓》的作者是？', opts: ['李白','孟浩然','杜甫','王维'], ans: 1 },
-        { q: '"欲穷千里目"下一句是？', opts: ['更上一层楼','黄河入海流','白日依山尽','入海流'], ans: 0 },
-        { q: '"小荷才露尖尖角"出自？', opts: ['小池','江南','画','咏鹅'], ans: 0 },
+        { q: '「欲穷千里目」下一句是？', opts: ['更上一层楼','黄河入海流','白日依山尽','入海流'], ans: 0 },
+        { q: '「小荷才露尖尖角」出自？', opts: ['小池','江南','画','咏鹅'], ans: 0 },
       ];
       const pq = poemQuiz[Math.floor(Math.random() * poemQuiz.length)];
       question.text = pq.q;
@@ -4677,14 +5272,24 @@ function generateAdventureQuestionRaw() {
       question.answer = pq.ans;
       break;
     }
-    case 'logic': {
+    case 'science': {
+      // v2.75：原「逻辑挑战」改为科学科目，闯关冒险的科学题直接从科学题库抽取（按当前关卡难度选池）
+      if (typeof SCIENCE_BANK !== 'undefined' && SCIENCE_BANK.length) {
+        const 池 = SCIENCE_BANK.filter(function (t) { return t.lv <= advLevel + 1; });
+        const 源 = 池.length ? 池 : SCIENCE_BANK;
+        const 原题 = 源[Math.floor(Math.random() * 源.length)];
+        // 打乱选项并重算答案下标（科学题库的正确答案固定写在第一位）
+        const opts = 原题.opts.slice().sort(function () { return Math.random() - 0.5; });
+        question.text = 原题.q;
+        question.options = opts;
+        question.answer = Math.max(0, opts.indexOf(原题.opts[原题.ans]));
+        break;
+      }
+      // 题库缺失时的兜底：旧的小逻辑题
       const logicQuiz = [
         { q: '🔴🔵🔴🔵🔴 下一个是？', opts: ['🔵','🔴','🟢','🟡'], ans: 0 },
         { q: '1, 2, 3, 4, 下一个是？', opts: ['5','6','4','3'], ans: 0 },
-        { q: '🍎🍐🍎🍐 下一个是？', opts: ['🍎','🍐','🍇','🍊'], ans: 0 },
         { q: '哪个最大？ 3, 7, 1, 5', opts: ['7','5','3','1'], ans: 0 },
-        { q: '哪个最小？ 8, 2, 6, 4', opts: ['2','4','6','8'], ans: 0 },
-        { q: '⭐🌙⭐🌙 下一个是？', opts: ['⭐','🌙','☀️','🌈'], ans: 0 },
       ];
       const lq = logicQuiz[Math.floor(Math.random() * logicQuiz.length)];
       question.text = lq.q;
@@ -4705,6 +5310,18 @@ function startAdventure() {
   showNextAdvQuestion();
 }
 
+// v2.75：刷新头部关卡与答题进度（此前头部只有一根进度条，没有任何文字）
+function 刷新闯关头部() {
+  const 已答 = Math.max(0, Math.min(advQuestion - 1, ADV_TOTAL));
+  const pct = Math.round(已答 / ADV_TOTAL * 100);
+  const 条 = document.getElementById('advProgressBar');
+  if (条) 条.style.width = pct + '%';
+  const 关标 = document.getElementById('advLevelInfo');
+  if (关标) 关标.textContent = '第 ' + advLevel + ' 关' + (advLevel >= ADV_LEVEL_MAX ? ' · 已到最后一关' : '');
+  const 右标 = document.getElementById('advHeadRight');
+  if (右标) 右标.textContent = '已答 ' + 已答 + '/' + ADV_TOTAL + ' · 答对 ' + advCorrectCount + '（过关需 ' + ADV_PASS + '）';
+}
+
 function showNextAdvQuestion() {
   advQuestion++;
   if (advQuestion > ADV_TOTAL) {
@@ -4713,7 +5330,7 @@ function showNextAdvQuestion() {
     return;
   }
 
-  document.getElementById('advProgressBar').style.width = ((advQuestion - 1) / ADV_TOTAL * 100) + '%';
+  刷新闯关头部();
 
   const q = generateAdventureQuestion();
   document.getElementById('advQText').textContent = q.text;
@@ -4743,6 +5360,8 @@ function showNextAdvQuestion() {
         container.querySelectorAll('.adv-btn')[q.answer].classList.add('correct');
         showToast('加油哦 💪');
       }
+      // 答题后立即刷新头部（答对计数变化）
+      刷新闯关头部();
       // 1.5秒后下一题
       setTimeout(showNextAdvQuestion, 1500);
     });
@@ -4751,7 +5370,7 @@ function showNextAdvQuestion() {
 }
 
 function finishLevel() {
-  document.getElementById('advProgressBar').style.width = '100%';
+  刷新闯关头部();   // 此时 advQuestion 已超出总数，进度自动到 100%
   const passed = advCorrectCount >= ADV_PASS; // 答对 60% 以上过关
 
   if (passed) {
@@ -4827,46 +5446,148 @@ function renderBadges() {
 }
 
 /* ==========================================================
-   首页知识图谱（1-6 年级 · 数学 语文 英语 科学）
-   数据来自 knowledge-graph.js，共 120 个知识点
-   渲染方式：原生 SVG，不引入任何第三方库，完全离线可用
-   布局规则：横轴按年级分列，纵轴按前置层级排列（基础在下、进阶在上）
+   知识图谱 v2.6 · ECharts 关系图视图（替代旧 SVG 树状图与卡片地图）
+   布局参考根目录 index.html 样板：四象限学科分区 + 前置链拓扑分层
+   （基础知识点在下、进阶知识点在上，虚线箭头表示前置关系）
+   数据：knowledge-graph.js，120 个知识点
+   进度：沿用 kgProgress 存储，done=已掌握、doing=学习中、无记录=未开始
+         老版本的 done 记录完全兼容，不作废
+   依赖：echarts.min.js（本地文件，离线可用，无网络请求）
    ========================================================== */
-
-// 画布虚拟坐标系尺寸（viewBox 基准，与容器像素无关）
-// 树状布局比原来的网格布局需要更大空间：数学树最深 12 层、16 个叶节点
-const kg画布宽 = 1500;
-const kg画布高 = 1000;
 
 // 运行状态（localStorage 数据异常时回退为空对象，避免读到 null 导致报错）
 let kg进度 = getData('kgProgress', {});
 if (!kg进度 || typeof kg进度 !== 'object' || Array.isArray(kg进度)) kg进度 = {};
-let kg科目 = 'all';
-let kg年级 = 'all';
-let kg搜索 = '';
-let kg选中 = null;
-let kg节点数 = 0;
-let kg视图 = { x: 0, y: 0, w: kg画布宽, h: kg画布高 };
-let kg已设视图 = false;
-let kg位置表 = {};   // 当前各节点的虚拟坐标，用于"点击最近节点"兜底
+let kgv科目 = 'math';   // 当前科目，'all' 为四科同屏四象限
+let kgv年级 = '1';     // 当前年级，'1'~'6' 或 'all'；默认一年级（2026-09-20 用户要求）
+let kg选中 = null;      // 当前选中的知识点 id
+let kgv图表 = null;     // ECharts 实例（进入图谱页时才初始化：页面隐藏时容器没有尺寸）
 
-// DOM 引用（初始化时赋值，避免重复查询）
-let kg画布元素 = null;
-let kg容器元素 = null;
 let kg面板元素 = null;
-let kg提示元素 = null;
 
-/* ---------- 数据筛选 ---------- */
-function kg筛选() {
-  return KG知识点.filter(function (n) {
-    if (kg科目 !== 'all' && n.学科 !== kg科目) return false;
-    if (kg年级 !== 'all' && n.年级 !== Number(kg年级)) return false;
-    return true;
-  });
+/* ==================== 题库与知识图谱打通（v2.75 新增） ==================== */
+// 维护原则：按题型 / 类别归档到知识点，不逐题手写字段；全部落在 1-3 年级节点，避免跨年级误标
+// id 命名：学科首字母 + 年级 + 序号，如 m1_2 数学一年级第 2 个知识点
+
+// 语文综合：按题型 t
+const KG语文题型 = {
+  '偏旁部首': 'c1_3',      // 识字与写字（一）
+  '笔画顺序': 'c1_3',
+  '间架结构': 'c1_3',
+  '拼读': 'c1_1',          // 汉语拼音
+  '反义词': 'c2_2',        // 词语积累：近义词与反义词
+  '量词': 'c2_2',
+  '成语典故': 'c3_2',      // 词语运用：成语与关联词
+  '歇后语': 'c3_2',
+  '脑筋急转弯': 'c3_2'
+};
+
+// 科学问答 / 真假判断：按领域 t（图谱 1-3 年级暂无「光与声音」「身体」独立节点，归到最贴近的观察类节点）
+const KG科学领域 = {
+  '动物世界': 's1_3',      // 动物初步
+  '植物王国': 's1_2',      // 植物初步
+  '我们的身体': 's1_1',    // 观察与测量（感官观察）
+  '天气与季节': 's2_1',
+  '水与空气': 's3_1',      // 水与溶解
+  '光与声音': 's1_1',
+  '磁与电': 's2_2',        // 磁铁
+  '材料与工具': 's1_4',    // 材料初步
+  '地球与宇宙': 's2_1',
+  '生活与科技': 's1_4'
+};
+
+// 识别分类：按主类
+const KG分类类别 = {
+  '哺乳动物': 's1_3', '鸟类': 's1_3', '昆虫': 's1_3', '水生动物': 's1_3', '家畜家禽': 's1_3', '野生动物': 's1_3',
+  '树木': 's1_2', '花卉': 's1_2', '蔬菜': 's1_2', '水果': 's1_2',
+  '天体': 's2_1', '天气': 's2_1',
+  '金属制品': 's1_4', '木制品': 's1_4', '玻璃陶瓷': 's1_4', '衣物服饰': 's1_4',
+  '电器用电': 's2_2', '文具': 's1_4', '乐器': 's1_4', '交通工具': 's1_4'
+};
+
+// 科学配对：按配对类型
+const KG配对类型 = {
+  '动物与食物': 's1_3',
+  '现象与原因': 's1_1',
+  '材料与用途': 's1_4',
+  '身体与功能': 's1_1',
+  '天气与应对': 's2_1',
+  '工具与用途': 's1_4'
+};
+
+// 数学：按题型 + 当前等级（题目是现场生成的，用难度档定位知识点）
+function KG数学知识点(类型, 等级) {
+  const L = Number(等级) || 1;
+  if (类型 === '口算') {
+    if (L <= 3) return 'm1_2';       // 10以内加减法
+    if (L <= 5) return 'm2_1';       // 100以内加减法（二）
+    return 'm3_1';                   // 万以内加减法（二）
+  }
+  if (类型 === '乘除') return L <= 4 ? 'm2_2' : 'm2_4';   // 表内乘法（一） / 表内除法
+  if (类型 === '数独') return 'm1_1';                     // 10以内数的认识
+  if (类型 === '找规律') return 'm1_1';
+  if (类型 === '排序') return 'm1_1';
+  return null;
+}
+
+// 英语：按模块 + 当前关卡
+function KG英语知识点(模块, 关卡) {
+  const L = Number(关卡) || 1;
+  if (模块 === '配对游戏') return 'e1_1';                 // 英文字母认读
+  if (L === 1) return 模块 === '听音选词' ? 'e1_1' : 'e1_3';
+  if (L <= 3) return 'e1_3';                              // 基础词汇（一）
+  if (L <= 5) return 'e2_2';                              // 基础词汇（二）
+  return 'e3_2';                                          // 词汇积累：学校与时间
+}
+
+// ---------- 通过量记账：kg自动 = { 知识点id: { 键: { 题目键: 时间 }, 数: n } } ----------
+let kg自动 = getData('kg自动', {});
+const KG通过阈值 = 5;   // 通过 5 道不同的题记为已掌握（比原先设想的 3 更严格）
+
+function 记知识点通过(知识点id, 题目键) {
+  if (!知识点id || !题目键) return;
+  const 节点 = kg取节点(知识点id);
+  if (!节点) return;                                   // id 变动时忽略，不报错
+  const 表 = kg自动[知识点id] || { 键: {}, 数: 0 };
+  if (表.键[题目键]) return;                            // 同一道题只算一次
+  表.键[题目键] = Date.now();
+  表.数 = Object.keys(表.键).length;
+  kg自动[知识点id] = 表;
+  setData('kg自动', kg自动);
+  if (表.数 === KG通过阈值) {
+    showToast('「' + 节点.名称 + '」已掌握，真厉害！', 2400);
+    addStars(1);
+  }
+  if (kgv图表) { kgv渲染(); kgv统计(); }               // 图谱已打开时即时刷新
+}
+
+// 生成类题目（数学、英语）没有稳定题号：同一知识点同一难度档最多计 3 题，防止反复刷同一档
+function 生成题键(前缀, 知识点id, 档) {
+  const 表 = kg自动[知识点id];
+  for (let i = 1; i <= 3; i++) {
+    const 键 = 前缀 + ':' + 知识点id + ':d' + 档 + ':' + i;
+    if (!(表 && 表.键[键])) return 键;
+  }
+  return null;
+}
+
+// 数学 / 英语生成题的记账入口（自动折算难度档）
+function 记生成题通过(前缀, 知识点id, 等级) {
+  if (!知识点id) return;
+  记知识点通过(知识点id, 生成题键(前缀, 知识点id, Math.min(5, Math.ceil((Number(等级) || 1) / 2))));
+}
+
+// 某知识点的练题进度（面板展示用）
+function kg练题进度(id) {
+  const a = kg自动[id];
+  return a && a.数 ? a.数 : 0;
 }
 
 function kg取状态(id) {
-  return kg进度[id] || 'todo';
+  if (kg进度[id]) return kg进度[id];                    // 手动标记优先，老数据完全兼容
+  const a = kg自动[id];
+  if (a && a.数 > 0) return a.数 >= KG通过阈值 ? 'done' : 'doing';
+  return 'todo';
 }
 
 function kg取节点(id) {
@@ -4874,355 +5595,345 @@ function kg取节点(id) {
   return 命中[0] || null;
 }
 
-/* ---------- 拓扑分层：无前置为第 0 层，其余取前置层最大值加 1 ---------- */
-function kg分层(列表) {
-  const 层 = {};
-  const 集 = {};
-  列表.forEach(function (n) { 集[n.id] = 1; 层[n.id] = 0; });
-  for (let 轮 = 0; 轮 < 20; 轮++) {
-    let 变了 = false;
-    列表.forEach(function (n) {
-      let 最大 = -1;
-      (n.前置 || []).forEach(function (p) {
-        if (集[p] && 层[p] > 最大) 最大 = 层[p];
-      });
-      const 新层 = Math.min(最大 < 0 ? 0 : 最大 + 1, 14);
-      if (层[n.id] !== 新层) { 层[n.id] = 新层; 变了 = true; }
+// 板块归类：把细分板块合并为大类（详情面板标签用）
+const KM板块归类 = {
+  '加减法':       '数与运算',
+  '乘除法':       '数与运算',
+  '分数与小数':   '数与运算',
+  '代数初步':     '数与运算',
+  '图形与几何':   '图形与几何',
+  '量与计量':     '量与统计',
+  '数据与推理':   '量与统计',
+  '拼音识字':     '语言基础',
+  '词语句子':     '语言基础',
+  '阅读理解':     '阅读与表达',
+  '表达与习作':   '阅读与表达',
+  '古诗文与名著': '古诗文与名著',
+  '字母与语音':   '词汇与语音',
+  '词汇':         '词汇与语音',
+  '句型与语法':   '句型与运用',
+  '综合运用':     '句型与运用',
+  '物质科学':     '物质与宇宙',
+  '地球与宇宙':   '物质与宇宙',
+  '生命科学':     '生命科学',
+  '工程与技术':   '工程与技术'
+};
+
+// 板块配色（大类）：浅底深字，保证浅色主题下可读
+const KM板块色 = {
+  '数与运算':     { 底: '#EAF1FF', 字: '#2F5FD0' },
+  '图形与几何':   { 底: '#E2F3E7', 字: '#2B7040' },
+  '量与统计':     { 底: '#FBF3D8', 字: '#7A5C00' },
+  '语言基础':     { 底: '#FFEEF4', 字: '#D63C74' },
+  '阅读与表达':   { 底: '#F3E8FF', 字: '#7C3AED' },
+  '古诗文与名著': { 底: '#FFF0E0', 字: '#C05621' },
+  '词汇与语音':   { 底: '#E3F8F6', 字: '#1F9C93' },
+  '句型与运用':   { 底: '#FFEBD9', 字: '#C05621' },
+  '物质与宇宙':   { 底: '#F4EAFF', 字: '#8E3FD6' },
+  '生命科学':     { 底: '#E2F3E7', 字: '#2B7040' },
+  '工程与技术':   { 底: '#FBF3D8', 字: '#7A5C00' }
+};
+
+/* ---------- 数据筛选 ---------- */
+function kgv筛选() {
+  return KG知识点.filter(function (n) {
+    if (kgv科目 !== 'all' && n.学科 !== kgv科目) return false;
+    if (kgv年级 !== 'all' && n.年级 !== Number(kgv年级)) return false;
+    return true;
+  });
+}
+
+/* ---------- 布局：按学科分象限，象限内按前置链拓扑分层 ----------
+   层 = max(前置层)+1，无前置为第 0 层；基础层画在下方、进阶层画在上方。
+   同层节点再做重心排序（Sugiyama 简化版）：共享前置的兄弟节点相邻，
+   上下各扫 3 轮，减少连线交叉。 */
+function kgv布局(宽, 高) {
+  const 位置 = {};
+  const 单科 = kgv科目 !== 'all';
+  const 科目列表 = 单科 ? [kgv科目] : ['math', 'chinese', 'english', 'science'];
+
+  let 象限;
+  if (单科) {
+    象限 = {};
+    ['math', 'chinese', 'english', 'science'].forEach(function (k) {
+      象限[k] = { x0: 宽 * 0.07, x1: 宽 * 0.93, y0: 高 * 0.09, y1: 高 * 0.91 };
     });
-    if (!变了) break;
+  } else {
+    象限 = {
+      math:    { x0: 宽 * 0.04, x1: 宽 * 0.46, y0: 高 * 0.06, y1: 高 * 0.46 },
+      chinese: { x0: 宽 * 0.54, x1: 宽 * 0.96, y0: 高 * 0.06, y1: 高 * 0.46 },
+      english: { x0: 宽 * 0.04, x1: 宽 * 0.46, y0: 高 * 0.54, y1: 高 * 0.94 },
+      science: { x0: 宽 * 0.54, x1: 宽 * 0.96, y0: 高 * 0.54, y1: 高 * 0.94 }
+    };
   }
-  return 层;
+
+  科目列表.forEach(function (科) {
+    const 节点们 = KG知识点.filter(function (n) {
+      return n.学科 === 科 && (kgv年级 === 'all' || n.年级 === Number(kgv年级));
+    });
+    if (!节点们.length) return;
+
+    // 拓扑分层（迭代到稳定，防环上限 30 轮）
+    const 层表 = {};
+    let 变了 = true, 轮 = 0;
+    while (变了 && 轮 < 30) {
+      变了 = false; 轮++;
+      节点们.forEach(function (n) {
+        let 最大 = -1;
+        (n.前置 || []).forEach(function (p) {
+          if (层表[p] !== undefined && 层表[p] > 最大) 最大 = 层表[p];
+        });
+        const 新层 = 最大 < 0 ? 0 : 最大 + 1;
+        if (层表[n.id] !== 新层) { 层表[n.id] = 新层; 变了 = true; }
+      });
+    }
+
+    // 收集各层节点
+    const 各层 = {};
+    节点们.forEach(function (n) {
+      const l = 层表[n.id] || 0;
+      (各层[l] = 各层[l] || []).push(n.id);
+    });
+    const 层序 = Object.keys(各层).map(Number).sort(function (a, b) { return a - b; });
+
+    // 同层重心排序：自底向上按前置重心、自顶向下按后继重心，交替 3 轮
+    let 有序 = 层序.map(function (l) { return 各层[l].slice(); });
+    const 取点 = function (id) { return 节点们.find(function (n) { return n.id === id; }); };
+    const 后继们 = function (id) {
+      return 节点们.filter(function (n) { return (n.前置 || []).indexOf(id) >= 0; })
+        .map(function (n) { return n.id; });
+    };
+    const 刷新重心 = function () {
+      const m = new Map();
+      有序.forEach(function (arr) {
+        arr.forEach(function (id, i) { m.set(id, (i + 0.5) / arr.length); });
+      });
+      return m;
+    };
+    let 重心 = 刷新重心();
+    const 平均 = function (arr) {
+      return arr.length ? arr.reduce(function (s, v) { return s + v; }, 0) / arr.length : 0.5;
+    };
+
+    for (let iter = 0; iter < 3; iter++) {
+      for (let li = 1; li < 有序.length; li++) {
+        有序[li].sort(function (a, b) {
+          const ra = ((取点(a).前置) || []).map(function (p) { return 重心.get(p); }).filter(function (v) { return v !== undefined; });
+          const rb = ((取点(b).前置) || []).map(function (p) { return 重心.get(p); }).filter(function (v) { return v !== undefined; });
+          return 平均(ra) - 平均(rb);
+        });
+      }
+      重心 = 刷新重心();
+      for (let li = 有序.length - 2; li >= 0; li--) {
+        有序[li].sort(function (a, b) {
+          const ra = 后继们(a).map(function (c) { return 重心.get(c); }).filter(function (v) { return v !== undefined; });
+          const rb = 后继们(b).map(function (c) { return 重心.get(c); }).filter(function (v) { return v !== undefined; });
+          return 平均(ra) - 平均(rb);
+        });
+      }
+      重心 = 刷新重心();
+    }
+
+    // 落坐标：层 0 在象限底部，层越高越靠上；同层沿水平均分
+    const q = 象限[科];
+    层序.forEach(function (l, li) {
+      const ids = 有序[li];
+      const cy = q.y1 - (li + 0.5) * (q.y1 - q.y0) / 层序.length;
+      ids.forEach(function (id, i) {
+        const cx = q.x0 + (i + 0.5) * (q.x1 - q.x0) / ids.length;
+        位置[id] = { x: cx, y: cy };
+      });
+    });
+  });
+  return 位置;
 }
 
-/* ---------- 学科绘制区域：单科占满画布，全科分四象限 ---------- */
-function kg取区域(学科, 单科) {
-  if (单科) return { x0: 70, y0: 66, x1: kg画布宽 - 70, y1: kg画布高 - 40 };
-  const 中x = kg画布宽 / 2;
-  const 中y = kg画布高 / 2;
-  const 表 = {
-    math:    { x0: 40,       y0: 38,       x1: 中x - 24,      y1: 中y - 16 },
-    chinese: { x0: 中x + 24, y0: 38,       x1: kg画布宽 - 40, y1: 中y - 16 },
-    english: { x0: 40,       y0: 中y + 16, x1: 中x - 24,      y1: kg画布高 - 38 },
-    science: { x0: 中x + 24, y0: 中y + 16, x1: kg画布宽 - 40, y1: kg画布高 - 38 }
-  };
-  return 表[学科];
-}
+/* ---------- 图谱渲染 ---------- */
+function kgv渲染() {
+  if (!kgv图表) return;
+  const 容器 = document.getElementById('kgvChart');
+  if (!容器) return;
+  const 宽 = 容器.clientWidth || 800;
+  const 高 = 容器.clientHeight || 600;
+  const 位置 = kgv布局(宽, 高);
+  const 节点集 = kgv筛选();
+  const id集 = new Set(节点集.map(function (n) { return n.id; }));
+  const 紧凑 = kgv科目 === 'all';
 
-/* ---------- 构建树 ----------
-   每个知识点认一个"主父"：在它的前置里挑层级最高的那个（离它最近的一步）。
-   只允许"层级低 → 层级高"的父子关系，因此父子链严格递增，不可能成环。
-   一个知识点有多个前置时，非主干的那几条仍然保留为关联线，信息不丢。   */
-function kg建树(列表, 层表) {
-  const 集 = {};
-  列表.forEach(function (n) { 集[n.id] = 1; });
-  const 父表 = {};
-  const 子表 = {};
+  const 节点数据 = 节点集.map(function (n) {
+    const 态 = kg取状态(n.id);
+    const s = KG状态[态];
+    const 样 = { color: s.色 };
+    if (态 !== 'todo') {
+      样.borderColor = 态 === 'done' ? '#15803D' : '#B45309';
+      样.borderWidth = 2;
+    }
+    const p = 位置[n.id] || { x: 宽 / 2, y: 高 / 2 };
+    const 大小 = 紧凑
+      ? (态 === 'done' ? 26 : (态 === 'doing' ? 23 : 20))
+      : (态 === 'done' ? 36 : (态 === 'doing' ? 32 : 28));
+    return {
+      id: n.id,
+      name: n.名称,
+      x: p.x,
+      y: p.y,
+      symbolSize: 大小,
+      itemStyle: 样,
+      label: { show: true, fontSize: 紧凑 ? 9 : 10.5, color: '#333', position: 'top' }
+    };
+  });
 
-  列表.slice().sort(function (a, b) {
-    return (层表[a.id] || 0) - (层表[b.id] || 0);
-  }).forEach(function (n) {
-    let 主父 = null;
-    (n.前置 || []).forEach(function (p) {
-      if (!集[p]) return;
-      if ((层表[p] || 0) < (层表[n.id] || 0)) {
-        if (!主父 || (层表[p] || 0) > (层表[主父] || 0)) 主父 = p;
+  const 连线 = [];
+  节点集.forEach(function (n) {
+    (n.前置 || []).forEach(function (前) {
+      if (id集.has(前)) {
+        连线.push({
+          source: 前,
+          target: n.id,
+          lineStyle: { color: '#A5B4FC', width: 1.5, curveness: 0.25, type: 'dashed' }
+        });
       }
     });
-    父表[n.id] = 主父;
-    if (主父) {
-      if (!子表[主父]) 子表[主父] = [];
-      子表[主父].push(n.id);
-    }
   });
 
-  const 关联对 = [];
-  列表.forEach(function (n) {
-    (n.前置 || []).forEach(function (p) {
-      if (集[p] && 父表[n.id] !== p) 关联对.push([p, n.id]);
-    });
-  });
-
-  return { 父表: 父表, 子表: 子表, 关联对: 关联对 };
+  kgv图表.setOption({
+    tooltip: {
+      confine: true,
+      formatter: function (p) {
+        if (p.dataType !== 'node') return '';
+        const n = kg取节点(p.data.id);
+        if (!n) return '';
+        return '<b>' + n.名称 + '</b><br>' + n.年级 + '年级 · ' + KG学科[n.学科].名称
+          + '<br>状态：' + KG状态[kg取状态(p.data.id)].名称;
+      }
+    },
+    series: [{
+      type: 'graph',
+      layout: 'none',
+      data: 节点数据,
+      links: 连线,
+      roam: true,
+      scaleLimit: { min: 0.5, max: 2.5 },   // v2.74：限制捏合缩放范围（50%~250%）
+      draggable: true,
+      edgeSymbol: ['none', 'arrow'],
+      edgeSymbolSize: [0, 8],
+      edgeLabel: { show: false },
+      emphasis: {
+        focus: 'adjacency',
+        lineStyle: { width: 3, color: '#4F6EF7', type: 'dashed' }
+      },
+      lineStyle: { opacity: 0.75, type: 'dashed' }
+    }]
+  }, true);
 }
 
-/* ---------- 树状布局 ----------
-   横向：所有叶节点在区域内均匀铺开
-   纵向：层级 0（基础知识点、低年级）在最下，层级越高越靠上
-   父节点横坐标 = 其所有子节点横坐标的中点，从而形成标准的树形分支      */
-function kg树定位(列表, 层表, 区) {
-  const 树 = kg建树(列表, 层表);
-  const 位置 = {};
-  const 根们 = 列表.filter(function (n) { return !树.父表[n.id]; }).map(function (n) { return n.id; });
-
-  const 上边 = 区.y0 + 50;    // 顶部留出节点文字标签的空间
-  const 下边 = 区.y1 - 46;    // 底部留给学科名称
-  let 最大层 = 1;
-  列表.forEach(function (n) {
-    const l = 层表[n.id] || 0;
-    if (l > 最大层) 最大层 = l;
-  });
-
-  function 取y(id) {
-    return 下边 - ((层表[id] || 0) / 最大层) * (下边 - 上边);
-  }
-
-  // 先序收集叶节点：它们决定横向占位
-  const 叶子们 = [];
-  const 收集 = function (id) {
-    const 子 = 树.子表[id] || [];
-    if (!子.length) { 叶子们.push(id); return; }
-    子.forEach(收集);
-  };
-  根们.forEach(收集);
-
-  const 叶宽 = (区.x1 - 区.x0) / Math.max(叶子们.length, 1);
-  const 叶序 = {};
-  叶子们.forEach(function (id, i) { 叶序[id] = i; });
-
-  // 后序定位：先定子节点，父节点再取子节点横向中点
-  const 定位 = function (id) {
-    if (位置[id]) return 位置[id];
-    const 子 = 树.子表[id] || [];
-    if (!子.length) {
-      位置[id] = { x: 区.x0 + (叶序[id] + 0.5) * 叶宽, y: 取y(id) };
-      return 位置[id];
-    }
-    let 左 = 1e9, 右 = -1e9;
-    子.forEach(function (c) {
-      const p = 定位(c);
-      if (p.x < 左) 左 = p.x;
-      if (p.x > 右) 右 = p.x;
-    });
-    位置[id] = { x: (左 + 右) / 2, y: 取y(id) };
-    return 位置[id];
-  };
-  根们.forEach(定位);
-
-  // 输出连线表：主干（父子）+ 关联（跨分支）
-  const 边表 = [];
-  列表.forEach(function (n) {
-    if (树.父表[n.id]) 边表.push({ 源: 树.父表[n.id], 目: n.id, 主干: true });
-  });
-  树.关联对.forEach(function (对) {
-    边表.push({ 源: 对[0], 目: 对[1], 主干: false });
-  });
-
-  const 层间距 = (下边 - 上边) / 最大层;
-  return {
-    位置: 位置,
-    边表: 边表,
-    最小间距: Math.min(叶宽, 层间距)
-  };
-}
-
-/* ---------- 位置计算：按学科分区，每科一棵树 ---------- */
-function kg计算布局(列表) {
-  const 位置 = {};
-  const 边表 = [];
-  let 最小间距 = 9999;
-  const 单科 = kg科目 !== 'all';
-  const 学科们 = 单科 ? [kg科目] : ['math', 'chinese', 'english', 'science'];
-
-  学科们.forEach(function (学科) {
-    const 本科 = 列表.filter(function (n) { return n.学科 === 学科; });
-    if (!本科.length) return;
-    const 区 = kg取区域(学科, 单科);
-    const 层表 = kg分层(本科);
-    const 结果 = kg树定位(本科, 层表, 区);
-
-    for (const 编号 in 结果.位置) 位置[编号] = 结果.位置[编号];
-    结果.边表.forEach(function (边) { 边表.push(边); });
-    if (结果.最小间距 < 最小间距) 最小间距 = 结果.最小间距;
-  });
-
-  return { 位置: 位置, 边表: 边表, 最小间距: 最小间距 };
-}
-
-/* ---------- 学科图形（热区为透明圆，触屏上扩大可点范围） ---------- */
-function kg图形(形, 半径, 填充色, 描边色, 热区半径) {
-  const 公共 = 'class="kg-shape" fill="' + 填充色 + '" stroke="' + 描边色 + '"';
-  let 热区 = '';
-  if (热区半径 && 热区半径 > 半径 + 1) {
-    热区 = '<circle class="kg-hit" r="' + 热区半径.toFixed(1) + '" fill="transparent"/>';
-  }
-  if (形 === 'rect') {
-    return 热区 + '<rect ' + 公共 + ' x="' + (-半径) + '" y="' + (-半径) + '" width="' + (半径 * 2) +
-      '" height="' + (半径 * 2) + '" rx="5"/>';
-  }
-  if (形 === 'triangle') {
-    const 高 = 半径 * 1.2;
-    const 宽 = 半径 * 1.12;
-    return 热区 + '<polygon ' + 公共 + ' points="0,' + (-高) + ' ' + 宽 + ',' + 高 + ' ' + (-宽) + ',' + 高 + '"/>';
-  }
-  if (形 === 'diamond') {
-    return 热区 + '<polygon ' + 公共 + ' points="0,' + (-半径 * 1.18) + ' ' + (半径 * 1.06) + ',0 0,' +
-      (半径 * 1.18) + ' ' + (-半径 * 1.06) + ',0"/>';
-  }
-  return 热区 + '<circle ' + 公共 + ' r="' + (半径 - 0.5) + '"/>';
-}
-
-/* ---------- 标签过长时截断 ---------- */
-function kg截断(文字, 上限) {
-  const 限 = 上限 || 9;
-  return 文字.length > 限 ? 文字.slice(0, 限 - 1) + '…' : 文字;
-}
-
-/* ---------- 渲染 ---------- */
-function kg渲染() {
-  if (!kg画布元素) return;
-  const 列表 = kg筛选();
-  const 布局 = kg计算布局(列表);
-  const 位置 = 布局.位置;
-  kg位置表 = 位置;
-  kg节点数 = 列表.length;
-
-  // 节点与标签尺寸按密度自适应（树状布局比网格稀疏，节点可以画得更醒目）
-  const 字号 = 列表.length > 70 ? 12 : (列表.length > 34 ? 16 : 19);
-  const 半径 = 列表.length > 70 ? 12 : (列表.length > 34 ? 16 : 20);
-  // 触控热区：在不与相邻节点重叠的前提下尽量放大（上限为节点直径的 1.6 倍）
-  const 热区半径 = Math.max(半径, Math.min(半径 * 1.6, 布局.最小间距 * 0.45));
-
-  // 连线：主干用垂直出入的三次贝塞尔（树状分叉感），跨分支关联用弧线
-  let 连线 = '';
-  布局.边表.forEach(function (边) {
-    const a = 位置[边.源];
-    const b = 位置[边.目];
-    if (!a || !b) return;
-    let d;
-    if (边.主干) {
-      const 控1y = a.y + (b.y - a.y) * 0.45;
-      const 控2y = b.y - (b.y - a.y) * 0.45;
-      d = 'M' + a.x.toFixed(1) + ',' + a.y.toFixed(1) +
-        ' C' + a.x.toFixed(1) + ',' + 控1y.toFixed(1) +
-        ' ' + b.x.toFixed(1) + ',' + 控2y.toFixed(1) +
-        ' ' + b.x.toFixed(1) + ',' + b.y.toFixed(1);
-    } else {
-      const 中x = (a.x + b.x) / 2;
-      const 中y = (a.y + b.y) / 2 + Math.abs(b.y - a.y) * 0.12;
-      d = 'M' + a.x.toFixed(1) + ',' + a.y.toFixed(1) +
-        ' Q' + 中x.toFixed(1) + ',' + 中y.toFixed(1) +
-        ' ' + b.x.toFixed(1) + ',' + b.y.toFixed(1);
-    }
-    const 类名 = 边.主干 ? 'kg-edge' : 'kg-edge kg-edge-soft';
-    const 箭头 = 边.主干 ? 'url(#kgArrow)' : 'url(#kgArrowSoft)';
-    连线 += '<path class="' + 类名 + '" marker-end="' + 箭头 +
-      '" data-src="' + 边.源 + '" data-dst="' + 边.目 + '" d="' + d + '"/>';
-  });
-
-  // 节点
-  let 节点 = '';
-  列表.forEach(function (n) {
-    const p = 位置[n.id];
-    if (!p) return;
-    const 科 = KG学科[n.学科];
-    const 态 = KG状态[kg取状态(n.id)];
-    const 命中 = kg搜索 && n.名称.indexOf(kg搜索) >= 0;
-    const 淡化 = kg搜索 && !命中;
-    节点 += '<g class="kg-node' + (淡化 ? ' dim' : '') + '" data-id="' + n.id +
-      '" transform="translate(' + p.x.toFixed(1) + ',' + p.y.toFixed(1) + ')">' +
-      kg图形(科.形, 半径, 态.色, 科.色, 热区半径) +
-      '<text class="kg-label' + (命中 ? ' hi' : '') + '" style="font-size:' + 字号 + 'px" y="' +
-      (半径 + 字号 + 2) + '">' + kg截断(n.名称) + '</text>' +
-      '</g>';
-  });
-
-  const 箭头定义 = '<defs>'
-    + '<marker id="kgArrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7"'
-    + ' orient="auto" markerUnits="userSpaceOnUse"><path d="M0,0 L10,5 L0,10 z" fill="#B9C7E0"/></marker>'
-    + '<marker id="kgArrowSoft" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6"'
-    + ' orient="auto" markerUnits="userSpaceOnUse"><path d="M0,0 L10,5 L0,10 z" fill="#DDE4EF"/></marker>'
-    + '</defs>';
-
-  kg画布元素.innerHTML = 箭头定义 + '<g>' + 连线 + '</g><g>' + 节点 + '</g>';
-
-  if (!kg已设视图) {
-    kg视图 = { x: 0, y: 0, w: kg画布宽, h: kg画布高 };
-    kg已设视图 = true;
-  }
-  kg应用视图();
-  kg更新统计(列表);
-  kg更新分区();
-}
-
-/* ---------- 视图（缩放与平移） ---------- */
-function kg应用视图() {
-  if (!kg画布元素) return;
-  kg画布元素.setAttribute('viewBox',
-    kg视图.x.toFixed(1) + ' ' + kg视图.y.toFixed(1) + ' ' + kg视图.w.toFixed(1) + ' ' + kg视图.h.toFixed(1));
-  kg更新标签显示();
-}
-
-/* 标签是否显示：节点较少时直接显示；节点很多时需放大到一定程度才显示，避免糊成一团 */
-function kg更新标签显示() {
-  if (!kg画布元素 || !kg容器元素) return;
-  const 容器宽 = kg容器元素.clientWidth || 1000;
-  const 比例 = 容器宽 / kg视图.w;
-  kg画布元素.classList.toggle('show-labels', kg节点数 <= 55 || 比例 > 1.02);
-}
-
-function kg缩放(因子, 中心x, 中心y) {
-  const 新宽 = Math.max(160, Math.min(kg画布宽 * 4, kg视图.w / 因子));
-  const 比例 = 新宽 / kg视图.w;   // 新视图相对当前视图的缩放比例
-  const cx = (中心x === undefined || 中心x === null) ? kg视图.x + kg视图.w / 2 : 中心x;
-  const cy = (中心y === undefined || 中心y === null) ? kg视图.y + kg视图.h / 2 : 中心y;
-  kg视图.x = cx - (cx - kg视图.x) * 比例;
-  kg视图.y = cy - (cy - kg视图.y) * 比例;
-  kg视图.w = 新宽;
-  kg视图.h = kg视图.h * 比例;
-  kg应用视图();
-}
-
-function kg缩放按钮(因子) {
-  kg缩放(因子);
-}
-
-function kg复位视图() {
-  kg视图 = { x: 0, y: 0, w: kg画布宽, h: kg画布高 };
-  kg应用视图();
-  showToast('视图已复位');
-}
-
-function kg滚动到图谱() {
-  const 区 = document.getElementById('kgSection');
-  if (区) 区.scrollIntoView({ behavior: 'smooth', block: 'start' });
-}
-
-/* 屏幕坐标换算成画布虚拟坐标（供滚轮定点缩放使用） */
-function kg屏幕转虚拟(clientX, clientY) {
-  const r = kg画布元素.getBoundingClientRect();
-  if (!r.width || !r.height) return { x: kg视图.x + kg视图.w / 2, y: kg视图.y + kg视图.h / 2 };
-  const 比例 = Math.min(r.width / kg视图.w, r.height / kg视图.h);
-  const 偏x = (r.width - kg视图.w * 比例) / 2;
-  const 偏y = (r.height - kg视图.h * 比例) / 2;
-  return {
-    x: kg视图.x + (clientX - r.left - 偏x) / 比例,
-    y: kg视图.y + (clientY - r.top - 偏y) / 比例
-  };
-}
-
-/* 全科视图显示四象限分区底色，单科视图隐藏 */
-function kg更新分区() {
-  const 区 = document.getElementById('kgZones');
-  if (区) 区.style.display = kg科目 === 'all' ? 'grid' : 'none';
-}
-
-/* ---------- 统计条 ---------- */
-function kg更新统计(列表) {
-  const 表 = document.getElementById('kgSub');
-  if (!表) return;
-  let 已掌握 = 0, 学习中 = 0;
-  列表.forEach(function (n) {
+/* ---------- 进度统计（图谱页顶部进度行按当前筛选；首页学习进度卡固定四科全科全年级） ---------- */
+function kgv统计() {
+  const 节点集 = kgv筛选();
+  const 总数 = 节点集.length;
+  let 掌握 = 0, 学习中 = 0;
+  节点集.forEach(function (n) {
     const s = kg取状态(n.id);
-    if (s === 'done') 已掌握++;
+    if (s === 'done') 掌握++;
     else if (s === 'doing') 学习中++;
   });
-  const 科名 = kg科目 === 'all' ? '全部科目' : KG学科[kg科目].名称;
-  const 级名 = kg年级 === 'all' ? '1-6 年级' : kg年级 + ' 年级';
-  表.innerHTML = 科名 + ' · ' + 级名 + ' · 共 <b>' + 列表.length + '</b> 个知识点'
-    + ' · 已掌握 ' + 已掌握 + ' · 学习中 ' + 学习中 + ' · 未开始 ' + (列表.length - 已掌握 - 学习中);
+  const 未开始 = 总数 - 掌握 - 学习中;
+  const 范围 = (kgv科目 === 'all' ? '四科全科' : KG学科[kgv科目].名称)
+    + (kgv年级 === 'all' ? '' : ' · ' + kgv年级 + '年级');
+
+  const 进度行 = document.getElementById('kmTotal');
+  if (进度行) {
+    进度行.innerHTML = 范围 + ' · 共 <b>' + 总数 + '</b> 个知识点，已掌握 <b>' + 掌握
+      + '</b>、学习中 <b>' + 学习中 + '</b> 个';
+  }
+
+  // 首页学习进度卡：不看筛选，固定统计全部知识点
+  const 全总数 = KG知识点.length;
+  let 全掌握 = 0, 全学习中 = 0;
+  KG知识点.forEach(function (n) {
+    const s = kg取状态(n.id);
+    if (s === 'done') 全掌握++;
+    else if (s === 'doing') 全学习中++;
+  });
+  const 全未开始 = 全总数 - 全掌握 - 全学习中;
+  const 全范围 = '四科全科 · 全部年级';
+
+  const 卡区 = document.getElementById('kgvStat');
+  if (卡区) {
+    const pct = 全总数 ? Math.round(全掌握 / 全总数 * 100) : 0;
+    // v2.75：横版重排——标题行（含百分比徽章）+ 三格数据卡 + 进度条（右侧跟人数）
+    卡区.innerHTML =
+      '<div class="kgv-stat-head">'
+      + '<div><div class="kgv-stat-title">学习进度</div><div class="kgv-stat-sub">' + 全范围 + '</div></div>'
+      + '<div class="kgv-pct-badge">' + pct + '%<span>掌握度</span></div>'
+      + '</div>'
+      + '<div class="kgv-stat-cards">'
+      + '<div class="kgv-stat-card done"><div class="kgv-num">' + 全掌握 + '</div><div class="kgv-cap">已掌握</div></div>'
+      + '<div class="kgv-stat-card doing"><div class="kgv-num">' + 全学习中 + '</div><div class="kgv-cap">学习中</div></div>'
+      + '<div class="kgv-stat-card todo"><div class="kgv-num">' + 全未开始 + '</div><div class="kgv-cap">未开始</div></div>'
+      + '</div>'
+      + '<div class="kgv-bar-row">'
+      + '<div class="kgv-bar"><div class="kgv-bar-fill" style="width:' + pct + '%"></div></div>'
+      + '<div class="kgv-bar-text">' + 全掌握 + ' / ' + 全总数 + ' 个知识点</div>'
+      + '</div>';
+  }
 }
 
-/* ---------- 详情面板 ---------- */
+/* ---------- 详情面板（右侧常驻；末尾同步顶部三态按钮高亮） ---------- */
+/* ---------- 范围介绍视图：随科目 / 年级筛选变化（v2.75 新增） ---------- */
+function kg渲染范围介绍() {
+  if (!kg面板元素) return;
+  const 节点集 = kgv筛选();
+  const 科名 = kgv科目 === 'all' ? '四科全科' : KG学科[kgv科目].名称;
+  const 范围键 = (kgv科目 === 'all' ? 'all' : kgv科目) + '-' + kgv年级;
+  const 介绍 = KG范围介绍[范围键] || KG范围介绍[kgv科目 + '-all'] || KG范围介绍['all-all'];
+
+  let 掌握 = 0, 学习中 = 0;
+  节点集.forEach(function (n) {
+    const s = kg取状态(n.id);
+    if (s === 'done') 掌握++;
+    else if (s === 'doing') 学习中++;
+  });
+
+  let h = '';
+  h += '<div class="kg-name">' + 科名 + (kgv年级 === 'all' ? '' : ' · ' + kgv年级 + ' 年级') + '</div>';
+  h += '<div class="kg-tags">'
+    + '<span class="kg-tag" style="background:#EAF1FF;color:#2F5FD0">共 ' + 节点集.length + ' 个知识点</span>'
+    + '<span class="kg-tag" style="background:#DCFCE7;color:#15803D">已掌握 ' + 掌握 + '</span>'
+    + '<span class="kg-tag" style="background:#FEF3C7;color:#B45309">学习中 ' + 学习中 + '</span>'
+    + '<span class="kg-tag" style="background:#F1F5F9;color:#475569">未开始 ' + (节点集.length - 掌握 - 学习中) + '</span>'
+    + '</div>';
+
+  if (介绍) {
+    h += '<div class="kg-field"><div class="kg-cap">本范围学什么</div><div class="kg-val">' + 介绍.导语 + '</div></div>';
+    if (介绍.重点) h += '<div class="kg-field"><div class="kg-cap">重点关注</div><div class="kg-val">' + 介绍.重点 + '</div></div>';
+    if (介绍.难点) h += '<div class="kg-field"><div class="kg-cap">常见难点</div><div class="kg-val">' + 介绍.难点 + '</div></div>';
+  }
+
+  if (!节点集.length) {
+    h += '<div class="kg-empty" style="padding:40px 14px">这个范围内还没有知识点</div>';
+  } else {
+    h += '<div class="kg-field"><div class="kg-cap">知识点清单（按学习顺序，点一下看详情）</div>';
+    节点集.slice().sort(function (a, b) { return (a.前置 || []).length - (b.前置 || []).length; }).forEach(function (n) {
+      const 态 = KG状态[kg取状态(n.id)];
+      const 进度 = kg练题进度(n.id);
+      h += '<button type="button" class="kg-range-item" onclick="kg跳转(\'' + n.id + '\')">'
+        + '<span class="kg-range-dot" style="background:' + 态.色 + '"></span>'
+        + '<span class="kg-range-name">' + n.名称 + '</span>'
+        + '<span class="kg-range-meta">' + (进度 ? '练题 ' + 进度 + '/' + KG通过阈值 : 态.名称) + '</span>'
+        + '</button>';
+    });
+    h += '</div>';
+  }
+
+  kg面板元素.innerHTML = h;
+  // 范围视图下没有选中节点，三态标记按钮置灰
+  ['kgvBtnTodo', 'kgvBtnDoing', 'kgvBtnDone'].forEach(function (bid) {
+    const b = document.getElementById(bid);
+    if (b) { b.classList.remove('active'); b.disabled = true; b.style.opacity = '.45'; }
+  });
+}
+
 function kg显示详情(id) {
   const n = kg取节点(id);
   if (!n) return;
@@ -5232,6 +5943,7 @@ function kg显示详情(id) {
   const 后续 = KG知识点.filter(function (x) { return (x.前置 || []).indexOf(id) >= 0; });
 
   let h = '';
+  h += '<button type="button" class="kg-back-btn" onclick="kg渲染范围介绍()">← 返回本范围总览</button>';
   const 大类 = KM板块归类[n.板块] || n.板块;
   const 大类色 = KM板块色[大类] || { 底: '#F1F5F9', 字: '#475569' };
   h += '<div class="kg-name">' + n.名称 + '</div>';
@@ -5256,6 +5968,12 @@ function kg显示详情(id) {
 
   h += '<div class="kg-field"><div class="kg-cap">教材位置</div><div class="kg-val">' + n.教材 + '</div></div>';
 
+  // v2.75：练题进度（题库答对后自动统计）
+  const 已通过 = kg练题进度(id);
+  h += '<div class="kg-field"><div class="kg-cap">练题进度</div><div class="kg-val">'
+    + (已通过 ? '已通过 ' + 已通过 + ' / ' + KG通过阈值 + ' 道不同的题' + (已通过 >= KG通过阈值 ? '（已自动标记为已掌握）' : '') : '还没有在这个知识点上答对过题目')
+    + '</div></div>';
+
   if ((n.前置 || []).length) {
     h += '<div class="kg-field"><div class="kg-cap">前置知识（先掌握这些）</div><div class="kg-rel">';
     n.前置.forEach(function (p) {
@@ -5273,410 +5991,209 @@ function kg显示详情(id) {
     h += '</div></div>';
   }
 
-  h += '<div class="kg-tip-line">选中知识点后，点上方「已学会」标记掌握，点「待学习」恢复未学</div>';
-
   kg面板元素.innerHTML = h;
-}
 
-/* 点击详情面板里的前置 / 后续标签：切换到目标所在科目，定位并闪烁高亮该卡片 */
-function kg跳转(id) {
-  const n = kg取节点(id);
-  if (!n) return;
-  if (n.学科 !== km当前科目) km设科目(n.学科);
-  kg选中 = id;
-  kg显示详情(id);
-  const 卡 = document.querySelector('#kmBody .km-card[data-id="' + id + '"]');
-  if (卡) {
-    document.querySelectorAll('#kmBody .km-card.sel').forEach(function(x) { x.classList.remove('sel'); });
-    卡.classList.add('sel');
-    卡.scrollIntoView({ behavior: 'smooth', block: 'center' });
-    卡.classList.add('km-flash');
-    setTimeout(function() { 卡.classList.remove('km-flash'); }, 1400);
-  }
-}
-
-function kg同步筛选按钮() {
-  document.querySelectorAll('#kgSubjectFilter .kg-btn').forEach(function (b) {
-    b.classList.toggle('active', b.getAttribute('data-kg-subject') === kg科目);
+  // 顶部三态按钮：高亮当前状态
+  const 当前态 = kg取状态(id);
+  const 按钮映射 = { todo: 'kgvBtnTodo', doing: 'kgvBtnDoing', done: 'kgvBtnDone' };
+  Object.keys(按钮映射).forEach(function (s) {
+    const btn = document.getElementById(按钮映射[s]);
+    if (btn) btn.classList.toggle('active', s === 当前态);
   });
-  document.querySelectorAll('#kgGradeFilter .kg-btn').forEach(function (b) {
-    b.classList.toggle('active', b.getAttribute('data-kg-grade') === kg年级);
+  // 选中节点后恢复三态按钮可用
+  ['kgvBtnTodo', 'kgvBtnDoing', 'kgvBtnDone'].forEach(function (bid) {
+    const b = document.getElementById(bid);
+    if (b) { b.disabled = false; b.style.opacity = ''; }
   });
 }
 
-/* （旧的三态状态按钮已移除：点亮 / 熄灭统一走右上角 km标记） */
-
-/* ---------- 高亮某节点的前后置连线 ---------- */
-function kg高亮邻接(id) {
-  if (!kg画布元素) return;
-  const 边们 = kg画布元素.querySelectorAll('.kg-edge');
-  for (let i = 0; i < 边们.length; i++) {
-    const 是 = !!id && (边们[i].getAttribute('data-src') === id || 边们[i].getAttribute('data-dst') === id);
-    边们[i].classList.toggle('on', 是);
-  }
-}
-
-/* ---------- 交互绑定 ---------- */
-let kg拖拽起点 = null;
-let kg拖拽位移 = 0;
-
-function kg绑定交互() {
-  kg画布元素.addEventListener('pointerdown', function (e) {
-    kg拖拽起点 = { x: e.clientX, y: e.clientY, vx: kg视图.x, vy: kg视图.y };
-    kg拖拽位移 = 0;
-    kg画布元素.classList.add('dragging');
-    if (kg画布元素.setPointerCapture) {
-      try { kg画布元素.setPointerCapture(e.pointerId); } catch (err) { }
-    }
-  });
-
-  kg画布元素.addEventListener('pointermove', function (e) {
-    if (!kg拖拽起点) return;
-    const 差x = e.clientX - kg拖拽起点.x;
-    const 差y = e.clientY - kg拖拽起点.y;
-    kg拖拽位移 = Math.abs(差x) + Math.abs(差y);
-    const r = kg画布元素.getBoundingClientRect();
-    const 比例 = Math.min(r.width / kg视图.w, r.height / kg视图.h) || 1;
-    kg视图.x = kg拖拽起点.vx - 差x / 比例;
-    kg视图.y = kg拖拽起点.vy - 差y / 比例;
-    kg应用视图();
-  });
-
-  function 结束拖拽() {
-    if (!kg拖拽起点) return;
-    kg拖拽起点 = null;
-    kg画布元素.classList.remove('dragging');
-  }
-  kg画布元素.addEventListener('pointerup', 结束拖拽);
-  kg画布元素.addEventListener('pointercancel', 结束拖拽);
-
-  // 点击节点查看详情（拖拽超过阈值则不当作点击）
-  kg画布元素.addEventListener('click', function (e) {
-    if (kg拖拽位移 > 6) return;
-    const g = e.target.closest ? e.target.closest('.kg-node') : null;
-    if (g) {
-      const id = g.getAttribute('data-id');
-      kg显示详情(id);
-      kg高亮邻接(id);
-      return;
-    }
-    // 没点中节点时选取最近的知识点：密集视图下节点本身很小（热区放不下），
-    // 靠这个兜底保证手指点在附近也能选中
-    const p = kg屏幕转虚拟(e.clientX, e.clientY);
-    let 最近 = null;
-    let 最近距 = 1e9;
-    for (const 编号 in kg位置表) {
-      const q = kg位置表[编号];
-      const 距 = Math.sqrt((q.x - p.x) * (q.x - p.x) + (q.y - p.y) * (q.y - p.y));
-      if (距 < 最近距) { 最近距 = 距; 最近 = 编号; }
-    }
-    if (最近 && 最近距 <= 48) {
-      kg显示详情(最近);
-      kg高亮邻接(最近);
-    }
-  });
-
-  // 悬停提示
-  kg画布元素.addEventListener('mousemove', function (e) {
-    if (kg拖拽起点) { kg提示元素.classList.remove('show'); return; }
-    const g = e.target.closest ? e.target.closest('.kg-node') : null;
-    if (!g) {
-      kg提示元素.classList.remove('show');
-      kg高亮邻接(null);
-      return;
-    }
-    const id = g.getAttribute('data-id');
-    const n = kg取节点(id);
-    if (!n) return;
-    kg提示元素.textContent = n.名称 + ' · ' + KG学科[n.学科].名称 + n.年级 + '年级 · ' + KG状态[kg取状态(id)].名称;
-    const r = kg容器元素.getBoundingClientRect();
-    let 左 = e.clientX - r.left + 14;
-    let 上 = e.clientY - r.top + 14;
-    if (左 + kg提示元素.offsetWidth > r.width - 8) 左 = e.clientX - r.left - kg提示元素.offsetWidth - 14;
-    if (上 + kg提示元素.offsetHeight > r.height - 8) 上 = e.clientY - r.top - kg提示元素.offsetHeight - 14;
-    kg提示元素.style.left = Math.max(4, 左) + 'px';
-    kg提示元素.style.top = Math.max(4, 上) + 'px';
-    kg提示元素.classList.add('show');
-    kg高亮邻接(id);
-  });
-
-  kg画布元素.addEventListener('mouseleave', function () {
-    kg提示元素.classList.remove('show');
-    kg高亮邻接(null);
-  });
-
-  // 滚轮定点缩放
-  kg画布元素.addEventListener('wheel', function (e) {
-    e.preventDefault();
-    const p = kg屏幕转虚拟(e.clientX, e.clientY);
-    kg缩放(e.deltaY < 0 ? 1.12 : 0.89, p.x, p.y);
-  }, { passive: false });
-
-  // 科目筛选
-  document.getElementById('kgSubjectFilter').addEventListener('click', function (e) {
-    const b = e.target.closest('.kg-btn');
-    if (!b) return;
-    kg科目 = b.getAttribute('data-kg-subject');
-    kg已设视图 = false;
-    kg同步筛选按钮();
-    kg渲染();
-  });
-
-  // 年级筛选
-  document.getElementById('kgGradeFilter').addEventListener('click', function (e) {
-    const b = e.target.closest('.kg-btn');
-    if (!b) return;
-    kg年级 = b.getAttribute('data-kg-grade');
-    kg已设视图 = false;
-    kg同步筛选按钮();
-    kg渲染();
-  });
-
-  // 搜索（高亮命中、淡化其余）
-  document.getElementById('kgSearch').addEventListener('input', function (e) {
-    kg搜索 = e.target.value.trim();
-    kg渲染();
-  });
-
-  window.addEventListener('resize', kg更新标签显示);
-}
-
-/* ==========================================================
-   知识图谱 · 卡片地图视图（替代原来的树状思维导图）
-   按「学科 → 年级 → 上册/下册」铺开知识点卡片，点击点亮 / 再点取消。
-   点亮状态直接复用 kg进度：值为 done 即视为点亮，因此老的进度数据不作废。
-   ========================================================== */
-
-// 板块归类：把细分板块合并为大类，减少色块种类
-// （knowledge-graph.js 里的 板块 字段保持原值不动，仅在渲染层归类）
-const KM板块归类 = {
-  '加减法':       '数与运算',
-  '乘除法':       '数与运算',
-  '分数与小数':   '数与运算',
-  '代数初步':     '数与运算',
-  '图形与几何':   '图形与几何',
-  '量与计量':     '量与统计',
-  '数据与推理':   '量与统计',
-  '拼音识字':     '语言基础',
-  '词语句子':     '语言基础',
-  '阅读理解':     '阅读与表达',
-  '表达与习作':   '阅读与表达',
-  '古诗文与名著': '古诗文与名著',
-  '字母与语音':   '词汇与语音',
-  '词汇':         '词汇与语音',
-  '句型与语法':   '句型与运用',
-  '综合运用':     '句型与运用',
-  '物质科学':     '物质与宇宙',
-  '地球与宇宙':   '物质与宇宙',
-  '生命科学':     '生命科学',
-  '工程与技术':   '工程与技术'
-};
-
-// 板块配色（大类）：浅底深字，保证浅色主题下可读；同一科目内色系相近
-const KM板块色 = {
-  // 数学
-  '数与运算':     { 底: '#EAF1FF', 字: '#2F5FD0' },
-  '图形与几何':   { 底: '#E2F3E7', 字: '#2B7040' },
-  '量与统计':     { 底: '#FBF3D8', 字: '#7A5C00' },
-  // 语文
-  '语言基础':     { 底: '#FFEEF4', 字: '#D63C74' },
-  '阅读与表达':   { 底: '#F3E8FF', 字: '#7C3AED' },
-  '古诗文与名著': { 底: '#FFF0E0', 字: '#C05621' },
-  // 英语
-  '词汇与语音':   { 底: '#E3F8F6', 字: '#1F9C93' },
-  '句型与运用':   { 底: '#FFEBD9', 字: '#C05621' },
-  // 科学
-  '物质与宇宙':   { 底: '#F4EAFF', 字: '#8E3FD6' },
-  '生命科学':     { 底: '#E2F3E7', 字: '#2B7040' },
-  '工程与技术':   { 底: '#FBF3D8', 字: '#7A5C00' }
-};
-
-// 当前显示的科目（科目筛选：一次只显示一个科目）
-let km当前科目 = 'math';
-
-function kg点亮(id) {
-  return kg进度[id] === 'done';
-}
-
-// 点击卡片：只选中知识点并显示详情，不直接切换点亮状态
-// 标记学习状态通过右侧面板顶部的"已学会 / 待学习"按钮，且必须先选中知识点
-function km标记(状态) {
+/* ---------- 三态标记（面板顶部按钮） ---------- */
+function kgv标记(状态) {
   if (!kg选中 || !kg取节点(kg选中)) {
-    showToast('请先点击选择一个知识点');
+    showToast('请先点击图谱中的一个知识点');
     return;
   }
   const id = kg选中;
-  if (状态 === 'done') {
+  if (状态 === 'doing') {
+    kg进度[id] = 'doing';
+    showToast('已标记为学习中');
+  } else if (状态 === 'done') {
     kg进度[id] = 'done';
     showToast('已标记为已掌握');
   } else {
     delete kg进度[id];
-    showToast('已标记为待学习');
+    showToast('已标记为未开始');
   }
   setData('kgProgress', kg进度);
-  km渲染();
+  kgv渲染();
+  kgv统计();
   kg显示详情(id);
 }
 
-// 册内排序：按板块顺序聚类，相同色块横向相邻；各册板块顺序一致，纵向也趋于对齐
-function km排序卡片(列表, 板块顺序) {
-  return 列表.slice().sort(function(a, b) {
-    const 板A = KM板块归类[a.板块] || a.板块;
-    const 板B = KM板块归类[b.板块] || b.板块;
-    return 板块顺序.indexOf(板A) - 板块顺序.indexOf(板B);
-  });
+/* ---------- 点击详情里的前置 / 后续：切科目年级，渲染并显示详情 ---------- */
+function kg跳转(id) {
+  const n = kg取节点(id);
+  if (!n) return;
+  let 需要重渲染 = false;
+  if (n.学科 !== kgv科目) { kgv设科目(n.学科); 需要重渲染 = true; }
+  if (kgv年级 !== 'all' && n.年级 !== Number(kgv年级)) { kgv设年级(String(n.年级)); 需要重渲染 = true; }
+  kg选中 = id;
+  kg显示详情(id);
+  // 定位：把目标节点放大一圈并高亮相邻连线，1.5 秒后恢复
+  if (kgv图表) {
+    try {
+      kgv图表.dispatchAction({ type: 'highlight', seriesIndex: 0, id: id });
+      setTimeout(function () {
+        if (kgv图表) kgv图表.dispatchAction({ type: 'downplay', seriesIndex: 0, id: id });
+      }, 1500);
+    } catch (err) { }
+  }
 }
 
-function km卡片(n) {
-  const 亮 = kg点亮(n.id);
-  const 选中 = n.id === kg选中;
-  const 大类 = KM板块归类[n.板块] || n.板块;
-  const 色 = KM板块色[大类] || { 底: '#F1F5F9', 字: '#475569' };
-  return '<button type="button" class="km-card' + (亮 ? ' on' : '') + (选中 ? ' sel' : '') + '"'
-    + ' data-id="' + n.id + '"'
-    + ' style="--底:' + 色.底 + ';--字:' + 色.字 + '"'
-    + ' title="' + n.名称 + '｜' + 大类 + '｜' + n.教材 + '">'
-    + (亮 ? '<span class="km-check">✓</span>' : '')
-    + '<span class="km-name">' + n.名称 + '</span></button>';
+/* ---------- 科目筛选：再点当前科目切回四科同屏 ---------- */
+function kgv设科目(科) {
+  if (科 !== 'all' && !KG学科[科]) return;
+  if (科 !== 'all' && 科 === kgv科目) return;
+  kgv科目 = 科;
+  document.querySelectorAll('#kgvSubjectTabs .km-tab').forEach(function (b) {
+    b.classList.toggle('active', b.getAttribute('data-kgv科目') === kgv科目);
+  });
+  const 区 = document.getElementById('kgvZones');
+  if (区) 区.style.display = kgv科目 === 'all' ? 'grid' : 'none';
+  kgv渲染();
+  kgv统计();
+  kg选中 = null;              // v2.75：切换范围后回到范围介绍视图
+  kg渲染范围介绍();
 }
 
-function km渲染() {
-  const 容器 = document.getElementById('kmBody');
-  if (!容器) return;
-  const 科 = km当前科目;
-  const 本科 = KG知识点.filter(function(n) { return n.学科 === 科; });
-  if (!本科.length) return;
-  const 科信息 = KG学科[科];
-
-  // 该科板块顺序：按知识点首次出现顺序，保证同板块卡片相邻排列
-  const 板块顺序 = [];
-  本科.forEach(function(n) {
-    const 大类 = KM板块归类[n.板块] || n.板块;
-    if (板块顺序.indexOf(大类) < 0) 板块顺序.push(大类);
+function kgv设年级(级) {
+  if (级 !== 'all' && (级 < '1' || 级 > '6')) return;
+  if (级 === kgv年级) return;
+  kgv年级 = 级;
+  document.querySelectorAll('#kgvGradeTabs .kg-btn').forEach(function (b) {
+    b.classList.toggle('active', b.getAttribute('data-kgv年级') === kgv年级);
   });
+  kgv渲染();
+  kgv统计();
+  kg选中 = null;              // v2.75：切换范围后回到范围介绍视图
+  kg渲染范围介绍();
+}
 
-  let html = '';
-
-  // 当前科目的板块图例
-  html += '<div class="km-legend">';
-  板块顺序.forEach(function(b) {
-    const 色 = KM板块色[b] || { 底: '#F1F5F9', 字: '#475569' };
-    html += '<span class="km-legend-item"><span class="km-swatch" style="background:' + 色.底 + ';border:1px solid ' + 色.字 + '"></span>' + b + '</span>';
+/* ---------- 搜索：命中红框放大，其余淡化；唯一命中直接打开详情 ---------- */
+function kgv搜索高亮(关键词) {
+  if (!kgv图表) return;
+  if (!关键词) { kgv渲染(); return; }
+  const 节点集 = kgv筛选();
+  const 命中 = 节点集.filter(function (n) {
+    if (n.名称.indexOf(关键词) >= 0) return true;
+    return (n.别名 || []).some(function (a) { return a.indexOf(关键词) >= 0; });
   });
-  html += '</div>';
+  const 命中集 = new Set(命中.map(function (n) { return n.id; }));
 
-  // 只有确实存在下册知识点时才分上 / 下册（语文、英语全部在上册，则不出现册别行）
-  // v2.1：数学、科学取消上 / 下册显示，卡片直接平铺
-  const 分册 = 科 !== 'math' && 科 !== 'science' && 本科.some(function(n) { return n.册别 === '下册'; });
-
-  html += '<div class="km-grid">';
-  [1, 2, 3, 4, 5, 6].forEach(function(年级) {
-    const 本级 = 本科.filter(function(n) { return n.年级 === 年级; });
-    if (!本级.length) return;
-
-    if (分册) {
-      // 年级格子纵向跨两行，格子内放"上册 / 下册"小标签，分别对齐右侧两行卡片
-      html += '<div class="km-grade has-term"><span class="km-grade-name">' + 年级 + '年级</span>'
-        + '<span class="km-term-tag">上册</span><span class="km-term-tag">下册</span></div>';
-      const 上卡 = km排序卡片(本级.filter(function(n) { return n.册别 !== '下册'; }), 板块顺序);
-      const 下卡 = km排序卡片(本级.filter(function(n) { return n.册别 === '下册'; }), 板块顺序);
-      html += '<div class="km-cards">';
-      if (!上卡.length) html += '<span class="km-empty">—</span>';
-      上卡.forEach(function(n) { html += km卡片(n); });
-      html += '</div>';
-      html += '<div class="km-cards">';
-      if (!下卡.length) html += '<span class="km-empty">—</span>';
-      下卡.forEach(function(n) { html += km卡片(n); });
-      html += '</div>';
+  kgv渲染();   // 先恢复正常渲染，再叠加高亮
+  const 选项 = kgv图表.getOption();
+  if (!选项.series || !选项.series[0]) return;
+  const 数据 = 选项.series[0].data.map(function (d) {
+    if (命中集.has(d.id)) {
+      d.itemStyle = Object.assign({}, d.itemStyle, { borderColor: '#EF4444', borderWidth: 3 });
+      d.symbolSize = (d.symbolSize || 30) + 8;
     } else {
-      html += '<div class="km-grade">' + 年级 + '年级</div>';
-      const 卡 = km排序卡片(本级, 板块顺序);
-      html += '<div class="km-cards">';
-      卡.forEach(function(n) { html += km卡片(n); });
-      html += '</div>';
+      d.itemStyle = Object.assign({}, d.itemStyle, { opacity: 0.22 });
     }
+    return d;
   });
-  html += '</div>';
+  const 连线 = (选项.series[0].links || []).filter(function (l) {
+    return 命中集.has(l.source) || 命中集.has(l.target);
+  });
+  kgv图表.setOption({ series: [{ data: 数据, links: 连线 }] });
 
-  容器.innerHTML = html;
-
-  const 亮数 = 本科.filter(function(n) { return kg点亮(n.id); }).length;
-  const 进度 = document.getElementById('kmTotal');
-  if (进度) 进度.innerHTML = 科信息.名称 + ' · 共 <b>' + 本科.length + '</b> 个知识点，已掌握 <b>' + 亮数 + '</b> 个';
+  if (命中.length === 1) {
+    kg选中 = 命中[0].id;
+    kg显示详情(命中[0].id);
+  }
 }
 
-function km初始化() {
-  const 容器 = document.getElementById('kmBody');
+/* ---------- 进入图谱页（switchPage 钩子）：首次建图，之后刷新尺寸 ---------- */
+function kgv进入页面() {
+  const 容器 = document.getElementById('kgvChart');
+  if (!容器) return;
+  if (typeof echarts === 'undefined') {
+    容器.innerHTML = '<div style="padding:80px 20px;text-align:center;color:#b6bcc6;font-size:14px;line-height:1.9">'
+      + '图表库 echarts.min.js 未加载<br><span style="font-size:12.5px">请确认它与 index.html 在同一目录</span></div>';
+    return;
+  }
+  if (!kgv图表) {
+    kgv图表 = echarts.init(容器);
+    kgv图表.on('click', function (p) {
+      if (p.dataType === 'node') {
+        kg选中 = p.data.id;
+        kg显示详情(p.data.id);
+      }
+    });
+  }
+  kgv图表.resize();
+  kgv渲染();
+  kgv统计();
+  if (kg选中) kg显示详情(kg选中);
+}
+
+/* ---------- 初始化（页面加载时执行：只绑事件，不建图） ---------- */
+function kgv初始化() {
+  const 容器 = document.getElementById('kgvChart');
   if (!容器) return;
   if (typeof KG知识点 === 'undefined' || !KG知识点.length) {
-    容器.innerHTML = '<div style="padding:60px 20px;text-align:center;color:#b6bcc6;font-size:14px">知识图谱数据未加载<br>请确认 knowledge-graph.js 与 index.html 在同一目录</div>';
+    const 区 = document.getElementById('kgvStage');
+    if (区) {
+      区.innerHTML = '<div style="padding:80px 20px;text-align:center;color:#b6bcc6;font-size:14px;line-height:1.9">'
+        + '知识图谱数据未加载<br><span style="font-size:12.5px">请确认 knowledge-graph.js、echarts.min.js 与 index.html 在同一目录</span></div>';
+    }
     return;
   }
   kg面板元素 = document.getElementById('kgPanel');
+  kg选中 = null;
+  kg渲染范围介绍();   // v2.75：进入页面直接显示当前「科目 + 年级」范围的介绍
 
-  // 科目筛选按钮
-  const 标签组 = document.getElementById('kmSubjectTabs');
-  if (标签组) {
-    标签组.addEventListener('click', function(e) {
+  // 科目按钮：再点同一个切回四科同屏
+  const 科目组 = document.getElementById('kgvSubjectTabs');
+  if (科目组) {
+    科目组.addEventListener('click', function (e) {
       const b = e.target.closest('.km-tab');
       if (!b) return;
-      km设科目(b.getAttribute('data-科目'));
+      const 科 = b.getAttribute('data-kgv科目');
+      kgv设科目(科 === kgv科目 ? 'all' : 科);
     });
   }
 
-  // 点卡片：只选中知识点并显示详情（点亮 / 熄灭用右上角按钮）
-  容器.addEventListener('click', function(e) {
-    const 卡 = e.target.closest ? e.target.closest('.km-card') : null;
-    if (!卡) return;
-    const id = 卡.getAttribute('data-id');
-    kg选中 = id;
-    容器.querySelectorAll('.km-card.sel').forEach(function(x) { x.classList.remove('sel'); });
-    卡.classList.add('sel');
-    kg显示详情(id);
+  // 年级按钮
+  const 年级组 = document.getElementById('kgvGradeTabs');
+  if (年级组) {
+    年级组.addEventListener('click', function (e) {
+      const b = e.target.closest('.kg-btn');
+      if (!b) return;
+      kgv设年级(b.getAttribute('data-kgv年级'));
+    });
+  }
+
+  // 搜索框
+  const 搜索框 = document.getElementById('kgvSearch');
+  if (搜索框) {
+    搜索框.addEventListener('input', function () {
+      kgv搜索高亮(搜索框.value.trim());
+    });
+  }
+
+  // 窗口缩放：重算布局（节流 200ms）
+  let 缩放计时 = null;
+  window.addEventListener('resize', function () {
+    if (!kgv图表) return;
+    clearTimeout(缩放计时);
+    缩放计时 = setTimeout(function () {
+      kgv图表.resize();
+      kgv渲染();
+    }, 200);
   });
-
-  // 详情面板初始占位
-  if (kg面板元素) {
-    kg面板元素.innerHTML = '<div class="kg-empty">点击左侧知识点卡片<br>查看详情并标记学习状态</div>';
-  }
-
-  km渲染();
 }
 
-// 切换科目筛选：一次只显示一个科目
-function km设科目(科) {
-  if (!KG学科[科] || 科 === km当前科目) return;
-  km当前科目 = 科;
-  document.querySelectorAll('#kmSubjectTabs .km-tab').forEach(function(b) {
-    b.classList.toggle('active', b.getAttribute('data-科目') === km当前科目);
-  });
-  km渲染();
-}
-
-/* ---------- 初始化 ---------- */
-function kg初始化() {
-  kg画布元素 = document.getElementById('kgCanvas');
-  if (!kg画布元素) return;
-  // 数据文件（knowledge-graph.js）缺失时优雅降级，不影响页面其它模块
-  if (typeof KG知识点 === 'undefined' || !KG知识点.length) {
-    const 容器 = document.getElementById('kgWrap');
-    if (容器) {
-      容器.innerHTML = '<div style="padding:80px 20px;text-align:center;color:#b6bcc6;font-size:14px;line-height:1.9">'
-        + '知识图谱数据未加载<br><span style="font-size:12.5px">请确认 knowledge-graph.js 与 index.html 在同一目录</span></div>';
-    }
-    return;
-  }
-  kg容器元素 = document.getElementById('kgWrap');
-  kg面板元素 = document.getElementById('kgPanel');
-  kg提示元素 = document.getElementById('kgTip');
-  // 触屏设备没有滚轮，提示文案随之调整
-  const 提示语 = document.getElementById('kgHint');
-  if (提示语 && window.innerWidth <= 768) {
-    提示语.textContent = '拖动平移 · 右下按钮缩放 · 点击节点看详情';
-  }
-  kg绑定交互();
-  kg渲染();
-}
 
 // ========== 初始化 ==========
 // ========== 国际化（i18n）==========
@@ -5684,21 +6201,21 @@ const I18N = {
   zh: {
     title: '宝贝学习乐园 · 7 岁版',
     home: '首页', alphabet: '英语岛', poem: '古诗花园',
-    number: '数学城', logic: '逻辑挑战', adventure: '闯关冒险',
+    number: '数学城', logic: '科学', adventure: '闯关冒险',
     chinese: '语文天地',
     alphabetTab: '英语', poemTab: '古诗', numberTab: '数字',
-    logicTab: '逻辑', adventureTab: '闯关', chineseTab: '语文',
+    logicTab: '科学', adventureTab: '闯关', chineseTab: '语文',
     welcome: '欢迎回来，小宝贝！',
     encouragement: '宝贝今天也要加油哦！',
     statStars: '获得星星', statLevels: '通过关卡',
     statBadges: '获得徽章', statQuestions: '答对题目',
     sectionAlphabet: '英语岛', sectionPoem: '古诗花园',
-    sectionNumber: '数学城', sectionLogic: '逻辑挑战',
+    sectionNumber: '数学城', sectionLogic: '科学',
     sectionAdventure: '闯关冒险', sectionChinese: '语文天地', badgeWall: '成就墙',
-    modAlphabet: '英语岛', modAlphabetDesc: '看词选图 · 听音选词',
+    modAlphabet: '英语岛', modAlphabetDesc: '英译中 · 听音选词',
     modPoem: '古诗花园', modPoemDesc: '经典古诗拼音朗读',
     modNumber: '数学城', modNumberDesc: '口算 · 乘除口诀 · 数独',
-    modLogic: '逻辑挑战', modLogicDesc: '找规律配对排序',
+    modLogic: '科学', modLogicDesc: '科学问答 · 识别分类 · 真假判断',
     modAdventure: '闯关冒险', modAdventureDesc: '综合闯关赢星星',
     modGraph: '知识图谱', modGraphDesc: '1-6 年级知识点学习路径',
     graph: '知识图谱', graphTab: '图谱',
@@ -5707,21 +6224,21 @@ const I18N = {
   en: {
     title: 'Baby Learning Playground',
     home: 'Home', alphabet: 'Alphabet', poem: 'Poems',
-    number: 'Numbers', logic: 'Logic', adventure: 'Adventure',
+    number: 'Numbers', logic: 'Science', adventure: 'Adventure',
     chinese: 'Chinese',
     alphabetTab: 'ABC', poemTab: 'Poems', numberTab: 'Nums',
-    logicTab: 'Logic', adventureTab: 'Quest', chineseTab: 'Chn',
+    logicTab: 'Science', adventureTab: 'Quest', chineseTab: 'Chn',
     welcome: 'Welcome back, little one!',
     encouragement: 'Keep learning today!',
     statStars: 'Stars Earned', statLevels: 'Levels Passed',
     statBadges: 'Badges Won', statQuestions: 'Correct Answers',
     sectionAlphabet: 'Alphabet Park', sectionPoem: 'Poem Garden',
-    sectionNumber: 'Math City', sectionLogic: 'Logic Challenge',
+    sectionNumber: 'Math City', sectionLogic: 'Science',
     sectionAdventure: 'Adventure Quest', sectionChinese: 'Chinese Land', badgeWall: 'Badge Wall',
-    modAlphabet: 'Alphabet Park', modAlphabetDesc: 'See words & pick pictures',
+    modAlphabet: 'Alphabet Park', modAlphabetDesc: 'English to Chinese & listening',
     modPoem: 'Poem Garden', modPoemDesc: 'Classic poems with pinyin',
     modNumber: 'Math City', modNumberDesc: 'Arithmetic, times tables & sudoku',
-    modLogic: 'Logic Challenge', modLogicDesc: 'Patterns, matching & sorting',
+    modLogic: 'Science', modLogicDesc: 'Quiz, classifying & true or false',
     modAdventure: 'Adventure Quest', modAdventureDesc: 'Mixed quizzes & star rewards',
     modGraph: 'Knowledge Map', modGraphDesc: 'Learning paths for grades 1-6',
     graph: 'Knowledge Map', graphTab: 'Map',
@@ -5753,11 +6270,7 @@ function applyI18N(lang) {
     const icon = el.querySelector('.tab-icon');
     if (icon) el.innerHTML = icon.outerHTML + tabLabels[i];
   });
-  // 首页文案
-  const h1 = document.querySelector('.welcome-banner h1');
-  if (h1) { const svg = h1.querySelector('svg'); h1.innerHTML = (svg ? svg.outerHTML + ' ' : '') + t.welcome; }
-  const p = document.querySelector('.welcome-banner p');
-  if (p) { const svg = p.querySelector('svg'); p.innerHTML = t.encouragement + (svg ? ' ' + svg.outerHTML : ''); }
+  // 首页文案（v2.74：欢迎模块已移除，无需注入；统计卡片见下）
   // 统计卡片
   const labels = document.querySelectorAll('.stat-label');
   const statTexts = [t.statStars, t.statLevels, t.statBadges, t.statQuestions];
@@ -5785,7 +6298,8 @@ function applyI18N(lang) {
   checkBadges();
   renderBadges();
   updateTabBadges();
-  km初始化();
+  kgv初始化();
+  kgv统计();  // 学习进度卡已移到首页，启动时立即填充一次
   // URL 参数支持
   const params = new URLSearchParams(window.location.search);
   const lang = params.get('lang') || 'zh';
